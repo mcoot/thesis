@@ -2,6 +2,7 @@
 
 \usepackage[margin=1.2in]{geometry}
 \usepackage[parfill]{parskip}
+\usepackage{titlesec}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{fancyhdr}
@@ -16,6 +17,14 @@
 \lhead{Thesis Project Proposal}
 \rhead{Joseph Spearritt}
 \cfoot{\thepage}
+
+\setcounter{secnumdepth}{3}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
 \begin{document}
 %	\setlength{\parindent}{0pt}
 	
