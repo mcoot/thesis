@@ -1,6 +1,7 @@
 \documentclass{article}
 
 \usepackage[margin=1.2in]{geometry}
+\usepackage[parfill]{parskip}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{fancyhdr}
@@ -16,11 +17,17 @@
 \rhead{Joseph Spearritt}
 \cfoot{\thepage}
 \begin{document}
-	\setlength{\parindent}{0pt}
+%	\setlength{\parindent}{0pt}
 	
 	\include{titlepage}
 	
-	\include{content}
+	\include{thesis-topic}
+	
+	\include{background}
+	
+	\include{plan}
+	
+	\include{ohs}
 	
 	\bibliographystyle{IEEETran}
 	\bibliography{bibliography}
