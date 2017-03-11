@@ -2,7 +2,25 @@
 
 \subsubsection{Overview and Rationale}
 
+Information Flow-based security focuses solely on the confidentiality of a system, as opposed to its integrity or availability. This is in contrast to Access Control mechanisms, which take an approach based on limiting which operations a user or program may perform --- controlling confidentiality but also the integrity of a system. Access Control allows the program to assert certain guarantees around what a process can \textit{do}, but it does not directly represent the problem at the heart of confidentiality: how to control when and how confidential data moves through a system.
+
+Information Flow mechanisms, on the other hand, specifically model how confidential data moves through a system, and can therefore provide robust guarantees about that movement. It does not specifically address integrity at all, though there is a relationship between integrity and confidentiality --- they can be seen as duals, where confidentiality concerns the `leakage' of data from the private system to a public output, and integrity concerns the flow of `contaminated' public data to the private system \cite{biba1977integrity} \cite{clarkson2010confintegrity}.
+
+Because Access Control mechanisms (such as Java's stack inspection-based SecurityManager, or Access Control List solutions) focus on modelling access to a system, they can ensure `tainted' data does not reach secure elements, thereby providing integrity, but they cannot prevent a user, program or call stack (in the case of SecurityManager) which \textit{has} privileged access from disseminating confidential data in an unauthorised way.
+
+The purpose of Information Flow security is to model the flow of information through a program and prevent data from moving from a high confidentiality state to a low confidentiality state. These are usually modelled by applying Bell and La Padula's Lattice Model \cite{bell1976lattice} of `Mandatory Access Control' to the state of a program and its variables. Either statically (at compile-time) or dynamically (at run-time) the Lattice Model sensitivity labels applied to data are used to enforce a `high water mark' \cite{ausanka2001accesscontrol} approach to the clearance a program has --- that is, a program flow which interacts with high sensitivity data can never `write down' to a lower confidentiality level.
+
 \subsubsection{Principles}
+
+	\paragraph{Lattice Model}
+	
+	The Lattice Model developed by Bell and La Padula \cite{bell1976lattice} 
+	
+	\cite{denning1976lattice}
+	
+	\cite{sandhu1994lattice}
+	
+	\paragraph{Run-Time Information Flow Checking}
 
 	\paragraph{Security Typing}
 	
