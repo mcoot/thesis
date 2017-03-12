@@ -2,7 +2,7 @@
 
 \subsubsection{Overview and Rationale}
 
-Information Flow-based security focuses solely on the confidentiality of a system, as opposed to its integrity or availability. This is in contrast to Access Control mechanisms, which take an approach based on limiting which operations a user or program may perform --- controlling confidentiality but also the integrity of a system. Access Control allows the program to assert certain guarantees around what a process can \textit{do}, but it does not directly represent the problem at the heart of confidentiality: how to control when and how confidential data moves through a system.
+Information Flow-based security focuses on confidentiality, as opposed to its integrity or availability. This is in contrast to Access Control mechanisms, which take an approach based on limiting which operations a user or program may perform --- controlling confidentiality but also the integrity of a system. Access Control allows the program to assert certain guarantees around what a process can \textit{do}, but it does not directly represent the problem at the heart of confidentiality: how to control when and how confidential data moves through a system.
 
 Information Flow mechanisms, on the other hand, specifically model how confidential data moves through a system, and can therefore provide robust guarantees about that movement. It does not specifically address integrity at all, though there is a relationship between integrity and confidentiality --- they can be seen as duals, where confidentiality concerns the `leakage' of data from the private system to a public output, and integrity concerns the flow of `contaminated' public data to the private system \cite{biba1977integrity} \cite{clarkson2010confintegrity}.
 
@@ -14,11 +14,17 @@ The purpose of Information Flow security is to model the flow of information thr
 
 	\paragraph{Lattice Model}
 	
-	The Lattice Model developed by Bell and La Padula \cite{bell1976lattice} 
+	The Lattice Model developed by Bell and La Padula for the US Department of Defense \cite{bell1976lattice} defines a system of `mandatory access controls' which explicitly specify what flows of information are allowed and disallowed. This may be used in conjunction with more traditional discretionary Access Control-based methods, such as Access Control Lists \cite{sandhu1993lattice}, where a user must have access both via the discretionary policy (which may be modified by users with appropriate permissions) and the mandatory policy (which may not be modified by users, even if they have clearance).
+	
+	The Lattice Model defines `security labels' (or \textit{classifications}) on data objects, as well as on subjects (which may be users or programs), where the label is the \textit{clearance} they are operating under \cite{denning1976lattice}. In a military context (as originally envisioned by the model), labels may range from `Unclassified' through to `Top Secret', with some number of classification between. A user with a maximum clearance of `Top Secret' may run a program at the `Unclassified' level, in which case the \textit{subject} (the program) will only have `Unclassified' clearance \cite{sandhu1993lattice}.
+	
+	
 	
 	\cite{denning1976lattice}
 	
-	\cite{sandhu1994lattice}
+	\cite{sandhu1994access}
+	
+	\paragraph{Implicit Flows}
 	
 	\paragraph{Run-Time Information Flow Checking}
 
