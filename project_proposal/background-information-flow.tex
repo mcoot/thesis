@@ -18,7 +18,20 @@ The purpose of Information Flow security is to model the flow of information thr
 	
 	The Lattice Model defines `security labels' (or \textit{classifications}) on data objects, as well as on subjects (which may be users or programs), where the label is the \textit{clearance} they are operating under \cite{denning1976lattice}. In a military context (as originally envisioned by the model), labels may range from `Unclassified' through to `Top Secret', with some number of classification between. A user with a maximum clearance of `Top Secret' may run a program at the `Unclassified' level, in which case the \textit{subject} (the program) will only have `Unclassified' clearance \cite{sandhu1993lattice}.
 	
+	Formally, the Bell - LaPadula model defines, given a set of security classes $ S $, and a `dominates' relation ($ \ge $) \cite{sandhu1993lattice} which defines a partial ordering on the labels, such that data of security class $ B $ can only flow to any class $ A $ such that $ A \ge B $. This may equivalently be defined, as by Denning \cite{denning1976lattice} as a `flow' relation $ \rightarrow $ which operates in another direction, such that data of class $ B $ may only flow to any class $ A $ such that $ B \rightarrow A $.
 	
+	This model is applied to the access control problem concerning subjects (users/programs) and objects (data) via two properties \cite{bell1973lattice}:
+	
+	\begin{description}
+		\item[Simple Security Property -- `No Read Up'] A subject with clearance $ C_s $ may only access a data object with classification $ C_o $ if $ C_s \ge C_o $ ($ C_o \rightarrow C_s $)
+		\item[* Property -- `No Write Down'] A subject with clearance $ C_s $ may only modify a data object with classification $ C_o $ if $ C_o \ge C_s $ ($ C_s \rightarrow C_o $)
+	\end{description}
+	
+	Because of the Simple Security Property, a user with low clearance cannot access data at a high clearance, and because of the * Property, a user with high clearance cannot modify low clearance data, preventing them from `declassifying' high clearance information by gaining simply, for example, copying sensitive information into a file marked at a low classification.
+	
+	Together, these rules enforce control over information flows: information may only ever flow from low to high classification, never from high to low. In practice, this requires 
+	
+	High Water Mark / monotonicity!!! 
 	
 	\cite{denning1976lattice}
 	
