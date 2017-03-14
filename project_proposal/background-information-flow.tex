@@ -6,9 +6,9 @@ Information Flow-based security focuses on confidentiality, as opposed to its in
 
 Information Flow mechanisms, on the other hand, specifically model how confidential data moves through a system, and can therefore provide robust guarantees about that movement. It does not specifically address integrity at all, though there is a relationship between integrity and confidentiality --- they can be seen as duals, where confidentiality concerns the `leakage' of data from the private system to a public output, and integrity concerns the flow of `contaminated' public data to the private system \cite{biba1977integrity} \cite{clarkson2010confintegrity}.
 
-Because Access Control mechanisms (such as Java's stack inspection-based SecurityManager, or Access Control List solutions) focus on modelling access to a system, they can ensure `tainted' data does not reach secure elements, thereby providing integrity, but they cannot prevent a user, program or call stack (in the case of SecurityManager) which \textit{has} privileged access from disseminating confidential data in an unauthorised way.
+Because Access Control mechanisms (such as Java's stack inspection-based SecurityManager, or Access Control List solutions) focus on modelling access to a system, they can ensure `tainted' data does not reach secure elements, thereby providing integrity, but they cannot prevent a user, program or call stack (in the case of SecurityManager) which \textit{has} privileged access from disseminating confidential data in an unauthorised way (REFERENCE).
 
-The purpose of Information Flow security is to model the flow of information through a program and prevent data from moving from a high confidentiality state to a low confidentiality state. These are usually modelled by applying Bell and La Padula's Lattice Model \cite{bell1976lattice} of `Mandatory Access Control' to the state of a program and its variables. Either statically (at compile-time) or dynamically (at run-time) the Lattice Model sensitivity labels applied to data are used to enforce a `high water mark' \cite{ausanka2001accesscontrol} approach to the clearance a program has --- that is, a program flow which interacts with high sensitivity data can never `write down' to a lower confidentiality level.
+The purpose of Information Flow security is to model the flow of information through a program and prevent data from moving from a high confidentiality state to a low confidentiality state. These are usually modelled by applying Bell and La Padula's Lattice Model \cite{bell1976lattice} of `Mandatory Access Control' to the state of a program and its variables. Either statically (at compile-time) or dynamically (at run-time) the Lattice Model sensitivity labels applied to data are used to prevent execution paths in which high confidentiality data would flow to a low confidentiality state.
 
 \subsubsection{Principles}
 
@@ -29,9 +29,7 @@ The purpose of Information Flow security is to model the flow of information thr
 	
 	Because of the Simple Security Property, a user with low clearance cannot access data at a high clearance, and because of the * Property, a user with high clearance cannot modify low clearance data, preventing them from `declassifying' high clearance information by gaining simply, for example, copying sensitive information into a file marked at a low classification.
 	
-	Together, these rules enforce control over information flows: information may only ever flow from low to high classification, never from high to low. In practice, this requires 
-	
-	High Water Mark / monotonicity!!! 
+	Together, these rules enforce control over information flows: information may only flow from low to high classification, never from high to low. This requires a `high water mark' \cite{jones1975highwatermark} policy, wherein during a program's execution, its security level is monotonically non-decreasing: the clearance it is operating at may rise, but never decrease during execution. For the purposes of Information Flow security, this policy is usually not applied to the linear execution of a program --- it is sufficient to show that no possible execution paths release data to a lower confidentiality level, as both static and dynamic applications of language-based Information Flow security do \cite{sabelfeld2003if}.
 	
 	\cite{denning1976lattice}
 	
@@ -39,8 +37,16 @@ The purpose of Information Flow security is to model the flow of information thr
 	
 	\paragraph{Implicit Flows}
 	
+	Since language-based Information Flow security examines all possible execution paths of a program, it must consider not only what high classification information is revealed by the execution path that occurs, but also by the paths that \textit{don't} occur --- that is, information which is revealed through `implicit' information flows \cite{sabelfeld2003if}.
+	
+	
+	
+	\paragraph{Covert Channels}
+	
 	\paragraph{Run-Time Information Flow Checking}
-
+	
+	\cite{austin2009dynamicif}
+	
 	\paragraph{Security Typing}
 	
 	\paragraph{Transitive / Intransitive Flows}
