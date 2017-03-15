@@ -39,9 +39,34 @@ The purpose of Information Flow security is to model the flow of information thr
 	
 	Since language-based Information Flow security examines all possible execution paths of a program, it must consider not only what high classification information is revealed by the execution path that occurs, but also by the paths that \textit{don't} occur --- that is, information which is revealed through `implicit' information flows \cite{sabelfeld2003if}.
 	
+	Denning \& Denning \cite{denning1977if} define an explicit flow $ x \rightarrow y$ as a flow where the operations performed are independent of the value of $ x $ --- such as an assignment statement $ y := x $. They then define an implicit flow $ x \rightarrow y$ as an arbitrary flow from some $ z \rightarrow y $, but where the execution depends upon the value of $ x $, such as where execution branches based on $ x $, as in the following example: $ y := 1; \keyword{if} x = 0 \keyword{then} y := 0 \keyword{else} \text{skip}\;$ \cite{denning1977if}.
 	
+	In the example above, in the case where the \textbf{then} branch executes, an attacker has gained knowledge of the value of $ x $ even though it was not explicitly modified -- because after the execution occurs, $ y = 0 $, and therefore $ x = 0 $. However, even if the \textbf{else} branch occurs, the attacker still gains information; since $ y = 1 $, the \textbf{then} branch wasn't taken and therefore $ x \ne 0 $.
+	
+	In order to be considered `secure' from an Information Flow perspective, the program must not reveal information about the state of $ x $ under \textit{any} execution path, whether through implicit or explicit flows.
 	
 	\paragraph{Covert Channels}
+	
+	Consider a program which -- by the definition given in the Implicit Flows section -- is secure. Specifically, consider the following: 
+	
+	\begin{algorithmic}
+		\State $ y := 1 $
+		\If {$ x = 0 $}
+			\For{$ i := 1 $ \textbf{to} $ 1000000 $}
+				\State skip
+			\EndFor
+		\Else
+			\State skip
+		\EndIf
+	\end{algorithmic}
+	
+	This program does not include any flows, explicit or otherwise, from $ x \rightarrow y $. There is neither any explicit assignment based on $ x $, nor does the control flow dependent on $ x $ produce any observable output in the state of $ y $. However, an adversary able to run this program can still determine information about the value of $ x $ based on the length of time that the program takes to execute. If $ x = 0 $, then the program will run the for loop and take significantly longer to execute than if $ x \ne 0 $ and the else branch is taken.
+	
+	This is an example of a covert channel attack, and specifically a \textit{timing} channel attack.
+	
+	\paragraph{Selective Declassification}
+	
+	
 	
 	\paragraph{Run-Time Information Flow Checking}
 	
