@@ -14,9 +14,9 @@ The purpose of Information Flow security is to model the flow of information thr
 
 	\paragraph{Lattice Model}
 	
-	The Lattice Model developed by Bell and La Padula for the US Department of Defense \cite{bell1976lattice} defines a system of `mandatory access controls' which explicitly specify what flows of information are allowed and disallowed. This may be used in conjunction with more traditional discretionary Access Control-based methods, such as Access Control Lists \cite{sandhu1993lattice}, where a user must have access both via the discretionary policy (which may be modified by users with appropriate permissions) and the mandatory policy (which may not be modified by users, even if they have clearance).
+	The Lattice Model developed by Bell and La Padula for the US Department of Defense \cite{bell1976lattice} defines a system of `mandatory access controls' which explicitly specify what flows of information are allowed and disallowed. This may be used in conjunction with more traditional discretionary Access Control-based methods, such as Access Control Lists \cite{sandhu1993lattice}, where a user must have access both via the discretionary policy and the mandatory policy.
 	
-	The Lattice Model defines `security labels' (or \textit{classifications}) on data objects, as well as on subjects (which may be users or programs), where the label is the \textit{clearance} they are operating under \cite{denning1976lattice}. In a military context (as originally envisioned by the model), labels may range from `Unclassified' through to `Top Secret', with some number of classification between. A user with a maximum clearance of `Top Secret' may run a program at the `Unclassified' level, in which case the \textit{subject} (the program) will only have `Unclassified' clearance \cite{sandhu1993lattice}.
+	The Lattice Model defines `security labels' (or \textit{classifications}) on data objects, as well as on subjects (which may be users or programs), where the label is the \textit{clearance} they are operating under \cite{denning1976lattice}.
 	
 	Formally, the Bell - LaPadula model defines, given a set of security classes $ S $, and a `dominates' relation ($ \ge $) \cite{sandhu1993lattice} which defines a partial ordering on the labels, such that data of security class $ B $ can only flow to any class $ A $ such that $ A \ge B $. This may equivalently be defined, as by Denning \cite{denning1976lattice} as a `flow' relation $ \rightarrow $ which operates in another direction, such that data of class $ B $ may only flow to any class $ A $ such that $ B \rightarrow A $.
 	
@@ -62,11 +62,23 @@ The purpose of Information Flow security is to model the flow of information thr
 	
 	This program does not include any flows, explicit or otherwise, from $ x \rightarrow y $. There is neither any explicit assignment based on $ x $, nor does the control flow dependent on $ x $ produce any observable output in the state of $ y $. However, an adversary able to run this program can still determine information about the value of $ x $ based on the length of time that the program takes to execute. If $ x = 0 $, then the program will run the for loop and take significantly longer to execute than if $ x \ne 0 $ and the else branch is taken.
 	
-	This is an example of a covert channel attack, and specifically a \textit{timing} channel attack.
+	This is an example of a covert channel attack, and specifically a \textit{timing} channel attack. Sabelfeld and Myers \cite{sabelfeld2003if} consider the impact of a number of kinds of covert channel on information flow security, including timing channels, termination channels (whether a program terminates), probabilistic channels (variance in the probability distributions of program outcomes).
+	
+	Covert channels present difficulties for Information Flow approaches to security, as even a program which has been formally verified to be secure cannot account for covert channels that may depend upon the environment the program runs in -- for example, covert channel attacks based on the relative CPU time or power draw of an execution path, which may only be possible when the program is run on a particular kind of CPU or system. A program can hence only be said to be `secure' in an Information Flow sense \textit{with respect to a particular environment} \cite{sabelfeld2003if}. This idea is examined by Lampson \cite{lampson1973covertchannels} in considering the `confinement' of programs in order to prevent information flow through unintended channels.	
 	
 	\paragraph{Selective Declassification}
 	
+	While Information Flow models typically attempt to show non-interference --- that low confidentiality data is not affected by high confidentiality data --- in practical applications some flow from high classification to low classification is expected, and indeed necessary. For instance, the output of a program which checks a (confidential) password by necessity depends upon the password's value \cite{sabelfeld2003if}, creating a `declassifying' information flow.
 	
+	In addition, models of non-interference are conservative: while they may be able to reject any insecure (interfering) program, they also reject some programs that do not interfere. This is not merely a practical limitation of current models: it has been shown that providing a necessary and sufficient condition for the information flow security of a given program is undecidable, as the halting problem can be reduced to it \cite{denning1977if}.
+	
+	To alleviate both of these problems, several different mechanisms for controlled `selective declassification' have been proposed, including from Myers and Liskov \cite{myers1997if}, Volpano and Smith \cite{volpano2000declassification}, Mantel and Sands \cite{mantel2004controlled} and others.
+	
+	Of these, many rely on a principle of `intransitive non-interference'. That is, where information flowing from low to high confidentiality is generally transitive (i.e. $ A \rightarrow B \wedge B \rightarrow C \implies A \rightarrow C $), some information flowing from high to low is allowable, but it is intransitive --- it must pass through particular trusted components. Hence, it may be allowable for information to flow from $ A $ to $ C $, but it \textit{must} pass through classification $ B $ \cite{roscoe1999intransitive}.
+	
+	Myers and Liskov \cite{myers1997if} propose the implementation of an explicit `declassify' operator which allows for a variable to be declassified, provided the calling code has clearance (this principle is used by the Java Information Flow (JIF) language). This approach is not perfect; it violates the * Property of the Lattice Model, but it requires that the program author explicitly denote when they perform the violation. In addition, it does not provide a way to model the effects of the declassification within the information flow analysis  \cite{zdancewic2004challenges}.
+	
+	Volpano and Smith \cite{volpano2000declassification} propose a more stringent mechanism for declassification: one which requires that secret information cannot be leaked in polynomial time. Under this model, the password checker example above would be allowable (there is no way for the program to leak the actual password to an attacker except via brute force). While this mechanism provides harder guarantees, it is also more restrictive \cite{zdancewic2004challenges} and hence less practical for writing complex programs.
 	
 	\paragraph{Run-Time Information Flow Checking}
 	
@@ -74,10 +86,14 @@ The purpose of Information Flow security is to model the flow of information thr
 	
 	\paragraph{Security Typing}
 	
-	\paragraph{Transitive / Intransitive Flows}
+	
 
 \subsubsection{Security Model Implementations}
 
 	\paragraph{Java Information Flow (JIF)}
+	
+	\cite{pullicino2014jif}
+	
+	\cite{broberg2013paragon}
 	
 	\paragraph{Paragon}
