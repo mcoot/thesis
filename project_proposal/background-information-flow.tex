@@ -37,6 +37,10 @@ The purpose of Information Flow security is to model the flow of information thr
 	
 	\cite{sandhu1994access}
 	
+	\paragraph{Semantics-Based Security}
+	
+	The purpose of Information Flow security is to show `non-interference' of the program; that is, to show that if two program executions begin with the same state in terms of their low confidentiality values (i.e. the `low view' of the inputs are the same), then the behaviour of the program should be indistinguishable to an attacker \cite{sabelfeld2003if}. This can be formalised in the assertion that a program does not interfere if there is no `strong dependency' \cite{cohen1977declassification} between high and low confidentiality variables.
+	
 	\paragraph{Implicit Flows}
 	
 	Since language-based Information Flow security examines all possible execution paths of a program, it must consider not only what high classification information is revealed by the execution path that occurs, but also by the paths that \textit{don't} occur --- that is, information which is revealed through `implicit' information flows \cite{sabelfeld2003if}.
@@ -90,17 +94,30 @@ The purpose of Information Flow security is to model the flow of information thr
 	
 	More recent research and most concrete implementations build their static analysis by using \textit{security type systems} \cite{sabelfeld2003if}, which make use of the same static checking and background theory commonly used in statically typed language to enforce Information Flow rules.
 	
-	Languages with security typing systems associate a classification label (as per the lattice model) with each variable and expression. Volpano and Smith's model \cite{volpano1996sectype} defines a model of 'secure flow types' with an associated set of static checking rules which allow for the security type of any valid (typable) expression to be evaluated. Expressions which contravene a non-interfering information flow policy are not typable under this system.
+	Languages with security typing systems associate a classification label (as per the lattice model) with each variable and expression. Volpano and Smith's model \cite{volpano1996sectype} defines a model of 'secure flow types' with an associated set of static checking rules which allow for the security type of any valid (typable) expression to be evaluated. Expressions which contravene a non-interfering information flow policy are not typable under this system. The typing system is compositional: secure expressions within the program are built up and combined to show that the overall program is secure.
 	
 	An expression or code segment's security type depends on its `security context', modelled as a program-counter label at a particular point \cite{sabelfeld2003if}. In, for example, the context of a high branch (i.e. where the condition is dependent on the value of a high confidentiality variable), code which includes assignments to low confidentiality variables is not typable; thereby preventing both explicit and implicit leaks of information.
 	
+	DEPENDENT TYPES
+	
 	\paragraph{Run-Time Information Flow Checking}
 	
+	While the need to evaluate all execution paths and concerns about performance have resulted in most Information Flow security research and implementation being focused on static analysis, attempts at building run-time enforcement systems have also been made. One motivation for this is that statically checked information flow security cannot enforce policies which depend on information only available at run-time, or information which may change before or during execution (such as file permissions) \cite{sabelfeld2003if}.
+	
+	One solution to this issue is to extend static checking policies by allowing labels to be used as first class values, meaning variables may be annotated with a security type which is only known at run-time \cite{myers1997if}. This can be performed using dependent types \cite{xi1999dependenttypes}, and is implemented by the JIF compiler \cite{myers1999jif}.
+	
+	True run-time solutions must account for the difficulty of detecting implicit flows in a dynamic context.
+	
 	\cite{austin2009dynamicif}
+	\cite{venkatakrishnan2006runtime}
+	
+	\cite{austin2010runtime}
 	
 \subsubsection{Security Model Implementations}
 
 	\paragraph{Java Information Flow (JIF)}
+	
+	\cite{myers1999jif}
 	
 	\cite{pullicino2014jif}
 	
