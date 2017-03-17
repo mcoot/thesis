@@ -10,6 +10,8 @@ Because Access Control mechanisms (such as Java's stack inspection-based Securit
 
 The purpose of Information Flow security is to model the flow of information through a program and prevent data from moving from a high confidentiality state to a low confidentiality state. These are usually modelled by applying Bell and La Padula's Lattice Model \cite{bell1976lattice} of `Mandatory Access Control' to the state of a program and its variables. Either statically (at compile-time) or dynamically (at run-time) the Lattice Model sensitivity labels applied to data are used to prevent execution paths in which high confidentiality data would flow to a low confidentiality state.
 
+\pagebreak
+
 \subsubsection{Principles}
 
 	\paragraph{Lattice Model}
@@ -80,14 +82,22 @@ The purpose of Information Flow security is to model the flow of information thr
 	
 	Volpano and Smith \cite{volpano2000declassification} propose a more stringent mechanism for declassification: one which requires that secret information cannot be leaked in polynomial time. Under this model, the password checker example above would be allowable (there is no way for the program to leak the actual password to an attacker except via brute force). While this mechanism provides harder guarantees, it is also more restrictive \cite{zdancewic2004challenges} and hence less practical for writing complex programs.
 	
+	\paragraph{Static Information Flow Checking}
+	
+	Applying Information Flow-based security to real programs requires all possible execution paths of the program to be analysed in order to determine whether any flow from high to low confidentiality occurs. Most implementations of Information Flow security perform some form of static, compile-time analysis in order to accomplish this.
+	
+	The work of Denning and Denning \cite{denning1977if} forms the basis of many approaches to static Information Flow checking, building a set of `certification semantics' based on the lattice model which apply to particular syntax, in order to certify programs as being secure.
+	
+	More recent research and most concrete implementations build their static analysis by using \textit{security type systems} \cite{sabelfeld2003if}, which make use of the same static checking and background theory commonly used in statically typed language to enforce Information Flow rules.
+	
+	Languages with security typing systems associate a classification label (as per the lattice model) with each variable and expression. Volpano and Smith's model \cite{volpano1996sectype} defines a model of 'secure flow types' with an associated set of static checking rules which allow for the security type of any valid (typable) expression to be evaluated. Expressions which contravene a non-interfering information flow policy are not typable under this system.
+	
+	An expression or code segment's security type depends on its `security context', modelled as a program-counter label at a particular point \cite{sabelfeld2003if}. In, for example, the context of a high branch (i.e. where the condition is dependent on the value of a high confidentiality variable), code which includes assignments to low confidentiality variables is not typable; thereby preventing both explicit and implicit leaks of information.
+	
 	\paragraph{Run-Time Information Flow Checking}
 	
 	\cite{austin2009dynamicif}
 	
-	\paragraph{Security Typing}
-	
-	
-
 \subsubsection{Security Model Implementations}
 
 	\paragraph{Java Information Flow (JIF)}
