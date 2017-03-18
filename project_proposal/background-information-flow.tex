@@ -100,15 +100,25 @@ Static information flow checking --- and security typing particularly --- forms 
 
 \paragraph{Java Information Flow (JIF)}
 
-J
+The Java Information Flow language or JIF \cite{myers2006jif}, originally known as JFlow \cite{myers1999jif}, is an extension of the Java language developed at Cornell university which adds security typing in order to allow for static enforcement of both integrity and confidentiality via information flow and access control policies.
 
-\cite{myers1999jif}
+JIF represents its security classifications in terms of `principals' (which may represent users, groups of users or other programs) \cite{pullicino2014jif}. The standard lattice model `dominates' relation is defined on these principals in terms of other principals being able to `act' for them (i.e. if Bob allows Alice to `act' for him, then Alice's clearance dominates Bob's and information may flow from Bob to Alice). All variables have a security label associated with them, consisting of both a confidentiality and integrity policy defining how that data is allowed to flow. Methods may also have a principal attached to them as an `authority', indicating that the method acts for that principal.
 
-\cite{pullicino2014jif}
-
-\cite{broberg2013paragon}
+JIF also provides an explicit `declassify' operator which allows for the selective declassification of information.
 
 \paragraph{Paragon}
+
+Paragon is described in the paper which introduced it \cite{broberg2013paragon} as a `Third-Generation' Information Flow language.
+
+Paragon's design considers earlier languages like JIF and concludes that the necessity for a `declassify' operator essentially limits the security policies that JIF (and languages like it, such as FlowCaml \cite{simonet2003flow}) can represent --- they are locked into the idea of viewing flow policies as ``Good flows plus exceptional cases [requiring selective declassification]" \cite{broberg2013paragon}.
+
+It uses the theory of `Flow Locks' \cite{broberg2010paralocks}: boolean conditions used to specify the conditions required for particular data to flow to a given actor. These conditions are policy independent: the policy specifies when the lock condition becomes true and the lock is `opened' allowing that actor to gain the information, as well as when the lock condition becomes false and the lock is `closed', preventing that information from flowing. Information flows, then, are dependent both on policy and the state of the flow locks. Information may always flow to a more restrictive policy (i.e. one which dominates the existing policy under the lattice model), but declassification is possible through manipulation of the lock state.
+
+The syntax of Paragon models entities in Information Flow as `actors' \cite{broberg2013paragon}, which are similar to principals in JIF, but are modelled as object references rather than as specialised language constructs. Policies are then defined stating which actors information in a given variable is allowed to flow to, as well as a body constraining the policy to flow lock predicates.
+
+Locks may then be used to allow for selective declassification of data, however Paragon will act conservatively in its evaluation of lock states in order to guard against leaks in implicit flows \cite{broberg2013paragon}, since the state of the lock at the time the implicit flow is triggered (e.g. by a high conditional) may be different to the state at the time the information is actually revealed.
+
+Paragon's analysis of lock states is purely static, though the lock expressions may be used as first class values at run-time, though the authors of Paragon express interest in the possibility of extending the idea of flow locks to dynamic Information Control enforcement mechanisms \cite{broberg2013paragon}.
 
 \subsubsection{Issues with the Static Checking Approach}
 
