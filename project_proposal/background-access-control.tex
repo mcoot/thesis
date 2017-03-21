@@ -1,15 +1,28 @@
-\subsection{Java Security}
+\subsection{The Java Security Model}
 
-\subsubsection{Overview and Rationale}
+\subsubsection{Overview}
 
-The Java platform was designed to provide security in areas that many other languages did not: it was designed to be memory-safe and sandboxed.
+The Java platform was designed to provide security in areas that many other languages did not: it was designed to be type safe, memory-safe and sandboxed. In addition, Java supports a set of access control features based around stack inspection.
 
-\subsubsection{Principles}
+\subsubsection{The Java Sandbox}
 
-\subsubsection{Security Model Implementations}
+The Java sandbox system, which has existed since the early versions of Java, was originally designed to allow for web-hosted Java applets to be downloaded by a web browser and executed in a (notionally) secure way \cite{mcgraw1999securingjava}. The sandbox model consists of three systems: the Bytecode Verifier, the Class Loader, and the Security Manager.
 
-	\paragraph{Java Security Manager}
-	
-	\paragraph{OSGi Security}
-	
-	\cite{philippov2012security}
+The Bytecode Verifier is run before a class is loaded and run by the JVM, and is designed to prevent broken or malicious code from being run \cite{mcgraw1999securingjava}. Though most of its checks are also performed at compile-time, bytecode may be generated in some other way, or edited manually, and hence the compile-time checks are performed by the Verifier. Specifically, the Verifier checks that the file adheres to the class file format, that there are no illegal casts, that no illegal accesses occur (e.g. accessing a private method from outside its class), and more generally that typing rules are obeyed (e.g. final methods are not overridden). It also checks that the call stack cannot overflow, and that uses of variables are valid (e.g. variables are not used before being initialised) \cite{lindholm2014java}.
+
+The Class Loader allows Java programs to dynamically add classes even while the JVM is running. The `primordial' or internal Class Loader is created with the JVM, and cannot be overridden \cite{mcgraw1999securingjava}. It loads the Java API classes and essentially bootstraps the virtual machine. Other classes, and those loaded dynamically at runtime, are loaded by ClassLoader objects, which may be subclassed and replaced by the programmer. As a consequence, malicious ClassLoaders are a common means by which to compromise a running JVM.
+
+\subsubsection{The SecurityManager and Stack Inspection-based Access Control}
+
+The final part of the sandbox model is the Security Manager. An instance of the SecurityManager class is associated with the running JVM \cite{gosling2014java}. When sensitive actions are undertaken, the Security Manager's checkPermission method is called, and if the action is not allowed, a SecurityException is thrown. The rules for what actions are allowed are specified in a policy file: by default there is a global policy file which applies system-wide, but there may also be a specific policy file for the application. The policy file may contain definitions of keystores (databases to securely store private keys), and `grant' definitions which define the permissions for particular classes (which may depend on the who the class's certificate is signed by) \cite{gosling2014java}.
+
+When a permission check is performed, the SecurityManager uses stack inspection to determine whether the check should succeed \cite{gong2003javasecurity}. Every frame on the stack below the code calling the sensitive operation is checked --- if any do not have the required permission, the check fails and a SecurityException is thrown. The only way the full stack inspection may be bypassed is if code is placed inside a doPrivileged block, in which case \cite{gong2003javasecurity} all frames below the frame in which doPrivileged is called are ignored when permissions are checked.
+
+
+\subsubsection{OSGi Security}
+
+The OSGi (Open Services Gateway initiative) specification defines a platform for Java applications which allows for the dynamic loading and unloading of modular components at run-time, based on the model of a `bundles' of classes with a manager which handles the life cycle of those bundles \cite{osgi2014osgi}. It also allows the specification of `service' interfaces which may be implemented by a bundle and managed via a service registry to be made available to clients.
+
+OSGi builds on Java's security model... [WIP]
+
+\cite{philippov2012security}
