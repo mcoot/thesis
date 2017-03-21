@@ -23,6 +23,12 @@ When a permission check is performed, the SecurityManager uses stack inspection 
 
 The OSGi (Open Services Gateway initiative) specification defines a platform for Java applications which allows for the dynamic loading and unloading of modular components at run-time, based on the model of a `bundles' of classes with a manager which handles the life cycle of those bundles \cite{osgi2014osgi}. It also allows the specification of `service' interfaces which may be implemented by a bundle and managed via a service registry to be made available to clients.
 
-OSGi builds on Java's security model... [WIP]
+OSGi builds on Java's security model by adding a number of new specific permissions, as well as more structural changes allowing, for instance, permissions that are updated via code or at run-time rather than from a static policy file. The new permissions OSGi adds are mostly related to the OSGi model, including permissions for loading a bundle or adding a service to the registry \cite{hall2011osgi}.
+
+Where the standard Java model uses permissions which are applied based on the combination of class name / URL and the identity associated with the class's signature, the OSGi model adds more fine-grained control over which permissions apply in a given situation.
+
+DENY operations
+
+Run-time permissions
 
 \cite{philippov2012security}
