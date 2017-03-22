@@ -25,18 +25,4 @@ The OSGi (Open Services Gateway initiative) specification defines a platform for
 
 OSGi builds on Java's security model by adding a number of new specific permissions, as well as more structural changes allowing, for instance, permissions that are updated via code or at run-time rather than from a static policy file. The new permissions OSGi adds are mostly related to the OSGi model, including permissions for loading a bundle or adding a service to the registry \cite{hall2011osgi}.
 
-\paragraph{Conditional Permissions}
-
-Where the standard Java model uses permissions which are applied based on the combination of class name / URL and the identity associated with the class's signature, the OSGi model adds more fine-grained control over which permissions apply in a given situation (REFERENCE). A condition may be specified defining what classes and bundles (and with what signatures) a permission rule applies to, as well as details about what is permitted (e.g. acting as a client of a given OSGi service).
-
-\paragraph{Deny Rules and Layered Policies}
-
-All permission rules in the plain Java security model are `grant' (or `allow') permissions --- all permissions are denied unless a rule specifically allows it, and as full stack inspection is performed, all frames below a given call must be explicitly granted permission for a check to succeed (REFERENCE). As OSGi relies on loosely coupled components, it is often not possible to have knowledge of the permissions all frames on the stack will have, and as a result OSGi applications typically set Java's static policy file to use a very permissive policy, restricting permissions higher up using OSGi's security features.
-
-To support this, OSGi supports `deny' as well as `allow' permission rules (REFERENCE): hence, the OSGi platform-wide security policy (managed by the ConditionalPermissionAdmin class) will explicitly remove the permissions granted by the underlying Java security layer. OSGi also has support for security policies that are local to a particular bundle (REFERENCE).
-
-\paragraph{Dynamic Security Policies}
-
-Finally, the biggest difference between the plain Java security model and the OSGi model is that OSGi's security policies may be defined through code rather than a policy file, and may be modified at run-time (REFERENCE). This is necessary to support the OSGi's model of bundles which may be installed and uninstalled into a running JVM, potentially requiring new permissions to be granted (or denied). In general, when a permission check is initiated OSGi will first check that a bundle has the appropriate local permissions; if this succeeds, the system-wide OSGi policy will be checked, and then the static Java security policy (REFERENCE). Assuming the check succeeds (i.e. there are `allow' rules applicable to the check's Permission Domain at each layer, and no explicit `deny' rules at the bundle-local or system-wide OSGi layers), the bundle is allowed to perform the requested operation.
-
-\cite{philippov2012security}
+Specifically, it adds more powerful conditional permissions (allowing for more detailed rules about what code a given permission applies to), it adds `deny' rules in addition to the `grant' rules in plain Java policies to allow for a `layered' security model with permissions at a per-bundle level in addition to the system-wide policy, and it adds the ability for policies to be defined in code at run-time rather than in a static policy file \cite{hall2011osgi}.

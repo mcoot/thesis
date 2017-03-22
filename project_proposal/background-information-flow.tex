@@ -1,6 +1,4 @@
-\subsection{Information Flow}
-
-\subsubsection{Overview and Rationale}
+\subsubsection{Information Flow Overview and Background}
 
 Information Flow-based security focuses on confidentiality, as opposed to its integrity or availability. This is in contrast to Access Control mechanisms, which take an approach based on limiting which operations a user or program may perform --- primarily controlling the integrity of a system. Access Control allows the program to assert certain guarantees around what a process can \textit{do}, but it does not directly represent the problem at the heart of confidentiality: how to control when and how confidential data moves through a system.
 
@@ -9,8 +7,6 @@ Information Flow mechanisms, on the other hand, specifically model how data move
 Because Access Control mechanisms (such as Java's stack inspection-based SecurityManager, or Access Control List solutions) focus on modelling access to a system, they can ensure data from an unprivileged (potentially tainted) source cannot reach secure components, thereby providing integrity, but they cannot prevent a user, program or call stack (in the case of SecurityManager) which \textit{has} privileged access from disseminating confidential data in an unauthorised way.
 
 The purpose of Information Flow security is to model the flow of information through a program and prevent data from moving from a high confidentiality state to a low confidentiality state. These are usually modelled by applying Bell and La Padula's Lattice Model \cite{bell1976lattice} of `Mandatory Access Control' to the state of a program and its variables. Either statically (at compile-time) or dynamically (at run-time) the Lattice Model sensitivity labels applied to data are used to prevent execution paths in which high confidentiality data would flow to a low confidentiality state.
-
-\pagebreak
 
 \subsubsection{Lattice Model}
 
@@ -31,13 +27,13 @@ Because of the Simple Security Property, a user with low clearance cannot access
 
 Together, these rules enforce control over information flows: information may only flow from low to high classification, never from high to low. This requires a `high water mark' \cite{jones1975highwatermark} policy, wherein during a program's execution, its security level is monotonically non-decreasing: the clearance it is operating at may rise, but never decrease during execution. For the purposes of Information Flow security, this policy is usually not applied to the linear execution of a program --- it is sufficient to show that no possible execution paths release data to a lower confidentiality level, as both static and dynamic applications of language-based Information Flow security do \cite{sabelfeld2003if}.
 
-\cite{denning1976lattice}
+\subsection{Information Flow Security for Programs}
 
-\cite{sandhu1994access}
+\subsubsection{Non-interference}
 
-\subsubsection{Semantics-Based Security}
+The `high water mark' approach of mandatory access control and its lattice structure limits its applicability to developing programs. Most useful programs that interact with secure information require some way of returning to a lower clearance, even if only to provide an exit code.
 
-The purpose of Information Flow security is to show `non-interference' of the program; that is, to show that if two program executions begin with the same state in terms of their low confidentiality values (i.e. the `low view' of the inputs are the same), then the behaviour of the program should be indistinguishable to an attacker \cite{sabelfeld2003if}. This can be formalised in the assertion that a program does not interfere if there is no `strong dependency' \cite{cohen1977declassification} between high and low confidentiality variables.
+Instead of enforcing mandatory access control, Information Flow security for programs tries to show `non-interference' of the program; that is, to show that if two program executions begin with the same state in terms of their low confidentiality values (i.e. the `low view' of the inputs are the same), then the behaviour of the program should be indistinguishable to an attacker \cite{sabelfeld2003if}. This can be formalised in the assertion that a program does not interfere if there is no `strong dependency' \cite{cohen1977declassification} between high and low confidentiality variables.
 
 \subsubsection{Implicit Flows}
 
@@ -48,6 +44,12 @@ Denning \& Denning \cite{denning1977if} define an explicit flow $ x \rightarrow 
 In the example above, in the case where the \textbf{then} branch executes, an attacker has gained knowledge of the value of $ x $ even though it was not explicitly modified -- because after the execution occurs, $ y = 0 $, and therefore $ x = 0 $. However, even if the \textbf{else} branch occurs, the attacker still gains information; since $ y = 1 $, the \textbf{then} branch wasn't taken and therefore $ x \ne 0 $.
 
 In order to be considered `secure' from an Information Flow perspective, the program must not reveal information about the state of $ x $ under \textit{any} execution path, whether through implicit or explicit flows.
+
+\subsubsection{Undecidability}
+
+
+
+In addition, models of non-interference are conservative: while they may be able to reject any insecure (interfering) program, they also reject some programs that do not interfere. This is not merely a practical limitation of current models: it has been shown that providing a necessary and sufficient condition for the information flow security of a given program is undecidable \cite{landi1992undecidability}, as the halting problem can be reduced to it \cite{denning1977if}.
 
 \subsubsection{Covert Channels}
 
@@ -74,7 +76,7 @@ Covert channels present difficulties for Information Flow approaches to security
 
 While Information Flow models typically attempt to show non-interference --- that low confidentiality data is not affected by high confidentiality data --- in practical applications some flow from high classification to low classification is expected, and indeed necessary. For instance, the output of a program which checks a (confidential) password by necessity depends upon the password's value \cite{sabelfeld2003if}, creating a `declassifying' information flow.
 
-In addition, models of non-interference are conservative: while they may be able to reject any insecure (interfering) program, they also reject some programs that do not interfere. This is not merely a practical limitation of current models: it has been shown that providing a necessary and sufficient condition for the information flow security of a given program is undecidable \cite{landi1992undecidability}, as the halting problem can be reduced to it \cite{denning1977if}.
+In addition, since model checking of non-interference is undecidable, any system for enforcing it is necessarily conservative: while it will reject any program that is interfering (i.e. that is not Information Flow secure), it will also reject some programs which do not in fact interfere.
 
 To alleviate both of these problems, several different mechanisms for controlled `selective declassification' have been proposed, including from Myers and Liskov \cite{myers1997if}, Volpano and Smith \cite{volpano2000declassification}, Mantel and Sands \cite{mantel2004controlled} and others.
 
@@ -84,7 +86,7 @@ Myers and Liskov \cite{myers1997if} propose the implementation of an explicit `d
 
 Volpano and Smith \cite{volpano2000declassification} propose a more stringent mechanism for declassification: one which requires that secret information cannot be leaked in polynomial time. Under this model, the password checker example above would be allowable (there is no way for the program to leak the actual password to an attacker except via brute force). While this mechanism provides harder guarantees, it is also more restrictive \cite{zdancewic2004challenges} and hence less practical for writing complex programs.
 
-\subsubsection{Static Information Flow Checking}
+\subsection{Static Information Flow Enforcement}
 
 Applying Information Flow-based security to real programs requires execution paths of the program to be analysed in order to determine whether any flow from high to low confidentiality occurs. Most implementations of Information Flow security perform some form of static, compile-time analysis in order to accomplish analysis of all possible execution paths while minimising the run-time overhead of the security.
 
@@ -97,6 +99,8 @@ Languages with security typing systems associate a classification label (as per 
 An expression or code segment's security type depends on its `security context', modelled as a program-counter label at a particular point \cite{sabelfeld2003if}. In, for example, the context of a high branch (i.e. where the condition is dependent on the value of a high confidentiality variable), code which includes assignments to low confidentiality variables is not typable; thereby preventing both explicit and implicit leaks of information.
 
 Static information flow checking --- and security typing particularly --- forms the basis of most confidentiality-focused Information Flow language extensions. Specifically looking at the Java language as a basis, there are two major efforts to provide developers with languages based on security typing principles.
+
+\subsubsection{Implementations}
 
 \paragraph{Java Information Flow (JIF)}
 
@@ -120,21 +124,25 @@ Locks may then be used to allow for selective declassification of data, however 
 
 Paragon's analysis of lock states is purely static, though the lock expressions may be used as first class values at run-time, though the authors of Paragon express interest in the possibility of extending the idea of flow locks to dynamic Information Control enforcement mechanisms \cite{broberg2013paragon}.
 
-\subsubsection{Issues with the Static Checking Approach}
+\subsubsection{Limitations}
 
 While static checking has advantages in performance, and in the ease of checking for implicit flows, it does have downsides. One major issue is the inability of static checking systems to deal with labels which may change before or during execution (such as file permissions) \cite{sabelfeld2003if}.
 
 One solution to this issue is to extend static checking policies by allowing labels to be used as first class values, meaning variables may be annotated with a security type which is only known at run-time \cite{myers1997if}. This can be performed using dependent types \cite{xi1999dependenttypes}, and is implemented by the JIF compiler \cite{myers1999jif}. This kind of modelling is complex, however, and still cannot account for the level of dynamism in permissions any large program will have to face --- consider, for example, a web browser \cite{venkatakrishnan2006runtime}. A browser by definition will have to interact with a multitude of websites over a long period of time, and the confidentiality state of all information the browser will ever process simply cannot be modelled at compile-time (for the specific case of the web browser, a system based on Secure Multi-Execution \cite{devriese2010sme}, discussed further below, has been implemented to create an Information Flow secure browser called FlowFox \cite{degroef2012flowfox}).
 
-Venkatakrishnan et al. \cite{venkatakrishnan2006runtime} consider two other issues facing static checking approaches. Firstly, since statically analysing implicit flows is undecidable \cite{landi1992undecidability}, by necessity static analysis makes use of conservative approximations to ensure that the analysis terminates.
+Venkatakrishnan et al. \cite{venkatakrishnan2006runtime} consider two other issues facing static checking approaches. Firstly, since model checking of implicit flows is undecidable \cite{landi1992undecidability}, by necessity static analysis makes use of conservative approximations to ensure that the analysis terminates.
 
 Secondly, static analysis cannot support programs that may \textit{occasionally} have the potential to leak information \cite{venkatakrishnan2006runtime} --- for example, a program which sends a crash report has the potential to leak sensitive information in that report, but a static analysis cannot dynamically choose whether to allow the report or not; it instead must disallow \textit{all} reports, even if most would not cause information leaks.
 
-\subsubsection{Run-Time Information Flow Checking}
+\subsection{Run-Time Information Flow Enforcement}
 
 While concerns about performance and the ability to analyse all execution paths have resulted in most Information Flow security research and implementation being focused on static analysis, attempts at building run-time enforcement systems have also been made, in order to find systems which can correct some of the flaws of static checking methodologies.
 
 Allowing dynamic or variable permissions is simple in a run-time enforced system. Similarly, code which may only produce leaks under certain circumstances, such as a crash report, can be accounted for by performing a run-time check before that action is executed. In addition, a run-time enforced system does not need to approximate in order to make the analysis decidable, as only the flow actually being executed is analysed \cite{venkatakrishnan2006runtime}.
+
+\subsubsection{Implementations}
+
+\subsubsection{Limitations}
 
 The primary drawback to using run time enforcement is the difficulty in detecting implicit flows \cite{sabelfeld2003if} --- since only the run-time execution path is analysed, implicit flows that depend on the different branching possibilities cannot be picked up, where a static analysis would be able to infer their existence by analysing the program's structure \cite{venkatakrishnan2006runtime}. It is, hence impossible to dynamically show non-interference using an `execution monitoring' enforcement system alone \cite{schneider2000executionmonitoring}.
 
