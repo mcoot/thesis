@@ -5,28 +5,67 @@
 \begin{tabular}{r|l}
 	Milestone & Date \\\hline\\
 	Proposal Due & March 30\textsuperscript{th} \\
+	Familiarise with JIF & April 13\textsuperscript{th} \\
+	Develop Evaluation Criteria & May 4\textsuperscript{th} \\
+	Produce Email Client Specification & May 11\textsuperscript{th} \\
 	Progress Seminar & May 15\textsuperscript{th}-19\textsuperscript{th} \\
+	Complete Java Implementation & June 29\textsuperscript{th} \\
+	Complete JIF Implementation & August 11\textsuperscript{th} \\
+	Determine Evaluation Results & September 14\textsuperscript{th} \\
+	Complete Evaluation Write-up & October 6\textsuperscript{th}\\
 	Poster and Demonstration & October 20\textsuperscript{th} \\
 	Final Thesis & November 6\textsuperscript{th} \\
-	x & y \\
 \end{tabular}
 
 \subsection{Project Milestones}
 
-\subsubsection{Develop Evaluation Criteria}
-Resources, Duration
-
 \subsubsection{Familiarise with JIF / Information Flow languages}
+
+Before concrete evaluation criteria and work on the motivating example can begin, familiarisation with JIF and Information Flow security models more generally will be required. This process will involve reading documentation, setting up a work environment and writing small code examples in order to try and gain a working knowledge of JIF, as well to try and produce examples which illustrate particular security properties for later use in demonstration and the Progress Seminar.
+
+The primary resource for this task will be the JIF documentation and toolset (e.g. the Eclipse-based JIF IDE), along with more theoretical information from the literature on JIF and static Information Flow security more generally.
+
+It is expected that this first phase will take about three weeks; ideally by the mid-semester break in mid-April the JIF toolset and workflow should be set up, and enough of an understanding should have been gained to allow for criteria to begin to be developed.
+
+\subsubsection{Develop Evaluation Criteria}
+
+The criteria used to evaluate the Information Flow secure models (as well as the standard Java security model) will need to be developed by considering the core purpose behind the evaluation: to determine \textit{what} benefits Information Flow secure models can bring, \textit{why} they are not being used widely in production applications, and \textit{how} they could be made more accessible for broader use.
+
+Developing these criteria will require the use of resources primarily from the security literature. The Information Flow literature and the specifications for the Java security model will aid in developing criteria that can accurately evaluate the security guarantees and properties that a particular model provides. For the Java security model, other literature analysing the model, as well as discussions of known exploits and weaknesses will be of use. The development of criteria around usability and programmer burden will derive from literature on the usability of the Java model. Resources on the usability and practicality of Information Flow models are less well developed, and so this criteria will be developed more as a result of the familiarisation with JIF.
+
+The criteria will continue to be refined throughout the project, and it is expected that they will be significantly updated through the process of developing the secure email client as a motivating example in Java and JIF, as a deeper understanding of exactly how these systems work in practice is gained.
+
+It is expected that a base set of criteria will be developed by the beginning of May, leaving time for familiarising with JIF. Though the criteria will almost certainly evolve later into the project, it is desirable for a clear and easily articulated basis for them be ready to be presented at the Progress Seminar in mid-May.
+
+\subsubsection{Produce Secure Email Client Specification}
+
+Concurrently with the development of the evaluation criteria, a detailed design for the motivating example of the secure email client will be developed. This document should in broad terms describe the required functionality of the email client, illustrating its general design, as well as outlining potential challenges for implementation. In addition, the specification should clearly demarcate which functionality is core to the example and which will be desirable extension that are nonetheless not required should time be constrained.
+
+The development of this specification will depend on documentation around email protocols, as well as the documentation on developing with the Java security model and JIF in order to estimate the challenges of implementation.
+
+The email client specification should be clearly laid out by early May, within a similar timeframe to the evaluation criteria, so that at the very least a broad outline can be presented at the Progress Seminar; ideally the specifics should be clearly defined by this stage as well.
 
 \subsubsection{Develop Java Implementation of Secure Email Client}
 
+
+
+Resources, duration
+
 \subsubsection{Develop JIF Implementation of Secure Email Client}
+
+Resources, duration
 
 \subsubsection{Develop Example using Run-Time Enforced System}
 
+Resources, duration
+
 \subsubsection{Determine Evaluation Results}
 
+Resources, duration
+
 \subsubsection{Perform Evaluation Write-up}
+
+Resources, duration
 
 \subsection{Extension Goals and Scope Considerations}
 	
