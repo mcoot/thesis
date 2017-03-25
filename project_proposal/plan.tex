@@ -47,31 +47,41 @@ The email client specification should be clearly laid out by early May, within a
 
 \subsubsection{Develop Java Implementation of Secure Email Client}
 
+Once the specification is produced, it will be implemented in Java, with the SecurityManager enabled and a security policy designed to try and prevent unauthorised information flows. Notes will be kept about the development process to aid with later evaluation.
 
+The implementation will depend upon the Java Development Kit, an IDE and toolset, Java documentation, and upon documentation of the Java Security Model (including \textit{Inside Java 2 Platform Security} by Gong and Ellison \cite{gong2003javasecurity}).
 
-Resources, duration
+While some implementation may begin while the specification is being finalised, it is expected to begin in earnest at around the time of the Progress Seminar, to be completed by the end of June.
 
 \subsubsection{Develop JIF Implementation of Secure Email Client}
 
-Resources, duration
+The JIF implementation will be built to the same specification as the Java implementation. It is expected that the Java version will form the base, with the JIF implementation sharing a large amount of source code. Nonetheless it is crucial that the security typing system be used to implement meaningful Information Flow controls that provide the guarantees listed in the specification. As with the Java implementation, notes for the further evaluation will be kept.
 
-\subsubsection{Develop Example using Run-Time Enforced System}
+This implementation will depend on resources including the JIF language documentation and the JIF Eclipse plugin as well as the Information Flow literature to ensure that the security policy defined by the program provides the necessary security guarantees.
 
-Resources, duration
+The JIF implementation will begin after the Java implementation is complete, and is expected to be completed by mid-August, leaving a month and a half for full implementation.
 
 \subsubsection{Determine Evaluation Results}
 
-Resources, duration
+The evaluation criteria, which will have been refined during the implementation phase, will be used to perform the evaluation of the security models of each implementation, based on the security guarantees each provides, as well as observations from development on the programmer burden that development using each model caused. The result of this phase will be a set of notes which will eventually form the basis of the project's conclusions.
+
+This resources that this phase will primarily make use of are the implementations from the earlier phases, notes from their development phase detailing developer burden, as well as literature around the security guarantees of each model.
+
+This evaluation has been allocated a month up until the middle of September in order to allow for the collation of notes and the detailed and considered application of the criteria. This process will blur somewhat with the subsequent write-up of the evaluation: it is likely that some elements will still be under consideration when the early portions of the write-up are being worked on.
 
 \subsubsection{Perform Evaluation Write-up}
 
-Resources, duration
+The completed write-up and table detailing the application of the criteria will be produced following the determination of the evaluation's results, though some aspects of the write-up may happen concurrently with the evaluation itself. This period will also be used to refine and write up other aspects of the final thesis document,
+
+This evaluation write-up will make use of the criteria and results from the previous stage, as well as literature used to refine the content of the evaluation and other aspects of the final thesis.
+
+The final write-up, along with a mostly complete thesis document, should be completed by early October, to allow time for preparation of the Poster and for the Project Demonstration, as well as fine-tuning of the thesis document in preparation for submission before the start of November.
 
 \subsection{Extension Goals and Scope Considerations}
 	
 	\subsubsection{Scope of Motivating Example (Email Client)}
 	
-	\subsubsection{Run-Time Enforcement Scope}
+	\subsubsection{Run-Time Enforcement Systems}
 	
 	\subsubsection{Security Exploits Examination}
 	
