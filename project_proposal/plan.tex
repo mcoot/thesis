@@ -77,12 +77,22 @@ This evaluation write-up will make use of the criteria and results from the prev
 
 The final write-up, along with a mostly complete thesis document, should be completed by early October, to allow time for preparation of the Poster and for the Project Demonstration, as well as fine-tuning of the thesis document in preparation for submission before the start of November.
 
+\pagebreak
+
 \subsection{Extension Goals and Scope Considerations}
 	
 	\subsubsection{Scope of Motivating Example (Email Client)}
 	
+	The scope of functionality implemented in the Java and JIF versions of the email client is one area which presents opportunity to pull back or extend depending on time and resource constraints. The specification will be designed with this in mind, so that if during development it is necessary too reduce scope, no re-architecture is necessary, and if development proceeds more quickly than anticipated then extended features can be added without requiring extra time to design and specify them.
+	
 	\subsubsection{Run-Time Enforcement Systems}
+	
+	Run-time enforced Information Flow security models are newer and less commonly available than statically enforced models. In addition, most run-time enforced models in the literature focus on web languages (particularly JavaScript) rather than statically typed languages such as Java. While it is intended that run-tiem enforced systems be considered with respect to the evaluation, developing a version of the email client in a run-time enforced system is less feasible. Hence, more detailed use of run-time enforced systems to aid in the evaluation may be considered as an extension goal which will be pursued to the extent that time and resources allow, but it is somewhat secondary to the primary goal of the evaluation.
+	
+	\subsubsection{Paragon Implementation}
+	
+	Paragon provides statically enforced Information Flow security similar to that of JIF, but as a newer language it provides a number of new concepts (such as selective declassification based on `flow locks'). It is expected that developing the email client in Paragon, in addition to Java and JIF would be an inefficient use of resources, but if time and resources allow, examining Paragon in greater depth through the use of examples is a potential extension for the project, in order to determine whether Paragon's extra concepts improve the security guarantees or reduce programmer burden when compared to more traditional mechanisms like JIF.
 	
 	\subsubsection{Security Exploits Examination}
 	
-	\subsubsection{Paragon Implementation}
+	It may be useful to the broad scope of the evaluation to consider existing exploits which make use of flaws in the standard Java security model, in order to determine how useful the security guarantees of Information Flow models are in practice. However, reproducing and understanding specific exploits is likely to be difficult and time consuming, and linking an exploit to a specific failure of the Java security model requires a very high level of understanding. As a result, examination of specific exploits is not considered core to the scope of the project, but may be considered if the implementation is completed more quickly than expected.
