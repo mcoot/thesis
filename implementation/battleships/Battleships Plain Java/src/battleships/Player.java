@@ -1,0 +1,112 @@
+package battleships;
+
+import java.util.List;
+import java.util.LinkedList;
+
+public class Player {
+
+	private Board board;
+
+	private final List<Coordinate> opponentQueries;
+
+	private Coordinate nextQuery = null;
+
+	public Player() {
+		opponentQueries = new LinkedList<Coordinate>();
+	}
+
+	Board init(int numCovered) {
+		Board board = new Board();
+
+		// Uses fixed positions for the ships to place
+		final Ship[] myCunningStrategy = {
+			new Ship(new Coordinate(1, 1), 1, true),
+			new Ship(new Coordinate(1, 3), 2, false),
+			new Ship(new Coordinate(2, 2), 3, true),
+			new Ship(new Coordinate(3, 4), 4, false),
+			new Ship(new Coordinate(5, 6), 5, true),
+			new Ship(new Coordinate(5, 7), 6, false)
+		};
+
+		int i = 0;
+
+		for (int count = numCovered; count > 0 && board != null;) {
+			try {
+					Ship newPiece = myCunningStrategy[i++];
+				if (newPiece.length > count) {
+					// Ship is too long :(
+					newPiece = new Ship(newPiece.pos, count, newPiece.isHorizontal);
+				}
+
+				board.addShip(newPiece);
+				count -= newPiece.length;
+			} catch (IllegalArgumentException ignored) {
+				// Ships overlapped, just add the next ship
+			}
+	}
+
+		return board;
+	}
+
+	void storeBoard(Board board) {
+		this.board = board;
+	}
+
+	Board endorseBoard(Board board) {
+		if (board == null) return null;		
+		return board.endorseBoard();
+	}
+
+	Coordinate endorseQuery(Coordinate query) {
+		if (query == null) return null;
+		return new Coordinate(query.x, query.y);
+	}
+
+	public Coordinate getNextQuery() {
+		Coordinate c = this.nextQuery;
+		if (c == null) {
+			c = new Coordinate(0, 0);
+		}
+
+		// Update nextQuery
+		boolean dir = ((c.x + c.y) % 2 == 0);
+		int newX = c.x + (dir ? 1 : -1);
+		int newY = c.y + (dir ? -1 : 1);
+
+		if (newX < 0) newX = 0;
+		if (newY < 0) newY = 0;
+
+		this.nextQuery = new Coordinate(newX, newY);
+
+		// 'Declassified' query - meaningless without JIF / SecurityManager
+		Coordinate d = new Coordinate(c.x, c.y);
+
+		return d;
+	}
+
+	/**
+     * Process the query of the opponent.
+     *
+     * @throws IllegalArgumentException if the opponent has asked the query already or the query is null
+     */
+	boolean processQuery(Coordinate query) {
+		if (query == null) {
+			throw new IllegalArgumentException("Null query");
+		}
+
+		// Test if the opponent asked this query already
+		if (opponentQueries.contains(query)) {
+			throw new IllegalArgumentException("Opponent already asked the query " + query.toString());
+		}
+
+		opponentQueries.add(query);
+
+		boolean result = board.testPosition(query);
+
+		// Would have to declassify result
+
+		return result;
+	}
+
+
+}
