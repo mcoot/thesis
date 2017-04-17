@@ -1,0 +1,21 @@
+<project>
+	
+	<property name="cygwin.home" location="D:\cygwin64"/>
+	<property name="jif.home" value="/cygdrive/d/jif"/>
+	<property name="jif.compiler" value="${jif.home}/bin/jifc"/>
+
+	
+	<target name="clean">
+		<delete dir="bin" />
+	</target>
+	
+	<target name="compile">
+		<mkdir dir="bin/classes" />
+		<exec executable="${cygwin.home}\bin\bash.exe">
+			<arg value="-l" />
+			<arg value="${basedir}\build.sh" />
+			<arg value="${basedir}" />
+		</exec>
+	</target>
+	
+</project>
