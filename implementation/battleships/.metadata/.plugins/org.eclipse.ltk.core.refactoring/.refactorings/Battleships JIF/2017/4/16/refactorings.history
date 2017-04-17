@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move 6 elements to &apos;battleships&apos;&#x0D;&#x0A;- Original project: &apos;Battleships JIF&apos;&#x0D;&#x0A;- Destination element: &apos;battleships&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     Coordinate.jif&#x0D;&#x0A;     Ship.jif&#x0D;&#x0A;     Main.jif&#x0D;&#x0A;     Board.jif&#x0D;&#x0A;     BattleShip.jif&#x0D;&#x0A;     Player.jif&#x0D;&#x0A;- Update references to refactored element" description="Move files" element1="src/Coordinate.jif" element2="src/Ship.jif" element3="src/Main.jif" element4="src/Board.jif" element5="src/BattleShip.jif" element6="src/Player.jif" files="6" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1492389586762" target="src/battleships" units="0" version="1.0"/>
+</session>
