@@ -27,7 +27,7 @@
 			"file": "content.tex",
 			"settings":
 			{
-				"buffer_size": 154,
+				"buffer_size": 228,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -36,7 +36,7 @@
 			"file": "styles.tex",
 			"settings":
 			{
-				"buffer_size": 401,
+				"buffer_size": 521,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -45,7 +45,7 @@
 			"file": "content/introduction.tex",
 			"settings":
 			{
-				"buffer_size": 133,
+				"buffer_size": 113,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -340,15 +340,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 154,
+						"buffer_size": 228,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								139,
-								139
+								0,
+								0
 							]
 						],
 						"settings":
@@ -368,15 +368,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 401,
+						"buffer_size": 521,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								400,
-								400
+								0,
+								0
 							]
 						],
 						"settings":
@@ -396,15 +396,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 133,
+						"buffer_size": 113,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								121,
-								121
+								0,
+								0
 							]
 						],
 						"settings":
