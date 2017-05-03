@@ -1,0 +1,22 @@
+package java.lang;
+
+/**
+ * The Jif signature for java.lang.StringBuffer. 
+ *
+ */
+public final class StringBuffer[label L] extends Object /*implements Serializable, CharSequence*/
+{
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+
+    public StringBuffer() {}
+    public StringBuffer(String str) {}
+
+    public native StringBuffer[L]{L;c} append(char c);
+    public native StringBuffer[L]{L;str} append(String str);
+    public native StringBuffer[L]{L;i} append(int i);
+    public native char{L;index} charAt(int index) throws (IndexOutOfBoundsException{this;index});
+    public native StringBuffer[L]{start;end} delete{L}(int start, int end);
+    public native StringBuffer[L]{index;L} deleteCharAt(int index) throws (IndexOutOfBoundsException{this;index});
+    public native int{this} length();
+    public native String{L;this} toString();
+}

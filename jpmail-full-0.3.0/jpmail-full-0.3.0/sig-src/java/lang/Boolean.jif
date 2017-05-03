@@ -1,0 +1,37 @@
+/* This is Jif signature for a Java class.
+ *
+ * This file provides a Jif signature for Jif code 
+ * to be compiled against. However, this signature is 
+ * disregarded at runtime, and instead the standard 
+ * Java class files are used.
+ *
+ * Methods are marked as native to avoid the need to
+ * provide an implementation for them.
+ */
+package java.lang;
+
+public final
+class Boolean {//implements java.io.Serializable {
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+
+//    public static final Boolean TRUE = new Boolean(true);
+
+//    public static final Boolean FALSE = new Boolean(false);
+
+    public Boolean(boolean{this} value) {
+	//this.value = value;
+    }
+
+    public Boolean{s}(String{this} s) {
+    		//this(toBoolean(s));
+    }
+    
+    public native boolean{this} booleanValue();
+    public native static Boolean{b} valueOf(boolean b);
+    public native static Boolean{s} valueOf(String s);
+    public native static String{b} toString(boolean b);
+    public native String{this} toString();
+//    public int hashCode();
+    public native boolean{obj;this} equals(Object obj);
+    public native static boolean{name} getBoolean(String name);
+}

@@ -1,0 +1,7 @@
+package java.net;
+
+public class UnknownHostException
+extends java.io.IOException
+{
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+}

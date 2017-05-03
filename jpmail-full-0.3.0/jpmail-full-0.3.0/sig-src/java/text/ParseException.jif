@@ -1,0 +1,14 @@
+package java.text;
+
+public
+class ParseException extends Exception {
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+
+    public ParseException() {
+	super();
+    }
+
+    public ParseException(String{this} s) {
+	super(s);
+    }
+}

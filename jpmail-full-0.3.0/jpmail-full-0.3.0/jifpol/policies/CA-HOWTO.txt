@@ -1,0 +1,60 @@
+Deploying JPmail for SIIS lab
+
+Step-by-step instructions for creating a CA and then issuing cert requests and certs:
+http://www.iona.com/support/docs/e2a/asp/5.0/xmlbus/UsersGuide/Security3.html
+
+Creating a CA [admin only!]
+	1) create a new public/private key pair, which automatically generates a self-signed certificate
+	   -- make it available to people who trust you (if there cannot be trust, will need to use an external CA)
+	   -- use the tool made available in the OpenSSL library (/System/Library/OpenSSL/misc/CA.sh)
+	   -- this tool will readily create a CA with all necessary files and directories:
+	   > /System/Library/OpenSSL/misc/CA.sh -newca
+	
+	Then, for each certificate request:
+	a) Create a signed certificate using OpenSSL (from $CAHOME)
+	openssl ca -config openssl.cnf -in your_machine_nameCSR.pem -out your_machine_nameCert.pem -keyfile private/cakey.pem -cert cacert.pem 
+	
+	b) Convert the signed certificate to DER format
+	openssl x509 -in your_machine_nameCert.pem -out your_machine_nameCert.der -outform DER 
+
+
+[All users:]
+Each person should setup their keystore:
+	1) [First time only:] Create a new keystore
+	> keytool -genkey -keyalg RSA -keystore $JPMAIL/certs/.keystore -storepass ******** -keypass ******** -alias your_principal_name -dname "CN=your_principal_name, OU=JPmail Lab, O=JPmail, L=Home, ST=PA, C=US" 
+	
+	2) [First time only:] Get the SIIS CA from the admin: cacert.pem
+	
+	3) [First time only:] Import the CA certificate into the keystore
+	> keytool -import -keystore $JPMAIL/certs/.keystore -storepass ******** -alias siislabCACert -file cacert.pem 
+	
+And make their own public key certificate, which must be signed by the CA
+	4) Create a Certificate Signing Request (CSR)
+	> keytool -certreq -keystore $JPMAIL/certs/.keystore -storepass ******** -alias your_principal_name -file $JPMAIL/certs/your_principal_nameCSR.pem 
+	
+	5) Send this to the admin to get it signed with the SIIS CA
+	6) Receive back the DER file: your_prinicpal_nameCert.der and save it in $JPMAIL/certs
+	
+For other principals' certificates, just the last step is needed (i.e. copy the .der file into the certs directory).
+
+-----------------
+
+1) Policy server -- use LDAP server:
+   a) self-signed certificate for LDAP Server's CA (could be externally signed by Verisign)
+   b) Each member has personal information, Jif policies (delegations, allowances), certificate for public key
+   c) Since Policy should be updated by each individual, the CA can update policy when new
+	  certificates are signed.  These policy updates should be posted somehow (leads into
+	  dynamic updating problems).
+   d) One option for posting policy is building the class files that are necessary and making them
+   		available.  Then whenever a user runs JPmail (or any other Jif application), they should (or
+   		a tool should automatically) grab the most recent, necessary class files and use them.
+2) Need someone to manage LDAP server, CA for signing certificates and allowing members to be added.
+
+Each person should:
+1) get entry into LDAP (requires out-of-band communication) complete with 
+	a signed certificate with own public key from SIIS-CA
+2) set up own policy (trusted declassifiers, delegations, etc.)
+3) run JPmail (should check regularly--each run?--for policy updates)
+
+----------------
+

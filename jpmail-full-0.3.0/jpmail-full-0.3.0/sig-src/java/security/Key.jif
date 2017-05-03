@@ -1,0 +1,11 @@
+/*
+ * @(#)Key.java	
+ */
+
+package java.security;
+
+public interface Key /*extends java.io.Serializable*/ {
+    public String{this} getAlgorithm();
+    public byte{this}[]{this} getEncoded();
+    public String{this} getFormat();
+}

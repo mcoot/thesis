@@ -1,0 +1,34 @@
+package javax.net;
+
+import java.net.Socket;
+import java.net.InetAddress;
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+public abstract class SocketFactory [label L]
+{
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+
+    protected SocketFactory() {}
+
+    public native Socket[L]{L} createSocket() throws (IOException{L});
+
+    public abstract Socket[L]{L} 
+    createSocket(String{L} host, int{L} port) 
+	throws (IOException{L}, UnknownHostException{L});
+
+    public abstract Socket[L]{L} 
+    createSocket(String{L} host, int{L} port, InetAddress{L} localHost, int{L} localPort) 
+	throws (IOException{L}, UnknownHostException{L});
+
+    public abstract Socket[L]{L}
+    createSocket(InetAddress{L} host, int{L} port) 
+	throws (IOException{L});
+
+    public abstract Socket[L]{L} 
+    createSocket(InetAddress{L} hast, int{L} port, InetAddress{L} localHost, int{L} localPort) 
+	throws (IOException{L});
+
+    // This should draw security labels from the environment
+    // public static native SocketFactory[L] getDefault();
+}

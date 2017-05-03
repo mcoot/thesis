@@ -1,0 +1,11 @@
+package javax.net.ssl;
+
+public abstract class SSLSocketFactory [label L] extends javax.net.SocketFactory[L]
+{
+    protected SSLSocketFactory() {}
+
+    public abstract java.net.Socket[L]{L} createSocket(java.net.InetAddress{L} host, int{L} port) throws (java.io.IOException{L},java.net.UnknownHostException{L});
+
+    // This should draw security labels from the environment
+    public static native javax.net.SocketFactory[L] getDefault();
+}

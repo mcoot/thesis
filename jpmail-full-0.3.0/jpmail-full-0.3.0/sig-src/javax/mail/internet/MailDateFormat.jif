@@ -1,0 +1,14 @@
+package javax.mail.internet;
+
+public class MailDateFormat extends java.text.SimpleDateFormat
+       	     		    implements java.lang.Cloneable, java.io.Serializable
+{
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+    
+    public MailDateFormat() {}
+
+    public native java.util.Date{this; text; pos} 
+       parse(java.lang.String text, java.text.ParsePosition pos);
+
+}
+    

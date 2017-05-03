@@ -1,0 +1,9 @@
+package java.sql;
+
+import java.lang.String;
+
+public class DriverManager {
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+
+    public native static Connection{url;user;password} getConnection{url;user;password}(String url,  String user,  String password);
+}

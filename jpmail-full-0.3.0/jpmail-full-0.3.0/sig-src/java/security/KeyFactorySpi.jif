@@ -1,0 +1,29 @@
+/* This is Jif signature for a Java class.
+ *
+ * This file provides a Jif signature for Jif code 
+ * to be compiled against. However, this signature is 
+ * disregarded at runtime, and instead the standard 
+ * Java class files are used.
+ *
+ * Methods are marked as native to avoid the need to
+ * provide an implementation for them.
+ */
+
+package java.security;
+
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+
+public abstract class KeyFactorySpi {
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+
+    protected abstract PublicKey{keySpec;this} engineGeneratePublic(KeySpec keySpec)
+    		throws (InvalidKeySpecException{this;keySpec});
+    protected abstract PrivateKey{keySpec;this} engineGeneratePrivate(KeySpec keySpec)
+    		throws (InvalidKeySpecException{this;keySpec});
+    protected abstract KeySpec{keySpec;this;key} engineGetKeySpec(Key key, Class keySpec)
+    		throws (InvalidKeySpecException{this;key;keySpec});
+    protected abstract Key{key;this} engineTranslateKey(Key key)
+		throws (InvalidKeyException{key;this});
+
+}

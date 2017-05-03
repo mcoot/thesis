@@ -1,0 +1,510 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"grade",
+				"gradeTestQualityDict"
+			],
+			[
+				"playba",
+				"playbackStart"
+			],
+			[
+				"play",
+				"playbackStart"
+			],
+			[
+				"rec",
+				"receiveTimes"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "content.tex",
+			"settings":
+			{
+				"buffer_size": 154,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "styles.tex",
+			"settings":
+			{
+				"buffer_size": 401,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "content/introduction.tex",
+			"settings":
+			{
+				"buffer_size": 133,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "Packages/LaTeXTools/LaTeX.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					""
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Traditional"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Script Builder"
+				]
+			],
+			[
+				"Packages/LaTeXTools/LaTeX.sublime-build",
+				"PdfLaTeX"
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 129.0,
+		"last_filter": "install p",
+		"selected_items":
+		[
+			[
+				"install p",
+				"Package Control: Install Package"
+			],
+			[
+				"add re",
+				"Package Control: Add Repository"
+			],
+			[
+				"remove r",
+				"Package Control: Remove Repository"
+			],
+			[
+				"remove ",
+				"Package Control: Remove Package"
+			],
+			[
+				"install pa",
+				"Package Control: Install Package"
+			],
+			[
+				"install ",
+				"Install Package Control"
+			]
+		],
+		"width": 593.0
+	},
+	"console":
+	{
+		"height": 200.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/UserFiles/Documents/Uni/thesis/seminar"
+	],
+	"file_history":
+	[
+		"/D/UserFiles/Documents/Uni/thesis/seminar/seminar.sublime-project",
+		"/D/UserFiles/Documents/Uni/thesis/seminar/main.tex",
+		"/D/UserFiles/Documents/Uni/engg4810g12/software/TP2/TP2Tests/sampledata.csv",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingActual/taken_csse2002/joseph/s4287942/s4287942.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingActual/taken_csse2002/joseph/s4287942/s4287942-submission.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingActual/taken_csse2002/joseph/s4286060/s4286060.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingActual/taken_csse2002/joseph/s4286060/s4286060-submission.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingActual/taken_csse2002/joseph/s4285233/s4285233.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingActual/taken_csse2002/joseph/s4285233/s4285233-submission.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingActual/taken_csse2002/joseph/s4284818/s4284818.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingActual/taken_csse2002/joseph/s4284818/s4284818-submission.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingActual/taken_csse2002/joseph/s4284682/s4284682.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingActual/taken_csse2002/joseph/s4284682/s4284682-submission.txt",
+		"/D/jif/examples/battleship/Coordinate.jif",
+		"/D/jif/examples/battleship/Ship.jif",
+		"/D/jif/examples/battleship/Board.jif",
+		"/D/jif/examples/battleship/Main.jif",
+		"/D/jif/examples/battleship/Player.jif",
+		"/D/jif/examples/battleship/BattleShip.jif",
+		"//JOE-METABOX/d/jif-3.5.0/examples/battleship/Player.jif",
+		"//JOE-METABOX/d/jif-3.5.0/examples/battleship/Main.jif",
+		"/D/jif/examples/basic/Test1.jif",
+		"/D/jif/config.properties",
+		"/D/UserFiles/Documents/Uni/thesis/jpmail-full-0.3.0/jpmail-full-0.3.0/INSTALL.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingCalibration/17_a1-markingGuide.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingCalibration/marked/joseph/s4382911/s4382911.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingCalibration/marked/joseph/s4355973/s4355973.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingCalibration/marked/joseph/s4321070/s4321070.txt",
+		"/C/Users/Joe/Dropbox/17_csse2002_staff/assignment1/a1-markingCalibration/marked/joseph/s4313109/s4313109.txt",
+		"/C/Users/Joe/AppData/Roaming/Sublime Text 3/Packages/CSSE2002Marking/2002_assign3.py",
+		"/D/UserFiles/Documents/comp3702-a1/Program/build.xml",
+		"/D/UserFiles/OneDrive/Uni/Sem 2 2016/COMP4500/Assignment1/report/algo-notes.java",
+		"/D/UserFiles/OneDrive/Uni/Tutoring/CSSE2310 2016/Ass1/done/s4394916/ass1.c.styled",
+		"/D/UserFiles/OneDrive/Uni/Tutoring/CSSE2310 2016/Ass1/done/s4399530/nogo.c.styled",
+		"/D/UserFiles/OneDrive/Uni/Tutoring/CSSE2310 2016/Ass1/done/s4393639/game.c.styled",
+		"/D/UserFiles/OneDrive/Uni/Tutoring/CSSE2310 2016/Ass1/done/s4389766/chess.c.styled",
+		"/D/UserFiles/OneDrive/Uni/Tutoring/CSSE2310 2016/Ass1/done/s4262490/ass1.c.styled",
+		"/D/UserFiles/OneDrive/Uni/Tutoring/CSSE2310 2016/Ass1/done/s4291285/ass1.c.styled",
+		"/D/UserFiles/Documents/SVN/2310tutors/joseph.csv",
+		"/D/UserFiles/Documents/Repos/CYOA/CYOADesktop/CYOADesktop/bin/Debug/testStory.xml",
+		"/D/UserFiles/OneDrive/Uni/Tutoring/CSSE2002/csse2002-grade-analysis-master-ass3/csse2002-grade-analysis-master/grade_analysis.py",
+		"/D/UserFiles/OneDrive/Uni/Tutoring/CSSE2002/assign3-marking/TESTING GUIDE.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4401204/s4401204.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4401204/s4401204-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4400099/s4400099.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4400099/s4400099-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4399437/s4399437.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4399437/s4399437-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4395825/s4395825.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4395825/s4395825-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4395144/s4395144.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4395144/s4395144-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4395134/s4395134.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4395134/s4395134-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4395046/s4395046.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4395046/s4395046-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4395007/s4395007.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4395007/s4395007-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394990/s4394990.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394990/s4394990-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394947/s4394947.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394947/s4394947-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394318/s4394318-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394318/s4394318.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394231/s4394231.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394231/s4394231-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394197/s4394197.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394197/s4394197-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394194/s4394194.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394194/s4394194-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394167/s4394167.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394167/s4394167-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394155/s4394155.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4394155/s4394155-submission.txt",
+		"/D/UserFiles/OneDrive/Uni/Tutoring/CSSE2002/csse2002-grade-analysis-master-ass3/csse2002-grade-analysis-master/assignment_script.py",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4332279/s4332279.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4332279/s4332279-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4328322/s4328322.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4328322/s4328322-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4325867/s4325867.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4325867/s4325867-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4324656/s4324656.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4324656/s4324656-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323950/s4323950.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323950/s4323950-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323944/s4323944.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323944/s4323944-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323915/s4323915.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323915/s4323915-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323367/s4323367.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323367/s4323367-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323246/s4323246.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323246/s4323246-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323145/s4323145.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment3/a3-actualMarking/taken/joseph/s4323145/s4323145-submission.txt",
+		"/D/UserFiles/OneDrive/Uni/COMS3200/Assign3/q2.py",
+		"/D/UserFiles/OneDrive/Uni/COMS3200/Assign3/q2graph.py",
+		"/D/UserFiles/OneDrive/Uni/DECO2500/electronic-tests/gendata.py",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394503/s4394503.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394552/s4394552.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394691/s4394691.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394691/s4394691-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394679/s4394679.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394679/s4394679-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394552/s4394552-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394512/s4394512.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394512/s4394512-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394503/s4394503-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394487/s4394487.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394487/s4394487-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394434/s4394434.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394434/s4394434-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394431/s4394431.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394431/s4394431-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394400/s4394400.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394400/s4394400-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394318/s4394318.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4394318/s4394318-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4390492/s4390492.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4390492/s4390492-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4390467/s4390467.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4390467/s4390467-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4390094/s4390094.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4390094/s4390094-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4390058/s4390058.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4390058/s4390058-submission.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4389766/s4389766.txt",
+		"/C/Users/Joe/Dropbox/CSSE2002_2016/assignment2/a2-actualMarking/taken_csse2002/joseph/s4389766/s4389766-submission.txt"
+	],
+	"find":
+	{
+		"height": 27.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"\\n",
+			"1",
+			"runtime",
+			"overlapped",
+			" \\n",
+			"  ",
+			"\\r\\n",
+			"\\n"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			", ",
+			" "
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "content.tex",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 154,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								139,
+								139
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 54.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "styles.tex",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 401,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								400,
+								400
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "content/introduction.tex",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 133,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								121,
+								121
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 38.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.latextools":
+	{
+		"height": 118.0
+	},
+	"pinned_build_system": "",
+	"project": "seminar.sublime-project",
+	"replace":
+	{
+		"height": 50.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 314.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

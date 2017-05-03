@@ -1,0 +1,36 @@
+/* This is Jif signature for a Java class.
+ *
+ * This file provides a Jif signature for Jif code 
+ * to be compiled against. However, this signature is 
+ * disregarded at runtime, and instead the standard 
+ * Java class files are used.
+ *
+ * Methods are marked as native to avoid the need to
+ * provide an implementation for them.
+ */
+
+package java.security;
+
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+
+public class KeyFactory {
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+
+    protected KeyFactory(KeyFactorySpi keyFacSpi, Provider provider,
+			 String algorithm) {
+//	this.keyFacSpi = keyFacSpi;
+//	this.provider = provider;
+//	this.algorithm = algorithm;
+    }
+    
+    public native static KeyFactory{algorithm} getInstance(String algorithm) throws (NoSuchAlgorithmException{algorithm});
+    public native static KeyFactory{algorithm;provider} getInstance(String algorithm, String provider) throws (NoSuchAlgorithmException{algorithm;provider}, NoSuchProviderException{algorithm;provider});
+    public native static KeyFactory{algorithm;provider} getInstance(String algorithm, Provider provider) throws (NoSuchAlgorithmException{algorithm;provider});
+    public final native Provider{this} getProvider();
+    public final native String{this} getAlgorithm();
+    public final native PublicKey{this;keySpec} generatePublic(KeySpec keySpec) throws (InvalidKeySpecException{this;keySpec});
+    public final native PrivateKey{this;keySpec} generatePrivate(KeySpec keySpec) throws (InvalidKeySpecException{this;keySpec});
+    public final native KeySpec{key;keySpec;this} getKeySpec(Key key, Class keySpec) throws (InvalidKeySpecException{key;keySpec;this});    
+    public final native Key{key;this} translateKey(Key key) throws (InvalidKeyException{key;this});
+}

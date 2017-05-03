@@ -1,0 +1,8 @@
+package javax.crypto.spec;
+
+public class IvParameterSpec implements java.security.spec.AlgorithmParameterSpec {
+
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+    
+    public IvParameterSpec(byte{this}[]{this} iv) {}
+}

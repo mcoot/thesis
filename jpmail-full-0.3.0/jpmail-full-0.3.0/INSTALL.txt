@@ -1,0 +1,201 @@
+Installation instructions for JPmail
+**NOTE: for quick installation instructions, consult README
+
+These instructions assume that $BASEDIR is set to the base directory where you
+want to install these jif tools.  E.g. /Users/joeuser/myjif/
+
+1a. Install Jif.
+The Jif installation can be found at www.cs.cornell.edu/jif
+Jif v. 2.0.1 is needed for this project.
+
+1b. Update Jif with our Runtime KeyStore extensions (from the $BASEDIR directory):
+> ant jif-update
+	
+2. Build the signature files
+
+Explanation: 
+One of the advantages of Jif is its capability for incorporating
+existing Java libraries (thus allowing incremental deployment of security-typed
+applications).  To do this, it is necessary to provide Jif signatures of Java
+classes and methods.  The Jif signature is needed for each method that is used
+and must match the original Java header, with the addition of security
+annotations and the keyword "native" which indicates that the .class files will
+be provided at runtime.
+
+The Jif signatures are provided in $BASEDIR/sig-src
+An ant build file is provided to build these.  It will arrange for the Jif
+signatures to be compiled into .class files which can ultimately be incorporated
+into the application.  This will build a $BASEDIR/sig-classes directory with the
+requisite structure and .class files.
+
+How-to: 
+There is one line in build.xml which must be configured to point to the
+Jif distribution.  Edit build.xml and make sure "location=/usr/local/jif-2.0.1"
+is set to the base Jif distribution directory.
+        <!-- Jif distribution directory -->
+        <property name="jif-basedir" location="/usr/local/jif-2.0.1"/>
+
+Then, from the $BASEDIR directory, simply run the build file using ant:
+> ant jif-sig
+
+Now your sig files will be in the $BASEDIR
+
+3. Building jifcrypto
+Explanation:
+The crypto classes use the Bouncy Castle cryptographic libraries for RSA and the standard Java-provided libraries for
+DES and TripleDES.
+
+Our crypto files are provided in $BASEDIR/jifcrypto/src
+An ant build file is provided to build these.  It will arrange for the Jif source to be compiled into .class files which can ultimately be incorporated into the application.  This will build a $BASEDIR/classes directory with the requisite structure and .class files.
+
+How-to:
+From the $BASEDIR directory, simply run the build file using ant:
+> ant jifcrypto
+
+Now your crypto files will be in $BASEDIR/classes
+
+4. Building jifpol
+Explanation:
+Our policy tool includes a policy store (and principals) and a policy compiler.
+The policy compiler is programmer in Java and can be found in
+$BASEDIR/jifpol/jifpolicytool.  The policy store, etc. is in
+$BASEDIR/jifpol/src/.
+
+An ant build file is provided to build these.  It will arrange for the Jif
+source to be compiled into .class files which can ultimately be incorporated
+into the application.  This will build a $BASEDIR/classes directory with the
+requisite structure and .class files.  The Jif policy compiler will be placed in
+jifpol/jifpolicytool.  It can then be used to build a policy as described below.
+
+How-to: 
+There is one line in build.xml which must be configured to point to the
+Jif distribution.  Edit build.xml and make sure "location=/usr/local/jif-2.0.1"
+is set to the base Jif distribution directory.  <!-- Jif distribution directory
+--> <property name="jif-basedir" location="/usr/local/jif-2.0.1"/>
+
+Then, from the $BASEDIR directory, simply run the build file using ant:
+> ant jifpol
+
+Now your policy store files will be in $BASEDIR/classes and the compiler is in
+$BASEDIR/jifpol/jifpolicytool
+
+Explanation: 
+To build an application using our policy tools, a policy must be
+built which gives 1) principal names, 2) delegations, 3) declassifier allowances
+for each principal.  This policy is front-loaded into the application when it is
+run.  The policy file consists of two kinds of statements: a) delegations, b)
+allowances.
+
+The syntax of a delegation is (where alice and bob are two principals):
+alice -> bob
+
+The syntax of a declassifier is (where alice is a principal and
+crypto.RSAClosure is the name of the declassifier): alice allows
+crypto.RSAClosure
+
+There is a special policy statement which establishes a delegation between a Jif
+principal and an operating system username ("alice" is a principal and "phicks"
+is the UNIX username that alice will trust): alice -> OS.phicks
+
+The file $BASEDIR/jifpol/jifpolicytool/basic_policy.txt provides a basic policy.
+So long as the private key of one of the principals is in $BASEDIR/certs/.keystore
+then the user can "log in" as that principal.
+
+Then compile the policy file (from the $BASEDIR directory):
+> ant makepolicy
+
+This creates a few files in the jifpol/polsrc/policy directory (AlicePrincipal.jif,
+BonoPrincipal.jif, BobPrincipal.jif, SiisPrincipal.jif, NsrcPrincipal.jif and
+Policy.jif) and compiles them which must be loaded when your application is executed.
+
+5. Configuring the SMTP and POP3 servers.
+
+a) Configure the Makefile
+The first line in the Makefile should contain the base directory of the JPmail application (this is the directory we have been referring to as $JPMAIL in this document).
+For example, 
+JPMAIL := /Users/phicks/jpmail
+Also, the location of the Jif distribution should match what was entered into build.xml.  For example,
+JIFDIR := /usr/local/jif-2.0.1
+
+b) entering passwords
+
+Explanation:
+JPmail is a secure mail client, providing functionality for sending and receiving Emails and protecting the body of those e-mails under the guarantees of information flow control within the Jif application.  In order to send e-mail, an SMTP server is needed along with username and password.  Unfortunately, due to some limitations in Java, there is no facility for entering passwords and replacing the entered characters with *'s.  Consequently, we have developed a small program for encrypting passwords and saving them locally in files only readable by the user.
+
+How-to:
+i) compile the Password program:
+> make password/NewPassword.class
+
+ii) To enter, encrypt and save the password for the SMTP account: 
+> make password/NewPassword ARGS='password-smtp'
+
+iii) To enter, encrypt and save the password for the POP3 account:
+> make password/NewPassword ARGS='password-pop3'
+
+c)  NOTE: At the moment, we are not configured for SSL and so the SMTP and POP3 servers must both be non-SSL connections.  (We use our department server for a non-SSL SMTP server and catholic.org for a non-SSL POP3 server.)  This will soon be changed, but there were some configuration complications in setting up Jif signatures for the SSLSocket classes.
+
+Configuration information needed (keep this handy so that it can be entered when the jpmail POP3 and SMTP clients are run):
+A. 
+SMTP server address.
+For example, mail.cse.psu.edu
+
+SMTP username:
+For example, phicks
+
+B. 
+POP3 server address
+For example, pop3.webmail.catholic.org
+
+POP3 username
+For example, bobjones
+
+6. Sending an EMail:
+a) build the JPmail SMTP client (from the $JPMAIL directory):
+> make smtp/MailSenderCrypto.class
+
+b) run it
+> make smtp/MailSenderCrypto ARGS='alice mail.cse.psu.edu phicks phicks@cse.psu.edu'
+The SMTP client requires three arguments:
+1: smtp server address
+2: username
+3: from-address for outgoing e-mails
+
+fill out the fields and end the body of the text with a '.' by itself on the last line.  For example:
+
+To: bobjones@catholic.org
+Subject: Test mail from Alice to NSRC
+Label: nsrc
+Dear NSRC members,
+
+This is a secret message which I am sending you all
+to test out the JPmail client.  Please do all of
+your e-mail transactions with JPmail!
+
+--Alice
+.
+
+7. Receiving an e-mail:
+a) build the JPmail POP3 client (from the $JPMAIL directory)
+> make pop3/MailReaderCrypto.class
+
+b) run it
+> make pop3/MailReaderCrypto ARGS='bob pop3.webmail.catholic.org bobjones'
+
+Output:
+Getting connection...
+There is 1 message
+Printing 1 message:
+----------
+Getting message 1
+From: phicks@cse.psu.edu
+Subject: Test mail from Alice to NSRC
+
+Dear NSRC members,
+
+This is a secret message which I am sending you
+to test out the JPmail client.  Please do all of
+your e-mail transactions with JPmail!
+
+--Alice
+
+To test some more features of JPmail, consult the file DEMO.txt

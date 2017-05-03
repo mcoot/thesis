@@ -1,0 +1,21 @@
+// This policy uses a CA to secure email
+
+// should be demonstrable by having public keys of each principal signed with private key of siisCA
+// need special policy statement for this?  or could it be the case for all delegations?
+// This should be implemented by requiring a check before doing AddDelClosure:
+// 		the check use siisCA's public key to verify bono's public key against a siis_ca-signed version of this key
+//		the siis_ca signed version could be provided as the authprf for AddDelClosure
+//		to do this, we should extract the del principal from AddDelClosure in siisCA's isAuthorized and 
+//		check the unencrypted authprf against del's public key
+siisCA certifies bono
+siisCA certifies p1
+//siisCA certifies p2
+//siisCA certifies enck
+//siisCA certifies lisa
+
+bono allows smtp.EmailRSAClosure(siisCA)
+bono allows crypto.AESClosure
+
+p1 allows EmailRSAClosure(siisCA)
+p1 allows crypto.AESClosure
+

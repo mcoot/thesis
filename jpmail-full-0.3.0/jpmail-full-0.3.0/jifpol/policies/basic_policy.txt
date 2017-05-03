@@ -1,0 +1,39 @@
+// policy for alice
+alice -> OS.phicks // associates alice with UNIX user "phicks"
+alice allows crypto.AESClosure
+alice allows crypto.RSAClosure
+alice allows smtp.DeclassStringClosure
+alice allows smtp.DeclassMsgBodyClosure
+alice allows smtp.EmailHdrDeclassClosure
+alice allows crypto.MD5Closure
+
+// policy for bob
+bob -> OS.bob // associates bob with UNIX user "bob"
+bob allows crypto.AESClosure
+// bob allows crypto.DESClosure
+bob allows crypto.RSAClosure
+bob allows smtp.DeclassStringClosure
+bob allows smtp.DeclassMsgBodyClosure
+bob allows smtp.EmailHdrDeclassClosure
+bob allows crypto.MD5Closure
+
+// policy for bono
+bono -> OS.phicks // associates bono with UNIX user
+bono allows crypto.AESClosure
+// bono allows crypto.DESClosure
+bono allows smtp.DeclassStringClosure
+bono allows smtp.DeclassMsgBodyClosure
+bono allows smtp.EmailHdrDeclassClosure
+bono allows crypto.RSAClosure
+bono allows crypto.MD5Closure
+
+// policy for SIIS Lab group
+siis -> alice
+siis allows crypto.AESClosure
+siis allows crypto.RSAClosure
+
+// policy for NSRC group
+nsrc -> bob
+nsrc -> alice
+nsrc allows crypto.AESClosure
+nsrc allows crypto.RSAClosure

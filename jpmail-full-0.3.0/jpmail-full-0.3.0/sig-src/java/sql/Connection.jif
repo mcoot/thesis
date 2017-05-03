@@ -1,0 +1,9 @@
+package java.sql;
+
+public interface Connection {
+    void commit{this}(); 
+    Statement{this} createStatement() throws (SQLException{this});
+    PreparedStatement{this;sql} prepareStatement(String sql) throws (SQLException{this;sql});
+    void setAutoCommit(boolean autoCommit) throws (SQLException{this;autoCommit});
+}
+    

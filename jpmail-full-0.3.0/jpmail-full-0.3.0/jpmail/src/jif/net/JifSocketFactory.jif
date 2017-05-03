@@ -1,0 +1,51 @@
+package jif.net;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import javax.net.SocketFactory;
+
+/**
+ * A trivial client socket factory.
+ */
+public class JifSocketFactory[label L] extends SocketFactory[L]
+{
+  private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+
+  // Constructor.
+  // ------------------------------------------------------------------
+
+  public JifSocketFactory()
+  {
+    super();
+  }
+
+  // Instance methods.
+  // ------------------------------------------------------------------
+
+  public Socket[L]{L} createSocket() throws (IOException{L})
+  {
+    return new Socket[L]();
+  }
+
+    public Socket[L]{L} createSocket(String{L} host, int{L} port) throws (IOException{L}, UnknownHostException{L})
+  {
+    return new Socket[L](host, port);
+  }
+
+    public Socket[L]{L} createSocket(String{L} host, int{L} port, InetAddress{L} localAddr, int{L} localPort) throws (IOException{L}, UnknownHostException{L})
+  {
+    return new Socket[L](host, port, localAddr, localPort);
+  }
+
+    public Socket[L]{L} createSocket(InetAddress{L} address, int{L} port) throws (IOException{L})
+  {
+    return new Socket[L](address, port);
+  }
+
+    public Socket[L]{L} createSocket(InetAddress{L} address, int{L} port, InetAddress{L} localAddr, int{L} localPort) throws (IOException{L})
+  {
+      return new Socket[L](address, port, localAddr, localPort);
+  }
+}

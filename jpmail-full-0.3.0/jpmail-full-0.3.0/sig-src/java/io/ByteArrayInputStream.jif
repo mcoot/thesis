@@ -1,0 +1,37 @@
+/* This is Jif signature for a Java class.
+ *
+ * This file provides a Jif signature for Jif code 
+ * to be compiled against. However, this signature is 
+ * disregarded at runtime, and instead the standard 
+ * Java class files are used.
+ *
+ * Methods are marked as native to avoid the need to
+ * provide an implementation for them.
+ */
+package java.io;
+
+public class ByteArrayInputStream[label L] extends InputStream[L] {
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+
+    public ByteArrayInputStream{L;buf}(byte{L}[] buf) {
+//	    	this.buf = buf;
+//	    	this.pos = 0;
+//	    	this.count = buf.length;
+    }
+
+    public ByteArrayInputStream{L;buf}(byte{L}[] buf, int{L} offset, int{L} length) {
+//	    	this.buf = buf;
+//	    	this.pos = offset;
+//	    	this.count = Math.min(offset + length, buf.length);
+//	    	this.mark = offset;
+    }
+
+    public native int{L} read();
+    public native int{L;b} read{L;b}(byte{L}[] b, int{L} off, int{L} len);
+    public native long skip(long{L} n);
+    public native int{L} available();
+//    public boolean{L} markSupported();
+//    public void mark(int readAheadLimit);
+//    public synchronized void reset();
+    public native void close{L}() throws (IOException{L});
+}

@@ -1,0 +1,21 @@
+package java.security;
+
+public class InvalidAlgorithmParameterException extends Exception {
+
+	private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+    /**
+     * Constructs a InvalidAlgorithmParameterException with no detail message. A
+     * detail message is a String that describes this particular
+     * exception.
+     */
+    public InvalidAlgorithmParameterException() {}
+
+    /**
+     * Constructs a InvalidAlgorithmParameterException with the specified detail
+     * message. A detail message is a String that describes this
+     * particular exception.  
+     *
+     * @param msg the detail message.  
+     */
+    public InvalidAlgorithmParameterException(String{this} msg) {}
+}

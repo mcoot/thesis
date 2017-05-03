@@ -1,0 +1,52 @@
+package java.net;
+
+import java.io.IOException;
+
+public class Socket[label L]  {
+    private static int __JIF_SIG_OF_JAVA_CLASS$20030619 = 0;
+
+    public Socket() {
+//       setImpl();
+    }
+
+//     protected Socket(SocketImpl impl) throws SocketException {
+// 	this.impl = impl;
+// 	if (impl != null) {
+// 	    checkOldImpl();
+// 	    this.impl.setSocket(this);
+// 	}
+//     }
+
+    public Socket(String{L} host, int{L} port)
+	throws (UnknownHostException{L}, IOException{L})
+    {
+	//	this(host != null ? new InetSocketAddress(host, port) :
+	//	     new InetSocketAddress(InetAddress.getByName(null), port),
+	//	     new InetSocketAddress(0), true);
+    }
+
+    public Socket(InetAddress{L} address, int{L} port) throws (IOException{L}) 
+    {
+	//	this(address != null ? new InetSocketAddress(address, port) : null, 
+	//	     new InetSocketAddress(0), true);
+    }
+
+    public Socket(String{L} host, int{L} port, InetAddress{L} localAddr,
+		  int{L} localPort) throws (IOException{L}) 
+    {
+	//	this(host != null ? new InetSocketAddress(host, port) :
+	//	       new InetSocketAddress(InetAddress.getByName(null), port),
+	//	     new InetSocketAddress(localAddr, localPort), true);
+    }
+
+    public Socket(InetAddress{L} address, int{L} port, InetAddress{L} localAddr,
+		  int{L} localPort) throws (IOException{L})
+    {
+	//	this(address != null ? new InetSocketAddress(address, port) : null,
+	//	     new InetSocketAddress(localAddr, localPort), true);
+    }
+
+    public native void close();
+    public native java.io.InputStream[L]{this} getInputStream() throws (java.io.IOException{L});
+    public native java.io.OutputStream[L] getOutputStream() throws (java.io.IOException{L});
+}
