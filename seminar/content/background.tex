@@ -47,7 +47,7 @@
 \end{frame}
 
 \begin{frame}{Practical Noninterference}
-	The second problem means almost any real world program cannot be noninterfering. So practical information flow solutions do not require true noninterference. Instead, they may:
+	The second problem means almost any real world program cannot be noninterfering. So most practical information flow solutions do not require true noninterference. Instead, they may:
 	
 	\begin{itemize}
 		\item Allow `selective declassification' of confidential data
@@ -62,25 +62,17 @@
 \end{frame}
 
 \begin{frame}{Enforcement: Static or Dynamic?}
-	Content...
-\end{frame}
-
-\begin{frame}{Decentralised Label Model}
-	Content...
+	Control of information flow may be enforced at compile-time or at run-time.
+	
+	\textbf{Static} information flow controls produce no run-time overhead, and can much more easily track `implicit flows'.
+	
+	\textbf{Dynamic} information flow controls include some overhead and cannot track implicit flows, but can be more flexible and can represent a wider range of policies.
+	
+	Most solutions use static or `mostly static' approaches.
 \end{frame}
 
 \begin{frame}{Information Flow and Integrity}
-	Content...
-\end{frame}
-
-\begin{frame}{JIF}
-	Content...
-\end{frame}
-
-\begin{frame}{LIFTy}
-	Content...
-\end{frame}
-
-\begin{frame}{Others}
-	Content...
+	Information flow is usually talked about with respect to Confidentiality, but it can also be applied to the problem of Integrity.
+	
+	Rather than tracking the flow of high confidentiality (i.e. `secret') outputs, you instead track the flow of low integrity (i.e. `tainted') inputs.
 \end{frame}
