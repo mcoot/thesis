@@ -11,13 +11,13 @@
 \end{frame}
 
 \begin{frame}{JIF}
-	Java Information Flow is a language extension to Java with `mostly static' information flow features through the addition of `security types', with policies as per the Decentralised Label Model \cite{work:myersdlm}.
+	Java Information Flow is a language extension to Java with `mostly static' information flow features through `security types', which are policies as per the Decentralised Label Model \cite{work:myersdlm}.
 	
 	Every variable has a security label attached to it which encodes how its information may flow between principals. For instance:
 	
 	\texttt{int\{Alice->Bob\} x;}
 	
-	indicates that principal Alice owns the information, and allows that information to flow to Bob or a principal Bob has delegated authority to. A third principal, Charlie, would not be allowed to access this information.
+	indicates that principal Alice owns the information, and allows that information to flow to Bob or a principal Bob has delegated authority to.
 \end{frame}
 
 \begin{frame}{JIF: Static Checking Errors}
@@ -34,13 +34,16 @@
 \end{frame}
 
 \begin{frame}{JIF: Practicality \& Programmer Burden}
-	Content...
+	As a language which is not widely used, documentation and examples for JIF are sparse. The language also does not have a debugger, and the static checking error messages often fail to explain the true source of an issue.
+	
+	Even aside from those implementational issues, JIF inherently places a large burden on the programmer: the programmer must correctly keep track of information flows and provide the correct policies each time they are used (though type inference helps).
 \end{frame}
 
 \begin{frame}{Other Implementations}
 	\begin{enumerate}
 		\item Paragon
 		\item LIFTy
+		\item Dynamic ones
 	\end{enumerate}
 \end{frame}
 
@@ -56,4 +59,6 @@
 	`Heavy' programmer burden
 	
 	Not relevant for most security issues
+	
+	Potential for `lighter' solutions (e.g. LIFTy, static analysis tools)
 \end{frame}
