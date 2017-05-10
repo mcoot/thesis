@@ -1,4 +1,4 @@
-\section{Work So Far}
+\section{Thesis Progress \& Plan}
 
 \begin{frame}{Work So Far}
 	Thus far, most of the work on my thesis has been split between three tasks:
@@ -20,6 +20,12 @@
 	indicates that principal Alice owns the information, and allows that information to flow to Bob or a principal Bob has delegated authority to.
 \end{frame}
 
+\begin{frame}{JIF: A Minimal `Hello World'}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{content/images/jif_helloworld.png}
+	\end{figure}
+\end{frame}
+
 \begin{frame}{JIF: Static Checking Errors}
 	\begin{figure}
 		\includegraphics[scale=0.5]{content/images/jif_helloworld_error.png}
@@ -27,16 +33,32 @@
 	\end{figure}
 \end{frame}
 
-\begin{frame}{JIF: A Minimal `Hello World'}
-	\begin{figure}
-		\includegraphics[width=\linewidth]{content/images/jif_helloworld.png}
-	\end{figure}
+\begin{frame}{JIF: Practicality \& Programmer Burden}
+	
+	JIF's issues:
+	
+	\begin{itemize}
+		\item Inherently complex policies
+		\item Programmer burden compounds as complexity increases
+		\item Sparse documentation, no debugger and misleading compiler errors
+		\item Interoperability with Java
+	\end{itemize}
+	
+	\note{
+		Thus far in my research, JIF's largest problem has proven to be the complexity of its policies and the programmer burden that induces.
+		
+		JIF inherently places a large cognitive burden on the programmer: the programmer must provide correct policies for flows within the system at every level, which compounds as programs get larger, and as they have to perform more complex tasks, which makes writing modular programs difficult.
+		
+		While documentation is sparse, and the compiler's error messages often do not correspond to the true information flow problem, these merely exacerbate the core burden issue.
+		
+		In addition, though Jif has the advantage of being based on Java, interoperability is limited -- features like reflection do not exist, and external libraries require JIF signatures for their interfaces.
+		}
+	
+	
 \end{frame}
 
-\begin{frame}{JIF: Practicality \& Programmer Burden}
-	As a language which is not widely used, documentation and examples for JIF are sparse. The language also does not have a debugger, and the static checking error messages often fail to explain the true source of an issue.
-	
-	Even aside from those implementational issues, JIF inherently places a large burden on the programmer: the programmer must correctly keep track of information flows and provide the correct policies each time they are used (though type inference helps).
+\begin{frame}{LIFTy -- An Alternate Approach}
+	In my research thus far, the complexity o
 \end{frame}
 
 \begin{frame}{Other Implementations}

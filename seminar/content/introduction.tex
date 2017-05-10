@@ -3,17 +3,17 @@
 \begin{frame}{Java is Widely Used}
 	As one of the most widely used languages on the planet, a lot of security critical code is written in Java.
 	
-	Due to its prevalence on the desktop, mobile and (formerly) the web, developers depend on the security of the JRE, of libraries, and of their trusted code.
-	
-	If any one of those components has a vulnerability, the system may be compromised.
+	Due to its prevalence on the desktop, mobile and (formerly) the web, developers need to ensure that their applications are secure, and they must trust that the JRE and any libraries they use can't be exploited.
 \end{frame}
 
 \begin{frame}{Java is Vulnerable}
 	\begin{columns}
 		\column{0.55\textwidth}
-			37 vulnerabilities were recorded in the US National Vulnerability Database in 2016.\newline
+			37 vulnerabilities in the JRE were recorded in the US National Vulnerability Database in 2016.\newline
 			
-			13 were listed as `critical', with a CVSS score $ > $ 9.0, indicating complete compromise of Confidentiality and Integrity \cite{nvd:jdk2016cvss9}.
+			13 were listed as `critical', with a CVSS score $ > $ 9.0, indicating complete compromise of Confidentiality and Integrity \cite{nvd:jdk2016cvss9}.\newline
+			
+			This is in the \textit{JRE alone}, without considering the thousands of Java libraries and applications in existence.
 		\column{0.45\textwidth}
 		\begin{figure}
 			\includegraphics[scale=0.25]{content/images/cvedetails_vulnsperyear.png}
@@ -35,10 +35,10 @@
 \end{frame}
 
 \begin{frame}{Thesis Topic}
-	One avenue for providing \textit{provable} Confidentiality and Integrity to programs is applying the theory of \textit{Information Flow}, leading to the key question:
+	One avenue for providing \textit{provable} Confidentiality to programs is applying \textit{Information Flow} policies, leading to the question:
 	
 	\begin{block}{Key Thesis Question}
-		Can Information Flow be used to provide practical improvements to the Confidentiality and Integrity of Java programs?
+		Can Information Flow be used to provide practical improvements to the Confidentiality of Java programs?
 	\end{block}
 	
 	To answer this question, this thesis aims to evaluate both the relevance of information flow-based security, and current implementations of it, to determine:

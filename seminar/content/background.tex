@@ -1,7 +1,7 @@
 \section{Background}
 
 \begin{frame}{Information Flow and Access Control}
-	Many systems control access to information with \textbf{access control} mechanisms, which place restrictions based on the \textit{permissions} of a user or of calling code, but which cannot restrict how that information \textit{propagates} once released \cite{ifbackground:sabelfeld}.
+	Many systems control access to information with \textbf{access control} mechanisms, which place restrictions based on the \textit{permissions} of a user or of calling code but which cannot restrict how that information \textit{propagates} once released \cite{ifbackground:sabelfeld}.
 	
 	\textbf{Information flow} mechanisms instead control access by enforcing that some \textit{policy} on the data is upheld.
 	
@@ -25,7 +25,7 @@
 		``A group of users [or a program] is noninterfering with another group of users if what the first group does with those commands has no effect on what the second group of users can see."\newline \tiny{-- Goguen \& Meseguer} \cite{ifbackground:goguen}
 	\end{block}
 	
-	Information flow models attempt to verify that programs have the property of \textit{noninterference}. A noninterfering program \textit{provably} protects confidentiality.
+	Information flow models attempt to verify that programs have the property of \textit{noninterference}. A noninterfering program \textit{provably} protects confidentiality by guaranteeing that disallowed flows can never occur.
 \end{frame}
 
 \begin{frame}{Noninterference - Is It Practical?}
