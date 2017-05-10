@@ -40,8 +40,8 @@
 	\begin{itemize}
 		\item Inherently complex policies
 		\item Programmer burden compounds as complexity increases
-		\item Sparse documentation, no debugger and misleading compiler errors
-		\item Interoperability with Java
+		\item Sparse documentation, no debugger, misleading compiler errors
+		\item Interoperability issues with Java
 	\end{itemize}
 	
 	\note{
@@ -58,7 +58,9 @@
 \end{frame}
 
 \begin{frame}{LIFTy -- An Alternate Approach}
-	In my research thus far, the complexity o
+	LIFTy is a different information flow-secure language, that provides some solutions to these problems. Specifically, code is \textbf{policy agnostic}, and the policies are simple predicates rather than complex DLM labels.
+	
+	LIFTy is not Java-based; it is a statically typed $ \lambda $-calculus based language that uses `type driven program repair' to automatically add access checks on confidential data during compilation.
 \end{frame}
 
 \begin{frame}{Other Implementations}
