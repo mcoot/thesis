@@ -79,7 +79,8 @@ showPaper w pid =
 		out = do title (*$ \leftarrow $*) getPaperTitle w pid
 						 authors (*$ \leftarrow $*) getPaperAuthors w pid
 						 return (title + + ": " + + show authors)
-	in print w u out
+	in print w u out
+
 		\end{lstlisting}
 		\caption{`Blind review' LIFTy example \cite{work:lifty}}
 	\end{figure}
@@ -93,6 +94,10 @@ showPaper w pid =
 \end{frame}
 
 \begin{frame}{Further Exploration}
+	The paper introducing LIFTy is still in submission, but it warrants further exploration.
+	
+	Another implementation that is worthy of study is Paragon -- like JIF, Paragon is Java based, but it uses a more refined policy specification and predicate-based `flow locks' to specify flows.
+	
 	\begin{enumerate}
 		\item Paragon
 		\item LIFTy
