@@ -1,10 +1,24 @@
 \section{Introduction}
 
-\begin{frame}{Java is Widely Used}
+\begin{frame}{Writing Secure Java Code}
 	As one of the most widely used languages on the planet, a lot of security critical code is written in Java.
 	
-	Due to its prevalence on the desktop, mobile and (formerly) the web, developers need to ensure that their applications are secure, and they must trust that the JRE and any libraries they use can't be exploited.
+	Developers of applications that may interact with sensitive information must take steps to ensure the \textit{confidentiality} of that information is maintained. They can do this by:
+	
+	\begin{itemize}
+		\item Following the Oracle Secure Coding Guidelines
+		\item Running their application with a \texttt{SecurityManager} installed
+		\item Following the Principle of Least Privilege
+	\end{itemize}
+	
+	What they usually can't do is \textit{prove it}.
 \end{frame}
+
+\begin{frame}{Secure Applications: Why IF}
+	content...
+\end{frame}
+
+
 
 \begin{frame}{Java is Vulnerable}
 	\begin{columns}
@@ -22,17 +36,7 @@
 	\end{columns}	
 \end{frame}
 
-\begin{frame}{Writing Secure Java Code}
-	Developers of security conscious Java applications must ensure the Confidentiality, Integrity and Availability of data. They can do this by:
-	
-	\begin{itemize}
-		\item Following the Oracle Secure Coding Guidelines
-		\item Running their application with a \texttt{SecurityManager} installed
-		\item Following the Principle of Least Privilege
-	\end{itemize}
-	
-	What they usually can't do is \textit{prove it}.
-\end{frame}
+
 
 \begin{frame}{Thesis Topic}
 	One avenue for providing \textit{provable} Confidentiality to programs is applying \textit{Information Flow} policies, leading to the question:
