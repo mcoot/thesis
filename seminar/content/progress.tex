@@ -101,27 +101,40 @@ showPaper w pid =
 \begin{frame}{Further Exploration}
 	The paper introducing LIFTy is still in submission, but it warrants further exploration.
 	
-	Another implementation that is worthy of study is Paragon -- like JIF, Paragon is Java based, but it uses a more refined policy specification based on predicate-based `flow locks'.
+	Another implementation: \textbf{Paragon}. Paragon is Java-based, but uses predicate-based `flow locks' to define policies in a more natural way.
 	
-	Initial impressions of the language are that while its policy mechanism is more complex than LIFTy's, its reliance on logic-based policies over the DLM may allow it to be far more usable in developing real world applications.
+	Initial impressions are that its burden falls somewhere between LIFTy and JIF. Its logic-based policies may make it more practical than JIF's Decentralised Label Model.
 \end{frame}
 
 \begin{frame}{Overall Thoughts So Far}
+
+Some key points:
+
+\begin{itemize}
+	\item Programmer burden matters
+	\item Natural policy expression matters
+	\item Practicality $ > $ provability
+\end{itemize}
+
+\note{
 From my research thus far, the stand out point has been that programmer burden matters. A system which is rigid and complex in its policy specification, and which forces programmers to understand and correctly apply a complex model to the design of their code is inherently less practical than one which allows policies to be specified in a way which is natural.
 
 Ideally, the programmer should be able to derive their policy straight from their program's specification and represent it simply and concisely, freeing them to then build their implementation without having to contort their design around the vagaries of the model the language forces on them.
 
 In addition, the \textit{usefulness} of a model in representing practical security properties seems directly related to the model's flexibility: the DLM, while it allows quite precise and mathematically meaningful policies to be specified, is very difficult to apply to a real world problem like the Calendar example. A logic or predicate-based system, by contrast, can very easily be fit to such a problem.
-
-Usefulness dependent on policy model
-
-Potential for `lighter' solutions (e.g. LIFTy, static analysis tools)
+}
 \end{frame}
 
 \begin{frame}{The Plan}
 
-My next step will be to familiarise myself more deeply with LIFTy and Paragon to gain a greater understand of how they compare \textit{in practice} with JIF.
+Next steps: examine LIFTy and Paragon more deeply.
 
-Beyond that, I plan to research further models and potential avenues that future implementations could take. I also plan to use familiarity with several models to come up with a set of criteria with which to perform a more rigorous comparison between and evaluation of each implementation.
+Later:
+\begin{itemize}
+	\item Research further implementations
+	\item Research `lighter' static analysis approaches
+	\item Develop more rigorous criteria for comparison
+	\item Perform an evaluation of the models
+\end{itemize}
 
 \end{frame}
