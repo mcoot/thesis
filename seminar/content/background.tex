@@ -9,9 +9,9 @@
 \end{frame}
 
 \begin{frame}{Information Flow Basics}
-	In its most general form, information flow security considers confidentiality states. An information flow policy formalises how information may move between states.
+	Information Flow considers \textit{confidentiality states}. Flow \textit{policies} formalise how information may move between states.
 	
-	This is commonly represented by applying the Bell-LaPadula Lattice model used in Mandatory Access Control.
+	One common representation is the Bell-LaPadula Lattice model used in Mandatory Access Control. An alternative is representing policies using logical predicates.
 	
 	\begin{figure}
 		\includegraphics[scale=0.45]{content/images/lattice_examples.png}
@@ -21,6 +21,8 @@
 \end{frame}
 
 \begin{frame}{Noninterference}
+	
+	Information Flow theory can provide a provable guarantee of correctness, according
 	\begin{block}{Noninterference}
 		``A group of users [or a program] is noninterfering with another group of users if what the first group does with those commands has no effect on what the second group of users can see."\newline \tiny{-- Goguen \& Meseguer} \cite{ifbackground:goguen}
 	\end{block}
@@ -29,20 +31,25 @@
 \end{frame}
 
 \begin{frame}{Noninterference - Is It Practical?}
-	There are two serious problems with proving noninterference:
+	Problems with proving noninterference:
 	
 	\begin{enumerate}
 		\item Proving non-interference (in the general case) is undecidable
 			\begin{itemize}
 				\item The halting problem can be reduced to it -- consider: \newline \texttt{\textbf{if} S() halts \textbf{then} h := 1 \textbf{else} h := 0} \cite{ifbackground:denninghalting}
+				\item \textit{Most real systems prove a simplified case using type checking}
 			\end{itemize}
 		\item Many useful programs are inherently interfering
 			\begin{itemize}
 				\item A password checker's output clearly depends on the password
+				\item \textit{Most real systems allow for `selective declassification'}
+			\end{itemize}
+		\item Noninterference does not model covert channels
+			\begin{itemize}
+				\item \textit{Some systems secure against specific potential covert channels}
+				\item There is no way to prove that no covert channels exist
 			\end{itemize}
 	\end{enumerate}
-	
-	Instead, most information flow solutions allow for data to be `selectively declassified'.
 \end{frame}
 
 \begin{frame}{Enforcement: Static or Dynamic?}
@@ -56,7 +63,9 @@
 \end{frame}
 
 \begin{frame}{Information Flow and Integrity}
-	Information flow is usually talked about with respect to Confidentiality, but it can also be applied to the problem of Integrity.
+	Information flow is usually talked about with respect to confidentiality, but it can also be applied to integrity.
 	
-	Rather than tracking the flow of high confidentiality (i.e. `secret') outputs, you instead track the flow of low integrity (i.e. `tainted') inputs.
+	For \textbf{Confidentiality}:\newline Track the flow of high confidentiality (`secret') outputs.
+	
+	For \textbf{Integrity}:\newline Track the flow of low integrity (`tainted') inputs.
 \end{frame}

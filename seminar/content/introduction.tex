@@ -12,20 +12,22 @@
 	\end{itemize}
 	
 	Java's Security Model provides APIs to secure applications with \textbf{access control}, but has no direct mechanisms for control of \textbf{information flows}.
-	What they usually can't do is \textit{prove it}.
 \end{frame}
 
 \begin{frame}{Why should we care?}
 
 	\begin{figure}
-		\caption{Calendar example}
+		\includegraphics[scale=0.5]{content/images/calendar_flow.png}
+		\caption{Example -- A Meeting Scheduler Application}
 	\end{figure}
 	
+	\note{
 	Consider an app that lets you schedule meetings. You grant it the `Calendar' and `Network' permissions on your phone. But once it has that permission, the app can do \textit{anything it likes} with your calendar, including sending your entire schedule over the network.
 	
 	With access control, you grant access and your security ends there. What we really want to do is control where that information \textit{flows}. In this case, we want your app to be able to use your calendar to check that your schedule is free, but we don't want it to be able to save or send that information elsewhere.
 	
-	As it happens, there exist \textbf{Information Flow} security models, which aim to provide \textit{provable} confidentiality in this fashion.
+	As it happens, there exist \textbf{Information Flow} security models, which aim to provide \textit{provable} confidentiality in this fashion.	
+	}
 \end{frame}
 
 
@@ -49,8 +51,6 @@
 
 
 \begin{frame}{Thesis Topic}
-	This leads to the key question this thesis is trying to answer:
-	
 	\begin{block}{Key Thesis Question}
 		Can Information Flow be used to provide practical improvements to the Confidentiality of Java programs?
 	\end{block}
