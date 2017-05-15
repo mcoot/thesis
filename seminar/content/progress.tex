@@ -71,24 +71,24 @@
 		\item Simple, predicate based policies
 		\item Automatically adds checks with no programmer effort
 		\begin{itemize}
-			\item Downside: won't error on a malformed policy
+			\item Downside: won't provide feedback on a malformed policy
 		\end{itemize}
 	\end{itemize}
 	
-	\begin{figure}
-		\begin{lstlisting}[escapeinside={(*}{*)}]
-getPaperAuthors :: 
-		w:World(*$ \rightarrow $*)PaperId(*$ \rightarrow $*)Tagged[User]<(*$ \mathcal{V} $*)=chair w>
-showPaper w pid =
-	let u = getCurrentUser w
-		out = do title (*$ \leftarrow $*) getPaperTitle w pid
-						 authors (*$ \leftarrow $*) getPaperAuthors w pid
-						 return (title + + ": " + + show authors)
-	in print w u out
-
-		\end{lstlisting}
-		\caption{`Blind review' LIFTy example \cite{work:lifty}}
-	\end{figure}
+%	\begin{figure}
+%		\begin{lstlisting}[escapeinside={(*}{*)}]
+%getPaperAuthors :: 
+%		w:World(*$ \rightarrow $*)PaperId(*$ \rightarrow $*)Tagged[User]<(*$ \mathcal{V} $*)=chair w>
+%showPaper w pid =
+%	let u = getCurrentUser w
+%		out = do title (*$ \leftarrow $*) getPaperTitle w pid
+%						 authors (*$ \leftarrow $*) getPaperAuthors w pid
+%						 return (title + + ": " + + show authors)
+%	in print w u out
+%
+%		\end{lstlisting}
+%		\caption{`Blind review' LIFTy example \cite{work:lifty}}
+%	\end{figure}
 	
 	\note{
 		LIFTy is a different information flow-secure language, that provides some solutions to these problems. Specifically, code is \textbf{policy agnostic}, and the policies are simple predicates rather than complex DLM labels.

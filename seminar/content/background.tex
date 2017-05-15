@@ -22,35 +22,43 @@
 
 \begin{frame}{Noninterference}
 	
-	Information Flow theory can provide a provable guarantee of correctness:
+	Information Flow theory can provide provable confidentiality:
 	\begin{block}{Noninterference}
-		``A group of users [or a program] is noninterfering with another group of users if what the first group does with those commands has no effect on what the second group of users can see."\newline \tiny{-- Goguen \& Meseguer} \cite{ifbackground:goguen}
+		A program is noninterfering if any two different executions which differ only in their high confidentiality inputs are indistinguishable to an attacker. \cite{ifbackground:goguen}
 	\end{block}
-	
-	Information flow models attempt to verify that programs have the property of \textit{noninterference}. A noninterfering program \textit{provably} protects confidentiality by guaranteeing that disallowed flows can never occur.
-\end{frame}
-
-\begin{frame}{Noninterference - Is It Practical?}
-	Problems with proving noninterference:
-	
-	\begin{enumerate}
+	\begin{itemize}
 		\item Proving non-interference (in the general case) is undecidable
 			\begin{itemize}
-				\item The halting problem can be reduced to it -- consider: \newline \texttt{\textbf{if} S() halts \textbf{then} h := 1 \textbf{else} h := 0} \cite{ifbackground:denninghalting}
-				\item \textit{Most real systems prove a simplified case using type checking}
+				\item The halting problem can be reduced to it
 			\end{itemize}
 		\item Many useful programs are inherently interfering
 			\begin{itemize}
 				\item A password checker's output clearly depends on the password
-				\item \textit{Most real systems allow for `selective declassification'}
 			\end{itemize}
-		\item Noninterference does not model covert channels
-			\begin{itemize}
-				\item \textit{Some systems secure against specific potential covert channels}
-				\item There is no way to prove that no covert channels exist
-			\end{itemize}
-	\end{enumerate}
+	\end{itemize}
 \end{frame}
+
+%\begin{frame}{Noninterference - Is It Practical?}
+%	Problems with proving noninterference:
+%	
+%	\begin{enumerate}
+%		\item Proving non-interference (in the general case) is undecidable
+%			\begin{itemize}
+%				\item The halting problem can be reduced to it -- consider: \newline \texttt{\textbf{if} S() halts \textbf{then} h := 1 \textbf{else} h := 0} \cite{ifbackground:denninghalting}
+%				\item \textit{Most real systems prove a simplified case using type checking}
+%			\end{itemize}
+%		\item Many useful programs are inherently interfering
+%			\begin{itemize}
+%				\item A password checker's output clearly depends on the password
+%				\item \textit{Most real systems allow for `selective declassification'}
+%			\end{itemize}
+%		\item Noninterference does not model covert channels
+%			\begin{itemize}
+%				\item \textit{Some systems secure against specific potential covert channels}
+%				\item There is no way to prove that no covert channels exist
+%			\end{itemize}
+%	\end{enumerate}
+%\end{frame}
 
 \begin{frame}{Enforcement: Static or Dynamic?}
 	Controls be enforced at compile-time or at run-time.
