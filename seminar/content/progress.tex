@@ -5,19 +5,19 @@
 	
 	\begin{enumerate}
 		\item Familiarising with one particular implementation: JIF (Java Information Flow)
-		\item Researching information flow models and implementations
-		\item Researching the applicability of information flow to real security problems
+		\item Researching information flow models and implementations more generally
+		\item Researching the applicability of information flow to real applications
 	\end{enumerate}
 \end{frame}
 
 \begin{frame}{JIF}
-	Java Information Flow is a language extension to Java with `mostly static' information flow features through `security types', which are policies as per the Decentralised Label Model \cite{work:myersdlm}.
+	Java Information Flow: a `security typed' subset of Java with mostly static information flow controls.
 	
-	Every variable has a security label attached to it which encodes how its information may flow between principals. For instance:
+	Every variable has a security label attached to it which encodes how its information may flow between `principals'.
 	
 	\texttt{int\{Alice->Bob\} x;}
 	
-	indicates that principal Alice owns the information, and allows that information to flow to Bob or a principal Bob has delegated authority to.
+	These `Decentralised Label Model' \cite{work:myersdlm} policies can get quite complex with many principals, composite policies, implicit flow considerations and mutual distrust between classes.
 \end{frame}
 
 \begin{frame}{JIF: A Minimal `Hello World'}
@@ -106,23 +106,23 @@
 	Initial impressions are that its burden falls somewhere between LIFTy and JIF. Its logic-based policies may make it more practical than JIF's Decentralised Label Model.
 \end{frame}
 
-\begin{frame}{Overall Thoughts So Far}
-
-Key points:
-
-\begin{itemize}
-	\item Information flow does have applications, but a solution's usefulness is directly tied to how naturally policies may be expressed in it
-	\item The burden a solution places on the programmer matters. For information flow to be practical, policies must not become more complex as the program scales
-\end{itemize}
-
-\note{
-From my research thus far, the stand out point has been that programmer burden matters. A system which is rigid and complex in its policy specification, and which forces programmers to understand and correctly apply a complex model to the design of their code is inherently less practical than one which allows policies to be specified in a way which is natural.
-
-Ideally, the programmer should be able to derive their policy straight from their program's specification and represent it simply and concisely, freeing them to then build their implementation without having to contort their design around the vagaries of the model the language forces on them.
-
-In addition, the \textit{usefulness} of a model in representing practical security properties seems directly related to the model's flexibility: the DLM, while it allows quite precise and mathematically meaningful policies to be specified, is very difficult to apply to a real world problem like the Calendar example. A logic or predicate-based system, by contrast, can very easily be fit to such a problem.
-}
-\end{frame}
+%\begin{frame}{Overall Thoughts So Far}
+%
+%Key points:
+%
+%\begin{itemize}
+%	\item Information flow does have applications, but a solution's usefulness is directly tied to how naturally policies may be expressed in it
+%	\item The burden a solution places on the programmer matters. For information flow to be practical, policies must not become more complex as the program scales
+%\end{itemize}
+%
+%\note{
+%From my research thus far, the stand out point has been that programmer burden matters. A system which is rigid and complex in its policy specification, and which forces programmers to understand and correctly apply a complex model to the design of their code is inherently less practical than one which allows policies to be specified in a way which is natural.
+%
+%Ideally, the programmer should be able to derive their policy straight from their program's specification and represent it simply and concisely, freeing them to then build their implementation without having to contort their design around the vagaries of the model the language forces on them.
+%
+%In addition, the \textit{usefulness} of a model in representing practical security properties seems directly related to the model's flexibility: the DLM, while it allows quite precise and mathematically meaningful policies to be specified, is very difficult to apply to a real world problem like the Calendar example. A logic or predicate-based system, by contrast, can very easily be fit to such a problem.
+%}
+%\end{frame}
 
 \begin{frame}{The Plan}
 

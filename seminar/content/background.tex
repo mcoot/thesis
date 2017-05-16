@@ -1,33 +1,29 @@
 \section{Background}
 
-\begin{frame}{Information Flow and Access Control}
-	Many systems control access to information with \textbf{access control} mechanisms, which place restrictions based on the \textit{permissions} of a user or of calling code but which cannot restrict how that information \textit{propagates} once released \cite{ifbackground:sabelfeld}.
-	
-	\textbf{Information flow} mechanisms instead control access by enforcing that some \textit{policy} on the data is upheld.
-	
-	In short, access control puts controls on the \textit{calling code}, where information flow puts controls on the \textit{data}.
-\end{frame}
-
 \begin{frame}{Information Flow Basics}
 	Information Flow considers \textit{confidentiality states}. Flow \textit{policies} formalise how information may move between states.
 	
-	One common representation is the Bell-LaPadula Lattice model used in Mandatory Access Control. An alternative is representing policies using logical predicates.
+	Simple model: logical predicates.
+	
+	A more complex model: the Bell-LaPadula Lattice model (as used by the US military).
 	
 	\begin{figure}
 		\includegraphics[scale=0.45]{content/images/lattice_examples.png}
-		\caption{Example Lattice Model policies \cite{ifbackground:sandhu}}
+		\caption{Example Lattice Model states \cite{ifbackground:sandhu}}
 	\end{figure}
 	
 \end{frame}
 
 \begin{frame}{Noninterference}
 	
-	Information Flow theory can provide provable confidentiality:
-	\begin{block}{Noninterference}
-		A program is noninterfering if any two different executions which differ only in their high confidentiality inputs are indistinguishable to an attacker. \cite{ifbackground:goguen}
-	\end{block}
+	A program which leaks no high confidentiality information is `noninterfering', but proving that a program is noninterfering is usually not practical.
+	
+%	\begin{block}{Noninterference}
+%		A program is noninterfering if any two different executions which differ only in their high confidentiality inputs are indistinguishable to an attacker. \cite{ifbackground:goguen}
+%	\end{block}
+	
 	\begin{itemize}
-		\item Proving non-interference (in the general case) is undecidable
+		\item Proving noninterference (in the general case) is undecidable
 			\begin{itemize}
 				\item The halting problem can be reduced to it
 			\end{itemize}
@@ -36,6 +32,8 @@
 				\item A password checker's output clearly depends on the password
 			\end{itemize}
 	\end{itemize}
+	
+	Most real systems allow for \textit{selective declassification}.
 \end{frame}
 
 %\begin{frame}{Noninterference - Is It Practical?}
@@ -61,19 +59,28 @@
 %\end{frame}
 
 \begin{frame}{Enforcement: Static or Dynamic?}
-	Controls be enforced at compile-time or at run-time.
+	Flow controls be enforced at compile-time or at run-time.
 	
-	\textbf{Static} information flow controls produce no run-time overhead, and can much more easily track `implicit flows'.
+	\textbf{Dynamic} information flow controls:
+	\begin{itemize}
+		\item Flexible: can represent policies which change dynamically
+		\item Incur some run-time overhead
+		\item Can only track the code path which is executed
+	\end{itemize}
 	
-	\textbf{Dynamic} information flow controls include some overhead and cannot track implicit flows, but can be more flexible and can represent a wider range of policies.
+	\textbf{Static} information flow controls:.
+	\begin{itemize}
+		\item Have little or no run-time overhead
+		\item Can easily track \textit{all} possible code paths
+	\end{itemize}
 	
 	Most solutions use static or `mostly static' approaches.
 \end{frame}
 
-\begin{frame}{Information Flow and Integrity}
-	Information flow is usually talked about with respect to confidentiality, but it can also be applied to integrity.
-	
-	For \textbf{Confidentiality}:\newline Track the flow of high confidentiality (`secret') outputs.
-	
-	For \textbf{Integrity}:\newline Track the flow of low integrity (`tainted') inputs.
-\end{frame}
+%\begin{frame}{Information Flow and Integrity}
+%	Information flow is usually talked about with respect to confidentiality, but it can also be applied to integrity.
+%	
+%	For \textbf{Confidentiality}:\newline Track the flow of high confidentiality (`secret') outputs.
+%	
+%	For \textbf{Integrity}:\newline Track the flow of low integrity (`tainted') inputs.
+%\end{frame}

@@ -1,9 +1,9 @@
 \section{Introduction}
 
 \begin{frame}{Writing Secure Java Code}
-	As one of the most widely used languages on the planet, a lot of security critical code is written in Java.
+	Java is one of the most widely used programming languages, and many security-critical applications are written in Java.
 	
-	Developers of applications that may interact with sensitive information must take steps to ensure the \textit{confidentiality} of that information is maintained. They can do this by:
+	Applications interacting with sensitive information must ensure the \textit{confidentiality} of that information. They can do this by:
 	
 	\begin{itemize}
 		\item Following the Oracle Secure Coding Guidelines
@@ -14,7 +14,7 @@
 	Java's Security Model provides APIs to secure applications with \textbf{access control}, but has no direct mechanisms for control of \textbf{information flows}.
 \end{frame}
 
-\begin{frame}{Why should we care?}
+\begin{frame}{Why Does Information Flow Matter?}
 
 	\begin{figure}
 		\includegraphics[scale=0.5]{content/images/calendar_flow.png}
@@ -30,7 +30,13 @@
 	}
 \end{frame}
 
-
+\begin{frame}{Information Flow and Access Control}
+	Many systems control access to information with \textbf{access control} mechanisms, which place restrictions based on the \textit{permissions} of a user or of calling code but which cannot restrict how that information \textit{propagates} once released \cite{ifbackground:sabelfeld}.
+	
+	\textbf{Information flow} mechanisms instead control access by enforcing that some \textit{policy} on the data is upheld.
+	
+	In short, access control puts controls on the \textit{calling code}, where information flow puts controls on the \textit{data}.
+\end{frame}
 
 %\begin{frame}{Java is Vulnerable}
 %	\begin{columns}
@@ -52,7 +58,7 @@
 
 \begin{frame}{Thesis Topic}
 	\begin{block}{Key Thesis Question}
-		Can Information Flow be used to provide practical improvements to the Confidentiality of Java programs?
+		Can Information Flow be used to provide practical improvements to the confidentiality of Java programs?
 	\end{block}
 	
 	This thesis aims to evaluate the theory of information flow-based security and current implementations of it to determine:
