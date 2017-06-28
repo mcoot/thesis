@@ -1,9 +1,0 @@
-package java.sql;
-
-public interface Statement {
-    ResultSet{sql;this} executeQuery(String sql) throws (SQLException{sql;this});
-    int{sql;this} executeUpdate{this}(String sql) throws (SQLException{sql;this});
-
-    void close() throws (SQLException{this});
-}
-    

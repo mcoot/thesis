@@ -1,9 +1,0 @@
-package java.sql;
-
-public interface PreparedStatement extends Statement {
-    ResultSet{this} executeQuery() throws (SQLException{this});
-    int{this} executeUpdate() throws (SQLException{this});
-    void setInt(int parameterIndex,  int x) throws (SQLException{parameterIndex;x});
-    void setString(int parameterIndex, String x) throws (SQLException{parameterIndex;x});
-}
-    

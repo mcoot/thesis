@@ -1,3 +1,0 @@
-V	070417205724Z		02	unknown	/C=US/ST=PA/O=JPmail/OU=JPmail Lab/CN=bob
-V	070421180533Z		06	unknown	/C=US/ST=PA/O=JPmail/OU=JPmail Lab/CN=alice
-V	070421181924Z		07	unknown	/C=US/ST=PA/O=JPmail/OU=JPmail Lab/CN=bono
