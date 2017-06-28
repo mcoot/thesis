@@ -27,4 +27,9 @@ public final class User {
         return name.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return "User: " + name;
+    }
+
 }

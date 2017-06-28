@@ -11,6 +11,8 @@ import java.util.List;
  */
 public final class CalendarEntry {
 
+    // The day on which the engagement is held
+    private final WeekDay day;
     // The hour on which the engagement starts
     private final int startHour;
     // The hour on which the engagement ends
@@ -26,6 +28,7 @@ public final class CalendarEntry {
     /**
      * Construct a new calendar entry
      *
+     * @param day the day the engagement is on
      * @param startHour the hour the engagement starts
      * @param endHour the hour the engagement ends
      * @param title the title of the engagement
@@ -33,13 +36,15 @@ public final class CalendarEntry {
      * @param attendees the attendees of the engagement
      * @throws CalendarException.InvalidEntryException if the times are invalid
      */
-    public CalendarEntry(int startHour, int endHour, String title, String description, List<User> attendees)
+    public CalendarEntry(WeekDay day, int startHour, int endHour,
+                         String title, String description, List<User> attendees)
             throws CalendarException.InvalidEntryException {
         // Check that the engagement is valid
         if (!areTimesValid(startHour, endHour)) {
             throw new CalendarException.InvalidEntryException(
                     String.format("Engagement %s (%d - %d) is not valid", title, startHour, endHour));
         }
+        this.day = day;
         this.startHour = startHour;
         this.endHour = endHour;
         this.title = title;
@@ -51,15 +56,17 @@ public final class CalendarEntry {
     /**
      * Construct a new calendar entry with only one attendee
      *
+     * @param day the day the engagement is on
      * @param startHour the hour the engagement starts
      * @param endHour the hour the engagement ends
      * @param title the title of the engagement
      * @param description the engagement description
      * @param attendee the user attending the engagement
      */
-    public CalendarEntry(int startHour, int endHour, String title, String description, User attendee)
+    public CalendarEntry(WeekDay day, int startHour, int endHour,
+                         String title, String description, User attendee)
             throws CalendarException.InvalidEntryException {
-        this(startHour, endHour, title, description, Collections.singletonList(attendee));
+        this(day, startHour, endHour, title, description, Collections.singletonList(attendee));
     }
 
     /**
@@ -70,9 +77,9 @@ public final class CalendarEntry {
      * @return true iff the times are valid for an engagement
      */
     private boolean areTimesValid(int startHour, int endHour) {
-        // Must be valid hours
+        // Must be valid hours - cannot start after 11pm or end after midnight
         if (startHour < 0 || startHour > 23) return false;
-        if (endHour < 0 || endHour > 23) return false;
+        if (endHour < 0 || endHour > 24) return false;
         // Start must be earlier than end
         if (startHour >= endHour) return false;
         return true;
@@ -111,6 +118,8 @@ public final class CalendarEntry {
      * @return true iff the entries overlap in time
      */
     public boolean overlapsWith(CalendarEntry entry) {
+        // Check they are on the same day
+        if (!day.equals(entry.day)) return false;
         // If one entry's start is within the other entry, they overlap
         return ((startHour >= entry.startHour && startHour < entry.endHour)
                 || (entry.startHour >= startHour && entry.startHour < endHour));
@@ -121,7 +130,8 @@ public final class CalendarEntry {
         if (!(o instanceof CalendarEntry)) return false;
         CalendarEntry other = (CalendarEntry)o;
 
-        return other.startHour == startHour && other.endHour == endHour
+        return day.equals(other.day)
+                && other.startHour == startHour && other.endHour == endHour
                 && title.equals(other.title) && description.equals(other.description)
                 && attendees.equals(other.attendees);
     }
@@ -129,6 +139,7 @@ public final class CalendarEntry {
     @Override
     public int hashCode() {
         int result = 19;
+        result = 29 * result + day.hashCode();
         result = 29 * result + startHour;
         result = 29 * result + endHour;
         result = 29 * result + title.hashCode();
@@ -136,6 +147,23 @@ public final class CalendarEntry {
         result = 29 * result + attendees.hashCode();
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        String sep = System.lineSeparator();
+        String format = "Calendar Entry: " + sep + "Title: %s" + sep + "Description: %s"
+                + sep + "Time/Day: %d - %d, %s" + sep + "Attendees: %s";
+
+        StringBuilder s = new StringBuilder();
+        String commaSep = "";
+        for (User u : attendees) {
+            s.append(commaSep);
+            s.append(u.toString());
+            commaSep = ", ";
+        }
+
+        return String.format(format, title, description, startHour, endHour, day, s.toString());
     }
 
 }
