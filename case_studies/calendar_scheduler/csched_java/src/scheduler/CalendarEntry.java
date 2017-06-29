@@ -47,9 +47,17 @@ public final class CalendarEntry {
         this.day = day;
         this.startHour = startHour;
         this.endHour = endHour;
+        if (title == null) {
+            throw new CalendarException.InvalidEntryException("Title may not be null");
+        }
         this.title = title;
+        if (description == null) {
+            throw new CalendarException.InvalidEntryException("Description may not be null");
+        }
         this.description = description;
-
+        if (attendees == null) {
+            throw new CalendarException.InvalidEntryException("Attendees may not be null");
+        }
         this.attendees = new ArrayList<>(attendees);
     }
 
