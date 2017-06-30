@@ -84,4 +84,19 @@ public final class Calendar {
         entries.add(entry);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+
+        s.append("Calendar for " + user.getName() + ":");
+        s.append(System.lineSeparator());
+
+        for (CalendarEntry entry : entries) {
+            s.append(entry.toString());
+            s.append(System.lineSeparator());
+        }
+
+        return s.toString();
+    }
+
 }

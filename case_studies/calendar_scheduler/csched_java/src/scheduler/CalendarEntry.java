@@ -160,8 +160,8 @@ public final class CalendarEntry {
     @Override
     public String toString() {
         String sep = System.lineSeparator();
-        String format = "Calendar Entry: " + sep + "Title: %s" + sep + "Description: %s"
-                + sep + "Time/Day: %d - %d, %s" + sep + "Attendees: %s";
+        String format = "Calendar Entry: " + sep + "\tTitle: %s" + sep + "\tDescription: %s"
+                + sep + "\tTime/Day: %d - %d, %s" + sep + "\tAttendees: %s";
 
         StringBuilder s = new StringBuilder();
         String commaSep = "";
