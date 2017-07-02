@@ -1,0 +1,9 @@
+public class CalendarException extends java.lang.Exception
+{
+  public CalendarException ()
+  {
+  }
+  public CalendarException (java.lang.String message)
+  {
+  }
+}

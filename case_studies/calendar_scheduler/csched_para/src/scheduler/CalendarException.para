@@ -13,17 +13,4 @@ public class CalendarException extends Exception {
         super(message);
     }
 
-    /**
-     * Exception thrown when an entry is invalid
-     */
-    public static class InvalidEntryException extends CalendarException {
-        public InvalidEntryException() {
-            super();
-        }
-
-        public InvalidEntryException(String message) {
-            super(message);
-        }
-    }
-
 }

@@ -34,29 +34,29 @@ public final class CalendarEntry {
      * @param title the title of the engagement
      * @param description the engagement description
      * @param attendees the attendees of the engagement
-     * @throws CalendarException.InvalidEntryException if the times are invalid
+     * @throws CalendarException if the times are invalid
      */
     public CalendarEntry(WeekDay day, int startHour, int endHour,
                          String title, String description, List<User> attendees)
-            throws CalendarException.InvalidEntryException {
+            throws CalendarException {
         // Check that the engagement is valid
         if (!areTimesValid(startHour, endHour)) {
-            throw new CalendarException.InvalidEntryException(
+            throw new CalendarException(
                     String.format("Engagement %s (%d - %d) is not valid", title, startHour, endHour));
         }
         this.day = day;
         this.startHour = startHour;
         this.endHour = endHour;
         if (title == null) {
-            throw new CalendarException.InvalidEntryException("Title may not be null");
+            throw new CalendarException("Title may not be null");
         }
         this.title = title;
         if (description == null) {
-            throw new CalendarException.InvalidEntryException("Description may not be null");
+            throw new CalendarException("Description may not be null");
         }
         this.description = description;
         if (attendees == null) {
-            throw new CalendarException.InvalidEntryException("Attendees may not be null");
+            throw new CalendarException("Attendees may not be null");
         }
         this.attendees = new ArrayList<>(attendees);
     }
@@ -73,7 +73,7 @@ public final class CalendarEntry {
      */
     public CalendarEntry(WeekDay day, int startHour, int endHour,
                          String title, String description, User attendee)
-            throws CalendarException.InvalidEntryException {
+            throws CalendarException {
         this(day, startHour, endHour, title, description, Collections.singletonList(attendee));
     }
 

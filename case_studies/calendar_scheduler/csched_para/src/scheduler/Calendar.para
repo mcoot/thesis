@@ -40,7 +40,7 @@ public final class Calendar {
         CalendarEntry entry;
         try {
             entry = new CalendarEntry(day, startHour, endHour, title, description, attendees);
-        } catch (CalendarException.InvalidEntryException ex) {
+        } catch (CalendarException ex) {
             return false;
         }
 
