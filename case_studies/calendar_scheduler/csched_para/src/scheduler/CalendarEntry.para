@@ -11,6 +11,16 @@ import java.util.List;
  */
 public final class CalendarEntry {
 
+    // Binary lock associating a user with a calendar entry
+    // I.e. the lock is open if the user is attending that engagement
+    public static lock IsAttending(User, CalendarEntry);
+
+    // Policy stating that:
+    // For all calendar entries e, information may flow to any user u providing that u is attending e
+    public static policy AttendeesOnly = {
+        (CalendarEntry e) User u : IsAttending(u, e)
+    };
+
     // The day on which the engagement is held
     private final WeekDay day;
     // The hour on which the engagement starts
