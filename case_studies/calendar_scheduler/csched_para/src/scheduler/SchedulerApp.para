@@ -89,13 +89,12 @@ public class SchedulerApp {
             output.println("Command is not a check command");
             return;
         }
-
-        try {
-            day = WeekDay.valueOf(args[1].toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            output.println("Day of week is invalid");
+		
+		day = new WeekDay(args[1].toUpperCase());
+		if (!day.isValidDay()) {
+			output.println("Day of week is invalid");
             return;
-        }
+		}
 
         try {
             startHour = Integer.parseInt(args[2]);
@@ -174,22 +173,22 @@ public class SchedulerApp {
         charles = scheduler.addUser("Charles");
 
         // Alice's calendar
-        scheduler.schedule(WeekDay.MONDAY, 8, 10, "Morning Meeting", "The meeting in the mornin'", alice);
-        scheduler.schedule(WeekDay.TUESDAY, 8, 10, "Morning Meeting", "The meeting in the mornin'", alice);
-        scheduler.schedule(WeekDay.WEDNESDAY, 8, 10, "Morning Meeting", "The meeting in the mornin'", alice);
-        scheduler.schedule(WeekDay.THURSDAY, 8, 10, "Morning Meeting", "The meeting in the mornin'", alice);
-        scheduler.schedule(WeekDay.FRIDAY, 8, 10, "Morning Meeting", "The meeting in the mornin'", alice);
-        scheduler.schedule(WeekDay.THURSDAY, 10, 18, "ACTUALLY WORKING", "", alice);
+        scheduler.schedule(new WeekDay("MONDAY"), 8, 10, "Morning Meeting", "The meeting in the mornin'", alice);
+        scheduler.schedule(new WeekDay("TUESDAY"), 8, 10, "Morning Meeting", "The meeting in the mornin'", alice);
+        scheduler.schedule(new WeekDay("WEDNESDAY"), 8, 10, "Morning Meeting", "The meeting in the mornin'", alice);
+        scheduler.schedule(new WeekDay("THURSDAY"), 8, 10, "Morning Meeting", "The meeting in the mornin'", alice);
+        scheduler.schedule(new WeekDay("FRIDAY"), 8, 10, "Morning Meeting", "The meeting in the mornin'", alice);
+        scheduler.schedule(new WeekDay("THURSDAY"), 10, 18, "ACTUALLY WORKING", "", alice);
 
         // Bob's calendar
-        scheduler.schedule(WeekDay.MONDAY, 10, 12, "Unspecified Meeting", "", bob);
-        scheduler.schedule(WeekDay.TUESDAY, 10, 11, "Specified meeting", "...", bob);
-        scheduler.schedule(WeekDay.THURSDAY, 14, 15, "Important Meeting", "IMPORTANT!!!", bob);
+        scheduler.schedule(new WeekDay("MONDAY"), 10, 12, "Unspecified Meeting", "", bob);
+        scheduler.schedule(new WeekDay("TUESDAY"), 10, 11, "Specified meeting", "...", bob);
+        scheduler.schedule(new WeekDay("THURSDAY"), 14, 15, "Important Meeting", "IMPORTANT!!!", bob);
 
         // Charles's calendar
-        scheduler.schedule(WeekDay.FRIDAY, 15, 18, "Leaving early friday lol", "", charles);
-        scheduler.schedule(WeekDay.THURSDAY, 9, 12, "Doing things", "Things!", charles);
-        scheduler.schedule(WeekDay.THURSDAY, 14, 15, "Doing other things", "Other things!", charles);
+        scheduler.schedule(new WeekDay("FRIDAY"), 15, 18, "Leaving early friday lol", "", charles);
+        scheduler.schedule(new WeekDay("THURSDAY"), 9, 12, "Doing things", "Things!", charles);
+        scheduler.schedule(new WeekDay("THURSDAY"), 14, 15, "Doing other things", "Other things!", charles);
 
         // Shared meetings
         List<User> aliceBob = new ArrayList<>();
@@ -200,8 +199,8 @@ public class SchedulerApp {
         allUsers.add(bob);
         allUsers.add(charles);
 
-        scheduler.schedule(WeekDay.WEDNESDAY, 10, 12, "Coffee Catchup", "Catching up", aliceBob);
-        scheduler.schedule(WeekDay.TUESDAY, 13, 14, "Interdepartmental Organisation Meeting", "Organising interdepartmentally", allUsers);
+        scheduler.schedule(new WeekDay("WEDNESDAY"), 10, 12, "Coffee Catchup", "Catching up", aliceBob);
+        scheduler.schedule(new WeekDay("TUESDAY"), 13, 14, "Interdepartmental Organisation Meeting", "Organising interdepartmentally", allUsers);
     }
 
 }

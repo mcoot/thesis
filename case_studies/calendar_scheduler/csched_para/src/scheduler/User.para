@@ -1,4 +1,4 @@
-package scheduler;
+//package scheduler;
 
 public final class User {
 
@@ -16,18 +16,15 @@ public final class User {
         return name;
     }
 
-    @Override
     public boolean equals(Object other) {
         if (!(other instanceof User)) return false;
         return name.equals(((User)other).name);
     }
 
-    @Override
     public int hashCode() {
         return name.hashCode();
     }
 
-    @Override
     public String toString() {
         return "User: " + name;
     }
