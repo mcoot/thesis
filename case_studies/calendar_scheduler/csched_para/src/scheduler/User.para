@@ -1,31 +1,38 @@
 //package scheduler;
 
+/**
+ * Policy explanation: User doesn't have any inherent policy so all of its properties/methods have the policy defined on the variable of type User
+ */
 public final class User {
 
     // The username
-    private final String name;
+    private final ?policyof(this) String name;
 
     /**
      * @param name The username for this user
      */
-    public User(String name) {
+    public User(?policyof(this) String name) {
         this.name = name;
     }
 
-    public String getName() {
+    public ?policyof(this) String getName() {
         return name;
     }
 
-    public boolean equals(Object other) {
-        if (!(other instanceof User)) return false;
-        return name.equals(((User)other).name);
+    public ?(policyof(this)*policyof(other)) boolean equals(Object other) {
+        //if (!(other instanceof User)) return false;
+        try {
+			return name.equals(((User)other).name);
+		} catch (ClassCastException ex) {
+			return false;
+		}
     }
 
-    public int hashCode() {
+    public ?policyof(this) int hashCode() {
         return name.hashCode();
     }
 
-    public String toString() {
+    public ?policyof(this) String toString() {
         return "User: " + name;
     }
 

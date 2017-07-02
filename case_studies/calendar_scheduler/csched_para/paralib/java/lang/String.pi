@@ -48,6 +48,8 @@ extends java.lang.Object
       throws !(policyof(this)+policyof(from)) StringIndexOutOfBoundsException;
     
     public ?(policyof(this)*policyof(other)) int compareTo(String other);
+	
+	public ?(policyof(this)) int hashCode();
     
     public ?(policyof(this)*policyof(other)) boolean equals(String other);
     
@@ -62,6 +64,8 @@ extends java.lang.Object
     public ?(policyof(this)*policyof(prefix)) boolean startsWith(String prefix);
 
     public ?(policyof(this)*policyof(substring)) boolean contains(String substring);
+	
+	public ?policyof(this) String toUpperCase();
     
     public ?(policyof(this)*policyof(charset)) byte[]<policyof(this)*policyof(charset)> getBytes(java.nio.charset.Charset charset);
     

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="csched_para" default="usage" basedir=".">
-    <property name="build.dir" value = "./" />
+    <property name="build.dir" value = "." />
     <property name="src.dir" value = "${build.dir}/src" />
     <property name="bin.parac.dir" value="${build.dir}/out/parac" />
     <property name="bin.javac.dir" value="${build.dir}/out/javac" />
@@ -17,7 +17,8 @@
         <echo message="Run ant with one of the following targets:" />
         <echo message="clean            - Cleans up." />
         <echo message="all              - Compiles all (=parac+javac)." />
-        <echo message="parac            - Compiles Paragon files only." />
+        <echo message="parac            - Compiles Paragon files only (using the Linux compiler)." />
+        <echo message="parac-win        - Compiles Paragon files only (using the Windows compiler)." />
         <echo message="javac            - Compiles generated Java files only." />
     </target>
 
@@ -35,6 +36,16 @@
 
     <target name="parac">
         <mkdir dir="${bin.parac.dir}" />
+        <exec executable="bash">
+            <arg value="-c" />
+            <arg value="./run-parac.sh" />
+          <!--   <arg value="parac-linux -p &quot;${lib.dir};${src.dir}/scheduler;${bin.parac.dir}&quot; -o &quot;${bin.parac.dir}&quot; ${src.dir}/scheduler/Policy.para ${src.dir}/scheduler/WeekDay.para ${src.dir}/scheduler/User.para ${src.dir}/scheduler/CalendarException.para ${src.dir}/scheduler/CalendarEntry.para ${src.dir}/scheduler/Calendar.para ${src.dir}/scheduler/Scheduler.para ${src.dir}/scheduler/SchedulerApp.para" /> -->
+        </exec>
+
+        
+    </target>
+
+    <target name="parac-win">
         <exec executable="parac">
             <!--<arg value="-v4" />-->
             <arg value="-p" />
