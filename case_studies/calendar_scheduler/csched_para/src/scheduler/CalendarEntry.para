@@ -1,8 +1,7 @@
-//package scheduler;
+package scheduler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+// import scheduler.User;
+// import scheduler.WeekDay;
 
 /**
  * An entry in the calendar
@@ -11,29 +10,32 @@ import java.util.List;
  */
 public final class CalendarEntry {
 
+    public final CalendarEntry self = (CalendarEntry)this;
+
+    public static final policy allUsers = {User u : };
+
     // Binary lock associating a user with a calendar entry
     // I.e. the lock is open if the user is attending that engagement
-    public static lock IsAttending(User, CalendarEntry);
+    public lock isAttending(User, CalendarEntry);
 
     // Policy stating that:
-    // For all calendar entries e, information may flow to any user u providing that u is attending e
-    public static policy AttendeesOnly = {
-        (CalendarEntry e) User u : IsAttending(u, e)
+    // Information may flow to any user u providing that u is attending this entry
+    public static final policy attendeesOnly = {
+        User u : isAttending(u, self)
     };
-
     // The day on which the engagement is held
-    private final WeekDay day;
+    private final ?allUsers WeekDay day;
     // The hour on which the engagement starts
-    private final int startHour;
+    private final ?allUsers int startHour;
     // The hour on which the engagement ends
-    private final int endHour;
+    private final ?allUsers int endHour;
     // The title of the engagement
-    private final String title;
+    private final ?attendeesOnly String title;
     // The engagement description
-    private final String description;
+    private final ?attendeesOnly String description;
 
     // The list of users who are attending the engagement
-    private final List<User> attendees;
+    private final ?allUsers User[] attendees;
 
     /**
      * Construct a new calendar entry
@@ -46,9 +48,10 @@ public final class CalendarEntry {
      * @param attendees the attendees of the engagement
      * @throws CalendarException if the times are invalid
      */
-    public CalendarEntry(WeekDay day, int startHour, int endHour,
-                         String title, String description, List<User> attendees)
-            throws CalendarException {
+    public !allUsers CalendarEntry(?allUsers WeekDay day,?allUsers int startHour,?allUsers int endHour,
+                         ?allUsers String title, ?allUsers String description, ?allUsers User[]<allUsers> attendees)
+            throws !allUsers CalendarException {
+
         // Check that the engagement is valid
         if (!areTimesValid(startHour, endHour)) {
             throw new CalendarException(
@@ -68,7 +71,12 @@ public final class CalendarEntry {
         if (attendees == null) {
             throw new CalendarException("Attendees may not be null");
         }
-        this.attendees = new ArrayList<>(attendees);
+        this.attendees = new User[attendees.length];
+        for (int i = 0; i < attendees.length; ++i) {
+            this.attendees[i] = attendees[i];
+        }
+
+        setAttendanceLocks();
     }
 
     /**
@@ -81,10 +89,23 @@ public final class CalendarEntry {
      * @param description the engagement description
      * @param attendee the user attending the engagement
      */
-    public CalendarEntry(WeekDay day, int startHour, int endHour,
-                         String title, String description, User attendee)
-            throws CalendarException {
-        this(day, startHour, endHour, title, description, Collections.singletonList(attendee));
+    // public CalendarEntry(WeekDay day, int startHour, int endHour,
+    //                      String title, String description, User attendee)
+    //         throws CalendarException {
+    //     ArrayList singletonAttendees = new ArrayList();
+    //     singletonAttendees.add(attendee);
+    //     this(day, startHour, endHour, title, description, singletonAttendees);
+    // }
+
+    /**
+     * Open the policy locks for the attendees of this event
+     */
+    private void setAttendanceLocks() {
+        
+        for (int i = 0; i < this.attendees.length; ++i) {
+            User curAttendee = attendees[i];
+            open isAttending(curAttendee, self);
+        }
     }
 
     /**
@@ -94,7 +115,7 @@ public final class CalendarEntry {
      * @param endHour the end time
      * @return true iff the times are valid for an engagement
      */
-    private boolean areTimesValid(int startHour, int endHour) {
+    private boolean areTimesValid(?allUsers int startHour, ?allUsers int endHour) {
         // Must be valid hours - cannot start after 11pm or end after midnight
         if (startHour < 0 || startHour > 23) return false;
         if (endHour < 0 || endHour > 24) return false;
@@ -103,28 +124,28 @@ public final class CalendarEntry {
         return true;
     }
 
-    public int getStartHour() {
+    public ?allUsers int getStartHour() {
         return startHour;
     }
 
-    public int getEndHour() {
+    public ?allUsers int getEndHour() {
         return endHour;
     }
 
-    public int getDuration() {
+    public ?allUsers int getDuration() {
         return endHour - startHour;
     }
 
-    public String getTitle() {
+    public ?attendeesOnly String getTitle() {
         return title;
     }
 
-    public String getDescription() {
+    public ?attendeesOnly String getDescription() {
         return description;
     }
 
-    public List<User> getAttendees() {
-        return new ArrayList<>(attendees);
+    public ?allUsers User[] getAttendees() {
+        return attendees;
     }
 
     /**
@@ -135,53 +156,86 @@ public final class CalendarEntry {
      * @param entry the entry to check against
      * @return true iff the entries overlap in time
      */
-    public boolean overlapsWith(CalendarEntry entry) {
-        // Check they are on the same day
-        if (!day.equals(entry.day)) return false;
-        // If one entry's start is within the other entry, they overlap
-        return ((startHour >= entry.startHour && startHour < entry.endHour)
-                || (entry.startHour >= startHour && entry.startHour < endHour));
+    public ?allUsers boolean overlapsWith(?allUsers CalendarEntry entry) {
+        try {
+            // Check they are on the same day
+            if (!day.equals(entry.day)) return false;
+            // If one entry's start is within the other entry, they overlap
+            return ((startHour >= entry.startHour && startHour < entry.endHour)
+                    || (entry.startHour >= startHour && entry.startHour < endHour));
+        } catch (NullPointerException ex) {
+            return false;
+        }
+        
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof CalendarEntry)) return false;
-        CalendarEntry other = (CalendarEntry)o;
+    public ?(attendeesOnly*policyof(o)) boolean equals(Object o) {
+        // if (!(o instanceof CalendarEntry)) return false;
+        CalendarEntry other = null;
+        try {
+            other = (CalendarEntry)o;
+        } catch (ClassCastException ex) {
+            return false;
+        }
 
-        return day.equals(other.day)
+        try {
+            return day.equals(other.day)
                 && other.startHour == startHour && other.endHour == endHour
-                && title.equals(other.title) && description.equals(other.description)
-                && attendees.equals(other.attendees);
+                && title.equals(other.title) && description.equals(other.description);
+               // && attendees.equals(other.attendees);
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 
-    @Override
-    public int hashCode() {
+    public ?attendeesOnly int hashCode() {
         int result = 19;
         result = 29 * result + day.hashCode();
         result = 29 * result + startHour;
         result = 29 * result + endHour;
         result = 29 * result + title.hashCode();
         result = 29 * result + description.hashCode();
-        result = 29 * result + attendees.hashCode();
+        // result = 29 * result + attendees.hashCode();
 
         return result;
     }
 
-    @Override
-    public String toString() {
-        String sep = System.lineSeparator();
+    // public ?allUsers !allUsers String printOut(?allUsers User u) {
+    //     if (isAttending(u, self)) {
+    //         String sep = "\n";
+    //         String format = "Calendar Entry: " + sep + "\tTitle: %s" + sep + "\tDescription: %s"
+    //                 + sep + "\tTime/Day: %d - %d, %s" + sep + "\tAttendees: %s";
+
+    //         String s = "";
+    //         String commaSep = "";
+    //         for (int i = 0; i < attendees.length; ++i) {
+    //             User u = attendees[i];
+    //             s += commaSep;
+    //             s += u.toString();
+    //             commaSep = ", ";
+    //         }
+    //         ?attendeesOnly String ret = String.format(format, title, description, startHour, endHour, day.toString(), s);
+    //         return ret;
+    //     } else {
+    //         return "";
+    //     }
+    // }
+
+    public ?attendeesOnly String toString() {
+        String sep = "\n";
         String format = "Calendar Entry: " + sep + "\tTitle: %s" + sep + "\tDescription: %s"
                 + sep + "\tTime/Day: %d - %d, %s" + sep + "\tAttendees: %s";
 
-        StringBuilder s = new StringBuilder();
+        String s = "";
         String commaSep = "";
-        for (User u : attendees) {
-            s.append(commaSep);
-            s.append(u.toString());
+        for (int i = 0; i < attendees.length; ++i) {
+            User u = attendees[i];
+            s += commaSep;
+            s += u.toString();
             commaSep = ", ";
         }
 
-        return String.format(format, title, description, startHour, endHour, day.toString(), s.toString());
+        return String.format(format, title, description, startHour, endHour, day.toString(), s);
     }
 
 }

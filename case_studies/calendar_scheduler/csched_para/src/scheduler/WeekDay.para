@@ -1,4 +1,4 @@
-//package scheduler;
+package scheduler;
 
 /**
  * Policy explanation: WeekDay doesn't have any inherent policy so all of its properties/methods have the policy defined on the variable of type WeekDay

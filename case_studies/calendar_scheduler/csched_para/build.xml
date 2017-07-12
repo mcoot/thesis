@@ -64,7 +64,7 @@
 
     <target name="javac">
         <mkdir dir="${bin.javac.dir}" />
-        <javac srcdir="{$bin.parac.dir}" destdir="${bin.javac.dir}" debug="true" includeantruntime="false">
+        <javac srcdir="${bin.parac.dir}" destdir="${bin.javac.dir}" debug="true" includeantruntime="false">
             <classpath refid="javac-classpath" />
             <include name="**/*.java" />
         </javac>

@@ -1,3 +1,4 @@
+package scheduler;
 public class CalendarException extends java.lang.Exception
 {
   public CalendarException ()

@@ -1,0 +1,41 @@
+package scheduler;
+public final class CalendarEntry
+{
+  private final scheduler.CalendarEntry self = (scheduler.CalendarEntry) this;
+  public static final policy allUsers = {User u:};
+  public ?scheduler.CalendarEntry.allUsers lock isAttending(User, scheduler.CalendarEntry);
+  public static final policy attendeesOnly = {User u: scheduler.CalendarEntry.isAttending(u,self)};
+  private final ?scheduler.CalendarEntry.allUsers WeekDay day;
+  private final ?scheduler.CalendarEntry.allUsers int startHour;
+  private final ?scheduler.CalendarEntry.allUsers int endHour;
+  private final ?scheduler.CalendarEntry.attendeesOnly java.lang.String title;
+  private final ?scheduler.CalendarEntry.attendeesOnly java.lang.String description;
+  private final ?scheduler.CalendarEntry.allUsers User[] attendees;
+  public !scheduler.CalendarEntry.allUsers CalendarEntry (?scheduler.CalendarEntry.allUsers WeekDay day, ?scheduler.CalendarEntry.allUsers int startHour, ?scheduler.CalendarEntry.allUsers int endHour, ?scheduler.CalendarEntry.allUsers java.lang.String title, ?scheduler.CalendarEntry.allUsers java.lang.String description, ?scheduler.CalendarEntry.allUsers User[]<scheduler.CalendarEntry.allUsers> attendees) throws !scheduler.CalendarEntry.allUsers CalendarException
+  {
+  }
+  private !scheduler.CalendarEntry.allUsers void setAttendanceLocks()
+  ;
+  private boolean areTimesValid(?scheduler.CalendarEntry.allUsers int startHour, ?scheduler.CalendarEntry.allUsers int endHour)
+  ;
+  public ?scheduler.CalendarEntry.allUsers int getStartHour()
+  ;
+  public ?scheduler.CalendarEntry.allUsers int getEndHour()
+  ;
+  public ?scheduler.CalendarEntry.allUsers int getDuration()
+  ;
+  public ?scheduler.CalendarEntry.attendeesOnly java.lang.String getTitle()
+  ;
+  public ?scheduler.CalendarEntry.attendeesOnly java.lang.String getDescription()
+  ;
+  public ?scheduler.CalendarEntry.allUsers User[] getAttendees()
+  ;
+  public ?scheduler.CalendarEntry.allUsers boolean overlapsWith(?scheduler.CalendarEntry.allUsers scheduler.CalendarEntry entry)
+  ;
+  public ?(scheduler.CalendarEntry.attendeesOnly * policyof(o)) boolean equals(java.lang.Object o)
+  ;
+  public ?scheduler.CalendarEntry.attendeesOnly int hashCode()
+  ;
+  public ?scheduler.CalendarEntry.attendeesOnly java.lang.String toString()
+  ;
+}

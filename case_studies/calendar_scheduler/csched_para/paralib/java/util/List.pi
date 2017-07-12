@@ -1,0 +1,11 @@
+package java.util;
+
+// Paragonized
+
+/**
+ * A list of JifObjects.
+ *
+ * @see jif.util.Collection
+ */
+public native interface List<policy p> { // extends Collection[L] {
+}

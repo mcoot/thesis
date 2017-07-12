@@ -1,0 +1,21 @@
+package scheduler;
+public final class Calendar
+{
+  public static final policy allUsers = scheduler.CalendarEntry.allUsers;
+  public static final policy attendeesOnly = scheduler.CalendarEntry.attendeesOnly;
+  public static final policy meme = {:};
+  public static final policy calendarOwner = {user:};
+  private final ?scheduler.Calendar.allUsers scheduler.Calendar self = (scheduler.Calendar) this;
+  private final ?scheduler.Calendar.allUsers scheduler.User user;
+  private ?scheduler.Calendar.allUsers int numEntries;
+  private final ?scheduler.Calendar.allUsers scheduler.CalendarEntry[]<scheduler.CalendarEntry.allUsers> entries;
+  public Calendar (?scheduler.Calendar.allUsers scheduler.User user)
+  {
+  }
+  public ?scheduler.Calendar.allUsers !scheduler.Calendar.allUsers boolean canAddEntry(?scheduler.Calendar.allUsers scheduler.WeekDay day, ?scheduler.Calendar.allUsers int startHour, ?scheduler.Calendar.allUsers int endHour, ?scheduler.Calendar.allUsers java.lang.String title, ?scheduler.Calendar.allUsers java.lang.String description, ?scheduler.Calendar.allUsers scheduler.User[]<scheduler.Calendar.allUsers> otherAttendees)
+  ;
+  public !scheduler.Calendar.allUsers void addEntry(?scheduler.Calendar.allUsers scheduler.WeekDay day, ?scheduler.Calendar.allUsers int startHour, ?scheduler.Calendar.allUsers int endHour, ?scheduler.Calendar.allUsers java.lang.String title, ?scheduler.Calendar.allUsers java.lang.String description, ?scheduler.Calendar.allUsers scheduler.User[]<scheduler.Calendar.allUsers> otherAttendees) throws !scheduler.Calendar.allUsers scheduler.CalendarException
+  ;
+  public ?scheduler.Calendar.calendarOwner java.lang.String toString()
+  ;
+}

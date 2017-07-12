@@ -1,3 +1,4 @@
+package scheduler;
 public final class User
 {
   private final java.lang.String name;
@@ -13,7 +14,7 @@ public final class User
   {
     try
     {
-      return name.equals(((User) other).name);
+      return name.equals(((scheduler.User) other).name);
     }
     catch (java.lang.ClassCastException ex)
     {

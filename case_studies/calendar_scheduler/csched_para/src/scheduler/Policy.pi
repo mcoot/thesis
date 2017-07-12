@@ -1,0 +1,7 @@
+public class Policy
+{
+  public static final java.lang.Object lowObserver = new java.lang.Object();
+  public static final java.lang.Object highObserver = new java.lang.Object();
+  public static final policy high = {highObserver:};
+  public static final policy low = {lowObserver:;highObserver:};
+}

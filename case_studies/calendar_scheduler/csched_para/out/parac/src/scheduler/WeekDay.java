@@ -1,3 +1,4 @@
+package scheduler;
 public class WeekDay
 {
   private final int value;
@@ -56,7 +57,7 @@ public class WeekDay
   {
     try
     {
-      return value == ((WeekDay) o).value;
+      return value == ((scheduler.WeekDay) o).value;
     }
     catch (java.lang.ClassCastException ex)
     {

@@ -1,23 +1,31 @@
-//package scheduler;
-
-import java.util.ArrayList;
-import java.util.List;
+package scheduler;
 
 public final class Calendar {
 
-    // The user who owns the calendar
-    private final User user;
+    public static final policy allUsers = CalendarEntry.allUsers;
+    public static final policy attendeesOnly = CalendarEntry.attendeesOnly;
 
-    private final List<CalendarEntry> entries;
+    public static final policy meme = {:};
+
+    public static final policy calendarOwner = {user : };
+
+    private final ?allUsers Calendar self = (Calendar)this;
+
+    // The user who owns the calendar
+    private final ?allUsers User user;
+
+    private ?allUsers int numEntries;
+    private final ?allUsers CalendarEntry[]<CalendarEntry.allUsers> entries;
 
     /**
      * Construct a calendar belonging to the given user
      *
      * @param user the user for this calendar
      */
-    public Calendar(User user) {
+    public Calendar(?allUsers User user) {
         this.user = user;
-        entries = new ArrayList<>();
+        entries = new CalendarEntry[5];
+        numEntries = 0;
     }
 
     /**
@@ -31,13 +39,16 @@ public final class Calendar {
      * @param otherAttendees the attendees of the event, not including the calendar owner
      * @return true iff adding the entry would succeed, false if it would cause an exception
      */
-    public boolean canAddEntry(WeekDay day, int startHour, int endHour,
-                               String title, String description, List<User> otherAttendees) {
+    public ?allUsers !allUsers boolean canAddEntry(?allUsers WeekDay day, ?allUsers int startHour, ?allUsers int endHour,
+                               ?allUsers String title, ?allUsers String description, ?allUsers User[]<allUsers> otherAttendees) {
         // The current user must attend events on their calendar
-        List<User> attendees = new ArrayList<>(otherAttendees);
-        attendees.add(user);
+        ?allUsers User[]<allUsers> attendees = new User[otherAttendees.length + 1];
+        attendees[0] = user;
+        for (?allUsers int i = 1; i < attendees.length; ++i) {
+            attendees[i] = otherAttendees[i-1];
+        }
 
-        CalendarEntry entry;
+        ?allUsers CalendarEntry entry;
         try {
             entry = new CalendarEntry(day, startHour, endHour, title, description, attendees);
         } catch (CalendarException ex) {
@@ -45,7 +56,8 @@ public final class Calendar {
         }
 
         // Check that the entry does not overlap any existing entries
-        for (CalendarEntry existing : entries) {
+        for (?allUsers int i = 0; i < numEntries; ++i) {
+            ?allUsers CalendarEntry existing = entries[i];
             if (entry.overlapsWith(existing)) {
                 return false;
             }
@@ -65,38 +77,55 @@ public final class Calendar {
      * @param otherAttendees the attendees of the event, not including the calendar owner
      * @throws CalendarException if the entry is impossible or clashes with an existing engagement
      */
-    public void addEntry(WeekDay day, int startHour, int endHour,
-                         String title, String description, List<User> otherAttendees)
-            throws CalendarException {
+    public !allUsers void addEntry(?allUsers WeekDay day, ?allUsers int startHour, ?allUsers int endHour,
+                         ?allUsers String title, ?allUsers String description, ?allUsers User[]<allUsers> otherAttendees)
+            throws !allUsers CalendarException {
         // The current user must attend events on their calendar
-        List<User> attendees = new ArrayList<>(otherAttendees);
-        attendees.add(user);
+        User[]<allUsers> attendees = new User[otherAttendees.length + 1];
+        attendees[0] = user;
+        for (?allUsers int i = 1; i < attendees.length; ++i) {
+            attendees[i] = otherAttendees[i-1];
+        }
 
-        CalendarEntry entry = new CalendarEntry(day, startHour, endHour, title, description, attendees);
-
+        ?allUsers CalendarEntry entry = new CalendarEntry(day, startHour, endHour, title, description, attendees);
         // Check that the entry does not overlap any existing entries
-        for (CalendarEntry existing : entries) {
+        for (?allUsers int i = 0; i < numEntries; ++i) {
+            ?allUsers CalendarEntry existing = entries[i];
             if (entry.overlapsWith(existing)) {
                 throw new CalendarException("Entry would clash with existing calendar");
             }
         }
 
-        entries.add(entry);
+        entries[numEntries] = entry;
+        numEntries++;
+        
+        // Expand array if needed
+        if (numEntries >= entries.length) {
+            CalendarEntry[] newList = new CalendarEntry[numEntries * 2];
+            for (?allUsers int i = 0; i < numEntries; ++i) {
+                newList[i] = entries[i];
+            }
+            entries = newList;
+        }
     }
 
-    @Override
-    public String toString() {
-        StringBuilder s = new StringBuilder();
+    public ?calendarOwner String toString() {
+        ?calendarOwner String s = "";
 
-        s.append("Calendar for " + user.getName() + ":");
-        s.append(System.lineSeparator());
+        s += "Calendar for " + user.getName() + ":";
+        s += "\n";
 
-        for (CalendarEntry entry : entries) {
-            s.append(entry.toString());
-            s.append(System.lineSeparator());
+        for (?{Object x :} int i = 0; i < numEntries; ++i) {
+            // ?{Object x : } int i = 0;
+            ?calendarOwner CalendarEntry entry = entries[i];
+            if (CalendarEntry.isAttending(user, entry)) {
+                s += entry.toString();
+                s += "\n";
+            }
+            
         }
 
-        return s.toString();
+        return s;
     }
 
 }
