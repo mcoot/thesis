@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class ConferenceSystem {
 
-    private boolean allocationsMade;
+    private boolean allocationsVisible;
 
     private int numSubmissions;
     private Paper[] submissions;
@@ -20,14 +20,14 @@ public class ConferenceSystem {
         submissions = new Paper[5];
         numSubmissions = 0;
 
-        allocationsMade = false;
+        allocationsVisible = false;
 
         allocations = new HashMap<>();
     }
 
     public void handleSubmission(Paper paper) {
         // Can't submit after the conference sessions are already allocated
-        if (allocationsMade) return;
+        if (allocationsVisible) return;
 
         submissions[numSubmissions] = paper;
         numSubmissions++;
@@ -43,7 +43,7 @@ public class ConferenceSystem {
     }
 
     public int getSessionNumber(Paper paper) {
-        if (allocationsMade) {
+        if (allocationsVisible) {
             return allocations.get(paper);
         } else {
             return -1;
@@ -51,7 +51,14 @@ public class ConferenceSystem {
     }
 
     public void performAllocations() {
-        // ...
+        // Arbitrary allocation - just give each paper a unique session number
+        for (int i = 0; i < numSubmissions; ++i) {
+            allocations.put(submissions[i], i);
+        }
+    }
+
+    public void setAllocationsVisible() {
+        allocationsVisible = true;
     }
 
 }
