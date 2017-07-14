@@ -1,0 +1,21 @@
+package conf;
+public class ConferenceSystem
+{
+  private static final policy bottom = {java.lang.Object x:};
+  private static ?conf.ConferenceSystem.bottom lock allocationsVisible;
+  private static final policy ifAllocationsVisible = {java.lang.Object x: conf.ConferenceSystem.allocationsVisible};
+  private ?conf.ConferenceSystem.bottom int numSubmissions;
+  private ?conf.ConferenceSystem.bottom conf.Paper<conf.ConferenceSystem.bottom>[]<conf.ConferenceSystem.bottom> submissions;
+  private ?conf.ConferenceSystem.bottom java.util.HashMap<conf.Paper, conf.ConferenceSystem.bottom, java.lang.Integer, conf.ConferenceSystem.ifAllocationsVisible> allocations;
+  public ConferenceSystem ()
+  {
+  }
+  public !conf.ConferenceSystem.bottom void handleSubmission(?conf.ConferenceSystem.bottom conf.Paper<conf.ConferenceSystem.bottom> paper)
+  ;
+  public ?conf.ConferenceSystem.bottom int getSessionNumber(?conf.ConferenceSystem.bottom conf.Paper<conf.ConferenceSystem.bottom> paper)
+  ;
+  public !conf.ConferenceSystem.bottom void performAllocations()
+  ;
+  public !conf.ConferenceSystem.bottom void setAllocationsVisible()
+  ;
+}

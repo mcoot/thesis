@@ -1,0 +1,22 @@
+package conf;
+public class Paper <policy authorRestriction>
+{
+  private final ?policyof(this) java.lang.String title;
+  private final ?policyof(this) java.lang.String paperAbstract;
+  private final ?authorRestriction conf.Author[]<authorRestriction> authors;
+  public !authorRestriction Paper (?policyof(this) java.lang.String title, ?policyof(this) java.lang.String paperAbstract, ?authorRestriction conf.Author[]<authorRestriction> authors)
+  {
+  }
+  public ?policyof(this) java.lang.String getTitle()
+  ;
+  public ?policyof(this) java.lang.String getAbstract()
+  ;
+  public ?authorRestriction !authorRestriction conf.Author[]<authorRestriction> getAuthors()
+  ;
+  public ?(policyof(this) * authorRestriction * policyof(o)) boolean equals(java.lang.Object o)
+  ;
+  public ?(policyof(this) * authorRestriction) int hashCode()
+  ;
+  public ?(policyof(this) * authorRestriction) java.lang.String toString()
+  ;
+}

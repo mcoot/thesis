@@ -1,0 +1,68 @@
+package conf;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * A system to handle the submission, approval and session allocation of papers to a conference
+ */
+public class ConferenceSystem {
+    
+    private static final policy bottom = {Object x :};
+
+    private static ?bottom lock allocationsVisible;
+
+    private static final policy ifAllocationsVisible = {Object x : allocationsVisible};
+
+    // private boolean allocationsVisible;
+
+    private ?bottom int numSubmissions;
+    private ?bottom Paper<bottom>[]<bottom> submissions;
+
+    // The allocation of accepted papers to allocations
+    private ?bottom HashMap<Paper, bottom, Integer, ifAllocationsVisible> allocations;
+
+    public ConferenceSystem() {
+        submissions = new Paper[5];
+        numSubmissions = 0;
+
+        allocations = new HashMap<Paper, bottom, Integer, ifAllocationsVisible>();
+    }
+
+    public !bottom void handleSubmission(?bottom Paper<bottom> paper) {
+        // Can't submit after the conference sessions are already allocated
+        if (!allocationsVisible) {
+            submissions[numSubmissions] = paper;
+            numSubmissions++;
+
+            // Resize array if required
+            if (numSubmissions >= submissions.length) {
+                Paper<bottom>[]<bottom> newSubmissions = new Paper[numSubmissions * 2];
+                for (int i = 0; i < submissions.length; ++i) {
+                    newSubmissions[i] = submissions[i];
+                }
+                submissions = newSubmissions;
+            }
+        }
+    }
+
+    public ?bottom int getSessionNumber(?bottom Paper<bottom> paper) {
+        if (allocationsVisible) {
+            return (int)allocations.get(paper);
+        } else {
+            return -1;
+        }
+    }
+
+    public !bottom void performAllocations() {
+        // Arbitrary allocation - just give each paper a unique session number
+        for (int i = 0; i < numSubmissions; ++i) {
+            allocations.put(submissions[i], i);
+        }
+    }
+
+    public !bottom void setAllocationsVisible() {
+        open allocationsVisible;
+    }
+
+}

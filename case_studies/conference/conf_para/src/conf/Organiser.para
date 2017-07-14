@@ -1,0 +1,37 @@
+package conf;
+
+/**
+ * An organiser for the conference, who can see details as the conference is being organised
+ */
+public class Organiser {
+
+    private final ?policyof(this) String name;
+
+    public Organiser(?policyof(this) String name) {
+        this.name = name;
+    }
+
+    public ?policyof(this) String getName() {
+        return name;
+    }
+
+    public ?(policyof(this)*policyof(o)) boolean equals(Object o) {
+        Organiser other;
+        try {
+            other = (Organiser)o;
+        } catch (ClassCastException ex) {
+            return false;
+        }
+
+        return other.name.equals(name);
+    }
+
+    public ?policyof(this) int hashCode() {
+        return name.hashCode();
+    }
+
+    public ?policyof(this) String toString() {
+        return "Organiser: " + name;
+    }
+
+}

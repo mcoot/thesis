@@ -1,0 +1,37 @@
+package conf;
+
+/**
+ * An author who may have papers submitted to a conference
+ */
+public class Author {
+
+    private final ?policyof(this) String name;
+
+    public Author(?policyof(this) String name) {
+        this.name = name;
+    }
+
+    public ?policyof(this) String getName() {
+        return name;
+    }
+
+    public ?(policyof(this) * policyof(o)) boolean equals(Object o) {
+        Author other;
+        try {
+            other = (Author)o;
+        } catch (ClassCastException ex) {
+            return false;
+        }
+
+        return other.name.equals(name);
+    }
+
+    public ?policyof(this) int hashCode() {
+        return name.hashCode();
+    }
+
+    public ?policyof(this) String toString() {
+        return "Author: " + name;
+    }
+
+}

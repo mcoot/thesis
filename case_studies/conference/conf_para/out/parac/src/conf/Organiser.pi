@@ -1,0 +1,16 @@
+package conf;
+public class Organiser
+{
+  private final ?policyof(this) java.lang.String name;
+  public Organiser (?policyof(this) java.lang.String name)
+  {
+  }
+  public ?policyof(this) java.lang.String getName()
+  ;
+  public ?(policyof(this) * policyof(o)) boolean equals(java.lang.Object o)
+  ;
+  public ?policyof(this) int hashCode()
+  ;
+  public ?policyof(this) java.lang.String toString()
+  ;
+}

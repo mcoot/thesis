@@ -1,0 +1,11 @@
+public native class ArrayList<policy p> implements List<p> {
+
+    public ArrayList() {}
+    
+    public void ensureCapacity(?p int c);
+    
+    public void set(?p int pos, ?p Object<p> s);
+    
+    public void add(?p int pos, ?p Object<p> s);
+    
+}

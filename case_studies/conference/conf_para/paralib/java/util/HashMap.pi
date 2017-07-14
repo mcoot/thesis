@@ -1,0 +1,11 @@
+package java.util;
+
+public native class HashMap<K, policy pKey, V, policy pValue> implements Map  {
+
+  public HashMap() { }
+  
+  public ?(pValue*policyof(k)*pKey) V get(K k);
+  
+  public ?(pValue*pKey) !(policyof(this)) V put(K k, V v);
+
+}

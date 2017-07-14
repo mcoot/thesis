@@ -1,0 +1,13 @@
+package conf;
+public class Main
+{
+  private static final policy bottom = {java.lang.Object x:};
+  private static ?conf.Main.bottom conf.ConferenceSystem conferenceSystem;
+  private static ?conf.Main.bottom conf.Paper<conf.Main.bottom>[]<conf.Main.bottom> papers;
+  public static !conf.Main.bottom void main(java.lang.String[] args)
+  ;
+  private static !conf.Main.bottom void setupDummyData()
+  ;
+  private static void printAllocations()
+  ;
+}
