@@ -1,14 +1,18 @@
-\section*{Revised Project Plan}
+%\section*{Revised Project Plan}
 
-\subsection*{Timeline}
+\section*{Timeline}
 
 \begin{tabular}{r|l}
-	Milestone & Date \\\hline\\
+	\textbf{Milestone} & \textbf{Date} \\\hline
+	Develop Case Studies & 1/9/17 \\\hline
+	Evaluation Write-up &  \\\hline
+	Literature Review / Theory Write-up &  \\\hline
+	Poster / Demonstration & Before 20/10/17 \\
 \end{tabular}
 
-\subsection*{Milestones}
+\section*{Milestones}
 
-\subsubsection*{Develop Case Studies}
+\subsection*{Develop Case Studies}
 
 Develop Java, JIF and Paragon implementations of three case examples to illustrate benefits and challenges of security-typed Information Flow approaches.
 
@@ -17,23 +21,39 @@ Specifically, the three examples being used are:
 \begin{itemize}
 	\item Calendar scheduling application --- to illustrate encapsulation of policies
 	
-	\item Conference management (or equivalent) --- to illustrate implicit flows / `account enumeration' style issues
+	\item Conference management --- to illustrate implicit flows
 	
-	\item Yet to be determined
+	\item Battleships --- to illustrate `mutual distrust' policies
 \end{itemize}
 
-\subsubsection*{Evaluate Case Studies}
+\subsection*{Evaluation}
 
-Using the both the final implementations of the case studies and the experience from developing them, create notes evaluating the points these case studies provide in terms of: what security guarantees security-typed IF provides, how useful those security guarantees are in practice, and what burden developing them with security-typed languages incurred.
+The ultimate goal of the project, and the case studies in particular, is to perform the following comparisons:
 
-\subsubsection*{Research \& Evaluate Alternatives}
+\begin{enumerate}
+	\item Between widely used security practices in Java (e.g. the Java Security Model) and security-typed information flow systems
+	
+	\item Between implementations of security-typed information flow measures (specifically JIF and Paragon), in terms of what guarantees they can provide in terms of security `correctness' and in terms of usability and policy burden placed on the developer
+	
+	\item Between traditional security-typed information flow measures and alternative information flow systems (e.g. policy-agnostic security typing, dynamic information flow)
+\end{enumerate}
 
-Do theoretical research into alternatives to the JIF and Paragon models --- including systems like JOANA and LIFTy. These will be discussed in the final thesis, but the case studies will not be developed under them.
+\subsubsection*{Case Study evaluation}
 
-\subsubsection*{Design Poster}
+The case studies will be used primarily to perform the first and second comparisons. The final implementations of the case studies may be used to show the security guarantees security-typed systems provide (e.g. compile errors on insecure methods). The implementations and the experience gained through creating them can be used to evaluate the second comparison in terms of policy model expressiveness and programmer burden.
 
-Design the poster for the Poster Demonstration.
+\subsubsection*{Evaluation of Alternatives}
 
-\subsubsection*{Complete Thesis Writeup}
+The third comparison will be based in part on the case studies, but also on theoretical research into a number of alternative models for which the case studies have not been implemented.
 
-Finalise the write-up of the thesis itself.
+In particular, the `policy agnostic' approaches used by systems like LIFTy and Jeeves warrants exploration, as their raison d'\^etre is reducing the programmer burden (and potential for mistakes) caused by the requirement of annotating all flows within an application.
+
+\subsection*{Perform Thesis Writeup}
+
+The evaluation (as listed above) will form the bulk of the thesis content (the `methodology', `results / discussion' and `conclusion' sections per EAIT's thesis template). In addition to performing the write-up for the evaluation, the `literature review' and `theory' sections will need to be written up. Some of the work from the Background section of the original project proposal will be relevant here, though the focus has shifted somewhat.
+
+\subsection*{Prepare Poster / Demonstration}
+
+Design the poster and prepare for the demonstration task.
+
+

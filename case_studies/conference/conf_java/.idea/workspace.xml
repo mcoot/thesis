@@ -649,7 +649,7 @@
       <workItem from="1499837003515" duration="3871000" />
       <workItem from="1499942002147" duration="1751000" />
       <workItem from="1499999671706" duration="1165000" />
-      <workItem from="1500022377434" duration="931000" />
+      <workItem from="1500022377434" duration="1456000" />
     </task>
     <task id="LOCAL-00001" summary="Project classes for conference system Java">
       <created>1499943740394</created>
@@ -669,11 +669,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7718000" />
+    <option name="totallyTimeSpent" value="8243000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="2578" height="1408" extended-state="7" />
-    <editor active="true" />
+    <frame x="-9" y="-9" width="2578" height="1408" extended-state="6" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
