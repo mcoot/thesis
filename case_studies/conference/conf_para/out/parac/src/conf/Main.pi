@@ -6,6 +6,10 @@ public class Main
   private static ?conf.Main.bottom conf.Paper<conf.Main.bottom>[]<conf.Main.bottom> papers;
   public static !conf.Main.bottom void main(java.lang.String[] args)
   ;
+  private static ~(conf.ConferenceSystem.allocationsVisible) !conf.Main.bottom void printOutAuthors(?conf.Main.bottom conf.Paper<conf.ConferenceSystem.ifAllocationsVisible>[]<conf.Main.bottom> retrievedPapers)
+  ;
+  private static !conf.Main.bottom void printOutAuthorsOrganiser(?conf.Main.bottom conf.Organiser organiser, ?conf.Main.bottom conf.Paper<conf.ConferenceSystem.ifAllocationsVisible>[]<conf.Main.bottom> retrievedPapers)
+  ;
   private static !conf.Main.bottom void setupDummyData()
   ;
   private static void printAllocations()

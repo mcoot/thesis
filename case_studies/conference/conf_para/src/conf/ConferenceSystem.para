@@ -10,40 +10,71 @@ public class ConferenceSystem {
     
     private static final policy bottom = {Object x :};
 
-    private static ?bottom lock allocationsVisible;
+    public static ?bottom lock allocationsVisible;
 
-    private static final policy ifAllocationsVisible = {Object x : allocationsVisible};
+    public static final policy ifAllocationsVisible = {Object x : allocationsVisible; Organiser o :};
+
+    // The conference chair / organiser, who can see all information even before it is public
+    public final ?bottom Organiser organiser;
 
     // private boolean allocationsVisible;
 
     private ?bottom int numSubmissions;
-    private ?bottom Paper<bottom>[]<bottom> submissions;
+    private ?bottom Paper<ifAllocationsVisible>[]<bottom> submissions;
 
     // The allocation of accepted papers to allocations
     private ?bottom HashMap<Paper, bottom, Integer, ifAllocationsVisible> allocations;
 
     public ConferenceSystem() {
+        organiser = new Organiser("TheOrganiser");
+
         submissions = new Paper[5];
         numSubmissions = 0;
 
         allocations = new HashMap<Paper, bottom, Integer, ifAllocationsVisible>();
     }
 
+    /**
+     * Upgrade a paper's policy such that its authors may only be viewed under the double-blind conditions
+     */
+    private !bottom Paper<ifAllocationsVisible> upgradePaper(?bottom Paper<bottom> paper) {
+        ?bottom Author[]<bottom> paperAuthors = paper.getAuthors();
+        ?bottom Author[]<ifAllocationsVisible> upgradedAuthors = new Author[paperAuthors.length];
+
+        // Need to upgrade the policy of all authors from bottom -> ifAllocationsVisible
+        for (?bottom int i = 0; i < paperAuthors.length; ++i) {
+            ?ifAllocationsVisible Author u = paperAuthors[i];
+            upgradedAuthors[i] = u;
+        }
+
+        Paper<ifAllocationsVisible> upgraded = new Paper<ifAllocationsVisible>(paper.getTitle(), paper.getAbstract(), upgradedAuthors);
+
+        return upgraded;
+    }
+
     public !bottom void handleSubmission(?bottom Paper<bottom> paper) {
         // Can't submit after the conference sessions are already allocated
         if (!allocationsVisible) {
-            submissions[numSubmissions] = paper;
+            submissions[numSubmissions] = upgradePaper(paper);
             numSubmissions++;
 
             // Resize array if required
             if (numSubmissions >= submissions.length) {
-                Paper<bottom>[]<bottom> newSubmissions = new Paper[numSubmissions * 2];
+                Paper<ifAllocationsVisible>[]<bottom> newSubmissions = new Paper[numSubmissions * 2];
                 for (int i = 0; i < submissions.length; ++i) {
                     newSubmissions[i] = submissions[i];
                 }
                 submissions = newSubmissions;
             }
         }
+    }
+
+    public ?bottom !bottom Paper<ifAllocationsVisible>[]<bottom> getSubmissions() {
+        Paper<ifAllocationsVisible>[]<bottom> copy = new Paper<ifAllocationsVisible>[submissions.length];
+        for (int i = 0; i < copy.length; ++i) {
+            copy[i] = submissions[i];
+        }
+        return copy;
     }
 
     public ?bottom int getSessionNumber(?bottom Paper<bottom> paper) {
@@ -61,7 +92,7 @@ public class ConferenceSystem {
         }
     }
 
-    public !bottom void setAllocationsVisible() {
+    public +allocationsVisible !bottom void setAllocationsVisible() {
         open allocationsVisible;
     }
 

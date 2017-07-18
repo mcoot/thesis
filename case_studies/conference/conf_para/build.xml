@@ -2,6 +2,7 @@
 <project name="csched_para" default="usage" basedir=".">
     <property name="build.dir" value = "." />
     <property name="src.dir" value = "${build.dir}/src" />
+    <property name="extra.dir" value = "${build.dir}/extra" />
     <property name="bin.parac.dir" value="${build.dir}/out/parac" />
     <property name="bin.javac.dir" value="${build.dir}/out/javac" />
     <property name="lib.dir" value="${build.dir}/paralib" />
@@ -67,6 +68,10 @@
 
     <target name="javac">
         <mkdir dir="${bin.javac.dir}" />
+        <javac srcdir="${extra.dir}" destdir="${bin.javac.dir}" debug="true" includeantruntime="false">
+            <classpath refid="javac-classpath" />
+            <include name="**/*.java" />
+        </javac>
         <javac srcdir="${bin.parac.dir}" destdir="${bin.javac.dir}" debug="true" includeantruntime="false">
             <classpath refid="javac-classpath" />
             <include name="**/*.java" />

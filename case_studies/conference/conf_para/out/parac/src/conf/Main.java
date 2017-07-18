@@ -9,15 +9,75 @@ public class Main
     java.lang.System.out.println("Conference system" + "\n-----------------\n");
     java.lang.System.out.println("Initialising system...");
     setupDummyData();
+    conf.Paper[] retrievedPapers = conferenceSystem.getSubmissions();
     java.lang.System.out.println("Performing session allocations [secret]");
     conferenceSystem.performAllocations();
     java.lang.System.out.println();
     java.lang.System.out.println("Allocations completed [secret]: attempting to retrieve session numbers:");
     printAllocations();
     java.lang.System.out.println();
+    java.lang.System.out.println("Printing out (secret) author information via organiser channel:");
+    try
+    {
+      printOutAuthorsOrganiser(conferenceSystem.organiser, retrievedPapers);
+    }
+    catch (java.lang.NullPointerException ex)
+    {
+    }
+    java.lang.System.out.println();
     conferenceSystem.setAllocationsVisible();
     java.lang.System.out.println("Allocations made public: attempting to retrieve session numbers:");
     printAllocations();
+    java.lang.System.out.println();
+    java.lang.System.out.println("Printing out (no longer secret) author information via public channel:");
+    printOutAuthors(retrievedPapers);
+  }
+  private static void printOutAuthors(conf.Paper[] retrievedPapers)
+  {
+    java.lang.System.out.println("Papers and authors: ");
+    for (int i = 0 ; i < retrievedPapers.length ; ++i)
+    {
+      if (retrievedPapers[i] == null)
+      continue;
+      java.lang.System.out.print(retrievedPapers[i].getTitle() + ": ");
+      java.lang.String sep = "";
+      conf.Author[] authors = retrievedPapers[i].getAuthors();
+      for (int j = 0 ; j < authors.length ; ++j)
+      {
+        conf.Author author = authors[j];
+        java.lang.System.out.print(sep + author.toString());
+        sep = ", ";
+      }
+      java.lang.System.out.println();
+    }
+  }
+  private static void printOutAuthorsOrganiser(conf.Organiser organiser, conf.Paper[] retrievedPapers)
+  {
+    organiser.channel.println("Papers and authors: ");
+    for (int i = 0 ; i < retrievedPapers.length ; ++i)
+    {
+      if (retrievedPapers[i] == null)
+      continue;
+      try
+      {
+        final java.lang.Object oself = organiser.self;
+        organiser.channel.print(retrievedPapers[i].getTitle() + ": ");
+        java.lang.String sep = "";
+        conf.Author[] authors = retrievedPapers[i].getAuthors();
+        for (int j = 0 ; j < authors.length ; ++j)
+        {
+          final conf.Author author = authors[j];
+          conf.Author author2 = author;
+          organiser.channel.print(sep);
+          organiser.channel.print(author.toString());
+          sep = ", ";
+        }
+      }
+      catch (java.lang.NullPointerException e)
+      {
+      }
+      organiser.channel.println();
+    }
   }
   private static void setupDummyData()
   {

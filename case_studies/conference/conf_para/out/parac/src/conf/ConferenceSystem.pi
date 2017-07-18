@@ -2,20 +2,25 @@ package conf;
 public class ConferenceSystem
 {
   private static final policy bottom = {java.lang.Object x:};
-  private static ?conf.ConferenceSystem.bottom lock allocationsVisible;
-  private static final policy ifAllocationsVisible = {java.lang.Object x: conf.ConferenceSystem.allocationsVisible};
+  public static ?conf.ConferenceSystem.bottom lock allocationsVisible;
+  public static final policy ifAllocationsVisible = {java.lang.Object x: conf.ConferenceSystem.allocationsVisible;conf.Organiser o:};
+  public final ?conf.ConferenceSystem.bottom conf.Organiser organiser;
   private ?conf.ConferenceSystem.bottom int numSubmissions;
-  private ?conf.ConferenceSystem.bottom conf.Paper<conf.ConferenceSystem.bottom>[]<conf.ConferenceSystem.bottom> submissions;
+  private ?conf.ConferenceSystem.bottom conf.Paper<conf.ConferenceSystem.ifAllocationsVisible>[]<conf.ConferenceSystem.bottom> submissions;
   private ?conf.ConferenceSystem.bottom java.util.HashMap<conf.Paper, conf.ConferenceSystem.bottom, java.lang.Integer, conf.ConferenceSystem.ifAllocationsVisible> allocations;
   public ConferenceSystem ()
   {
   }
+  private !conf.ConferenceSystem.bottom conf.Paper<conf.ConferenceSystem.ifAllocationsVisible> upgradePaper(?conf.ConferenceSystem.bottom conf.Paper<conf.ConferenceSystem.bottom> paper)
+  ;
   public !conf.ConferenceSystem.bottom void handleSubmission(?conf.ConferenceSystem.bottom conf.Paper<conf.ConferenceSystem.bottom> paper)
+  ;
+  public ?conf.ConferenceSystem.bottom !conf.ConferenceSystem.bottom conf.Paper<conf.ConferenceSystem.ifAllocationsVisible>[]<conf.ConferenceSystem.bottom> getSubmissions()
   ;
   public ?conf.ConferenceSystem.bottom int getSessionNumber(?conf.ConferenceSystem.bottom conf.Paper<conf.ConferenceSystem.bottom> paper)
   ;
   public !conf.ConferenceSystem.bottom void performAllocations()
   ;
-  public !conf.ConferenceSystem.bottom void setAllocationsVisible()
+  public +(conf.ConferenceSystem.allocationsVisible) !conf.ConferenceSystem.bottom void setAllocationsVisible()
   ;
 }

@@ -15,19 +15,35 @@ public class Main {
         System.out.println("Initialising system...");
         setupDummyData();
 
+        // Retrieve papers
+        Paper<ConferenceSystem.ifAllocationsVisible>[] retrievedPapers = conferenceSystem.getSubmissions();
+
         System.out.println("Performing session allocations [secret]");
 
         // Perform the allocations
         conferenceSystem.performAllocations();
 
         System.out.println();
-
+        
         // Allocations to sessions have been made, but are not visible to authors yet!
         System.out.println("Allocations completed [secret]: attempting to retrieve session numbers:");
 
         // Attempt to print out allocations (should return consistent default value of -1)
         printAllocations();
 
+        System.out.println();
+        
+
+        // Cannot attempt to show authors of submissions as this causes compile error!
+        // printOutAuthors(retrievedPapers);
+
+        System.out.println("Printing out (secret) author information via organiser channel:");
+
+        // The organiser can print out papers' authors though!
+        try {
+            printOutAuthorsOrganiser(conferenceSystem.organiser, retrievedPapers);
+        } catch (NullPointerException ex) {}
+        
         System.out.println();
 
         // Mark allocations as visible (i.e. notification date expired)
@@ -37,7 +53,64 @@ public class Main {
 
         // Print out allocations again (now available)
         printAllocations();
+        
+        System.out.println();
 
+        System.out.println("Printing out (no longer secret) author information via public channel:");
+
+        // Can now print out authors of submissions
+        printOutAuthors(retrievedPapers);
+
+    }
+
+    /**
+     * Print out the authors of a given set of papers; requires allocations to be visible
+     */
+    private static
+    ~ConferenceSystem.allocationsVisible
+    !bottom
+    void printOutAuthors(?bottom Paper<ConferenceSystem.ifAllocationsVisible>[]<bottom> retrievedPapers) {
+        System.out.println("Papers and authors: ");
+
+        for (?bottom int i = 0; i < retrievedPapers.length; ++i) {
+            if (retrievedPapers[i] == null) continue;
+            System.out.print(retrievedPapers[i].getTitle() + ": ");
+            String sep = "";
+            ?ConferenceSystem.ifAllocationsVisible Author[]<ConferenceSystem.ifAllocationsVisible> authors = retrievedPapers[i].getAuthors();
+            for (?bottom int j = 0; j < authors.length; ++j) {
+                ?ConferenceSystem.ifAllocationsVisible Author author = authors[j];
+                System.out.print(sep + author.toString());
+                sep = ", ";
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Have the privileged organiser print out a given set of papers (can)
+     */
+    private static
+    !bottom
+    void printOutAuthorsOrganiser(?bottom Organiser organiser, ?bottom Paper<ConferenceSystem.ifAllocationsVisible>[]<bottom> retrievedPapers) {
+        organiser.channel.println("Papers and authors: ");
+
+        for (?bottom int i = 0; i < retrievedPapers.length; ++i) {
+            if (retrievedPapers[i] == null) continue;
+            try {
+                final Object oself = organiser.self;
+                organiser.channel.print(retrievedPapers[i].getTitle() + ": ");
+                ?{oself:} String sep = "";
+                ?ConferenceSystem.ifAllocationsVisible Author[]<ConferenceSystem.ifAllocationsVisible> authors = retrievedPapers[i].getAuthors();
+                for (?bottom int j = 0; j < authors.length; ++j) {
+                    final ?{oself:} Author author = authors[j];
+                    ?{oself:} Author author2 = author;
+                    organiser.channel.print(sep);
+                    organiser.channel.print(author.toString());
+                    sep = ", ";
+                }
+            } catch (NullPointerException e) {}
+            organiser.channel.println();
+        }
     }
 
     private static !bottom void setupDummyData() {

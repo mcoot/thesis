@@ -1,7 +1,10 @@
 package conf;
 public class Organiser
 {
+  public final conf.Organiser self = (conf.Organiser) this;
+  public final java.lang.Object oself = (java.lang.Object) self;
   private final ?policyof(this) java.lang.String name;
+  public IOChannel<{java.lang.Object x:}, self> channel;
   public Organiser (?policyof(this) java.lang.String name)
   {
   }

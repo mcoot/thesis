@@ -5,10 +5,16 @@ package conf;
  */
 public class Organiser {
 
+    public final Organiser self = (Organiser)this;
+    public final Object oself = (Object)self;
+
     private final ?policyof(this) String name;
+
+    public IOChannel<{Object x:}, self> channel;
 
     public Organiser(?policyof(this) String name) {
         this.name = name;
+        channel = new IOChannel<{Object x:}, self>();
     }
 
     public ?policyof(this) String getName() {

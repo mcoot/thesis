@@ -1,0 +1,14 @@
+package conf;
+
+public class IOChannel<policy pol, actor Organiser owner>
+{
+    public IOChannel() {}
+
+    public ?pol String readLine();
+
+    public !{owner:} void print(?{owner:} String output);
+
+    public !{owner:} void println(?{owner:} String output);
+
+    public !{owner:} void println();
+}
