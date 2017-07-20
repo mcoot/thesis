@@ -4,11 +4,11 @@ import java.util.Scanner;
 
 public class IOChannel {
 
-    private Organiser owner;
+    private Object owner;
     /**
      * Construct a system I/O channel with the given input policy, owned by the given owner
      */
-    public IOChannel(se.chalmers.paragon.runtime.Policy pol, Organiser owner) {
+    public IOChannel(se.chalmers.paragon.runtime.Policy pol, Object owner) {
         this.owner = owner;
     }
 

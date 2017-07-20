@@ -31,7 +31,7 @@ public class ConferenceSystem
   }
   public void handleSubmission(conf.Paper paper)
   {
-    if (!se.chalmers.paragon.runtime.LockState.isOpen(new se.chalmers.paragon.runtime.Lock(allocationsVisible)))
+    if (!allocationsVisible)
     {
       submissions[numSubmissions] = upgradePaper(paper);
       numSubmissions++;
@@ -57,7 +57,7 @@ public class ConferenceSystem
   }
   public int getSessionNumber(conf.Paper paper)
   {
-    if (se.chalmers.paragon.runtime.LockState.isOpen(new se.chalmers.paragon.runtime.Lock(allocationsVisible)))
+    if (allocationsVisible)
     {
       return (int) allocations.get(paper);
     }

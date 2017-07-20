@@ -38,6 +38,9 @@
     </target>
 
     <target name="parac">
+        <!-- Need to create a (blank) Organiser.pi file to resolve circular dependency -->
+        <mkdir dir="${bin.parac.dir}/src/conf" />
+        <touch file="${bin.parac.dir}/src/conf/Organiser.pi" />
         <property name="classToBuild" value="all" />
         <mkdir dir="${bin.parac.dir}" />
         <exec executable="bash">
