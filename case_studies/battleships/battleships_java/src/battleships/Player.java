@@ -47,6 +47,27 @@ public class Player {
         return board;
     }
 
+    /**
+     * Endorse the opponent's board as having integrity
+     */
+    Board endorseBoard(Board b) {
+        if (b == null) return null;
+
+        return b.endorseBoard();
+    }
+
+    /**
+     * Endorse an opponent's query as having integrity
+     */
+    Coordinate endorseQuery(Coordinate q) {
+        if (q == null) return q;
+
+        int x = q.x;
+        int y = q.y;
+
+        return new Coordinate(x, y);
+    }
+
     void storeBoard(Board board) {
         this.board = board;
     }

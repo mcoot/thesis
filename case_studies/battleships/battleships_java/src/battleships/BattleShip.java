@@ -16,11 +16,13 @@ public class BattleShip {
 
         output.print("  Initializing...");
 
-        Board board1 = player1.init(NUM_COVERED_COORDS);
-        player1.storeBoard(board1);
+        Board proposed1 = player1.init(NUM_COVERED_COORDS);
+        Board accepted1 = player2.endorseBoard(proposed1);
+        player1.storeBoard(accepted1);
 
-        Board board2 = player2.init(NUM_COVERED_COORDS);
-        player2.storeBoard(board2);
+        Board proposed2 = player2.init(NUM_COVERED_COORDS);
+        Board accepted2 = player1.endorseBoard(proposed2);
+        player2.storeBoard(accepted2);
 
         output.println(" Done.");
 
@@ -34,20 +36,22 @@ public class BattleShip {
 
             // Player 1 queries
             Coordinate play1Query = player1.getNextQuery();
+            Coordinate play1QueryEnd = player2.endorseQuery(play1Query);
 
-            output.print("\t Alice: " + (play1Query == null ? "null" : play1Query.toString()) + "?  ");
+            output.print("\t Alice: " + (play1QueryEnd == null ? "null" : play1QueryEnd.toString()) + "?  ");
 
-            boolean result = player2.processQuery(play1Query);
+            boolean result = player2.processQuery(play1QueryEnd);
             player1Hits += result ? 1 : 0;
             output.print(result ? "Y" : "N");
 
             // If player 1 did not win the game with that query, player 2 now queries
             if (player1Hits < NUM_COVERED_COORDS) {
                 Coordinate play2Query = player2.getNextQuery();
+                Coordinate play2QueryEnd = player1.endorseQuery(play2Query);
 
-                output.print("   Bob: " + (play2Query == null ? "null" : play2Query.toString()) + "?  ");
+                output.print("   Bob: " + (play2QueryEnd == null ? "null" : play2QueryEnd.toString()) + "?  ");
 
-                boolean result2 = player1.processQuery(play2Query);
+                boolean result2 = player1.processQuery(play2QueryEnd);
 
                 player2Hits += result2 ? 1 : 0;
                 output.print(result2 ? "Y" : "N");

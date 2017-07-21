@@ -30,14 +30,34 @@ public class Board {
     public boolean testPosition(Coordinate coord) {
         List<Ship> shps = this.ships;
 
-        if (shps != null) {
-            for (int i = 0; i < shps.size(); i++) {
-                Ship s = shps.get(i);
-                if (s != null && s.covers(coord)) return true;
-            }
+        for (int i = 0; i < shps.size(); i++) {
+            Ship s = shps.get(i);
+            if (s != null && s.covers(coord)) return true;
         }
 
         return false;
+    }
+
+    /**
+     * Get a copy of this board which is endorsed (i.e. trusted) by the opponent
+     */
+    public Board endorseBoard() {
+        Board newBoard = new Board();
+
+        List<Ship> shps = this.ships;
+
+        for (int i = 0; i < shps.size(); i++) {
+            Ship s = shps.get(i);
+
+            Coordinate pos = s.pos;
+            if (pos != null) {
+                int length = s.length;
+                boolean isHoriz = s.isHorizontal;
+                Ship t = new Ship(pos, length, isHoriz);
+                newBoard.addShip(t);
+            }
+        }
+        return newBoard;
     }
 
 }
