@@ -1,0 +1,15 @@
+package battleships;
+public class Coordinate
+{
+  public ?policyof(this) final int x;
+  public ?policyof(this) final int y;
+  public Coordinate (?policyof(this) int x, ?policyof(this) int y)
+  {
+  }
+  public ?policyof(this) java.lang.String toString()
+  ;
+  public ?policyof(this) int hashCode()
+  ;
+  public ?(policyof(this) * policyof(o)) boolean equals(java.lang.Object o)
+  ;
+}

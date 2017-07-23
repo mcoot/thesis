@@ -1,0 +1,76 @@
+package battleships;
+
+// import java.util.List;
+import java.util.LinkedList;
+
+public class Board<policy shipPolicy> {
+
+    private ?shipPolicy LinkedList<Ship, shipPolicy> ships;
+    // private ?shipPolicy Ship[]<shipPolicy> ships;
+
+    // private ?shipPolicy int numShips;
+
+    public Board() {
+        ships = new LinkedList<Ship, shipPolicy>();
+        // ships = new Ship[10]<shipPolicy>;
+        // numShips = 0;
+    }
+
+    public !shipPolicy void addShip(?shipPolicy Ship s) throws !shipPolicy IllegalArgumentException {
+        if (s != null) {
+            // Check this doesn't intersect an existing ship
+            for (int i = 0; i < this.ships.size(); i++) {
+                ?shipPolicy Ship t = this.ships.get(i);
+                // ?shipPolicy Ship t = this.ships[i];
+                if (s.intersects(t)) throw new IllegalArgumentException("Ship to add " +
+                        "intersects an existing ship");
+            }
+            this.ships.add(s);
+            // this.ships[numShips] = s;
+            // numShips++;
+
+            // if (numShips >= this.ships.length) {
+            //     ?shipPolicy Ship[]<shipPolicy> newShips = new Ship[numShips * 2]<shipPolicy>;
+
+            //     for (int i = 0; i < numShips; ++i) {
+            //         newShips[i] = ships[i];
+            //     }
+
+            //     ships = newShips;
+            // }
+        }
+    }
+
+    public ?(shipPolicy * policyof(coord)) boolean testPosition(Coordinate coord) {
+        for (int i = 0; i < this.ships.size(); i++) {
+            ?shipPolicy Ship s = this.ships.get(i);
+            // ?shipPolicy Ship s = this.ships[i];
+            if (s != null && s.covers(coord)) return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get a copy of this board which is endorsed (i.e. trusted) by the opponent
+     */
+    // public Board endorseBoard() {
+    //     Board newBoard = new Board();
+
+    //     ?shipPolicy LinkedList<Ship, shipPolicy> shps = this.ships;
+
+    //     for (int i = 0; i < shps.size(); i++) {
+    //         Ship s = shps.get(i);
+
+    //         Coordinate pos = s.pos;
+    //         if (pos != null) {
+    //             int length = s.length;
+    //             boolean isHoriz = s.isHorizontal;
+    //             Ship t = new Ship(pos, length, isHoriz);
+    //             newBoard.addShip(t);
+    //         }
+    //     }
+    //     return newBoard;
+    // }
+
+}

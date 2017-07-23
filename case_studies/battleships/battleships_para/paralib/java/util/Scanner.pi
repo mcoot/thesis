@@ -1,0 +1,9 @@
+public native class Scanner<policy p>() {
+	
+	public Scanner();
+	
+	public ?p String nextLine();
+	
+	public void close();
+	
+}

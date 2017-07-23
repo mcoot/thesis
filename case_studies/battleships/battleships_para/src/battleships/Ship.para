@@ -1,0 +1,104 @@
+package battleships;
+
+/**
+ * Represents a ship in the game
+ *
+ * Has a coordinate representing its bottom-left point, and a flag for whether it is horizontal or vertical
+ */
+public class Ship {
+
+    final ?policyof(this) Coordinate pos;
+
+    final ?policyof(this) int length;
+
+    final ?policyof(this) boolean isHorizontal;
+
+    public Ship(?policyof(this) Coordinate pos, ?policyof(this) int len, ?policyof(this) boolean isHoriz) {
+        this.pos = pos;
+        this.length = len;
+        this.isHorizontal = isHoriz;
+    }
+
+    /**
+     * Checks whether the ship covers the coordinate
+     */
+    public ?(policyof(this) * policyof(coord)) boolean covers(Coordinate coord) {
+        ?policyof(this) Coordinate pos = this.pos;
+
+        try {
+            if (isHorizontal) {
+                return coord.y == pos.y &&
+                        pos.x <= coord.x &&
+                        coord.x < pos.x + length;
+            } else {
+                return coord.x == pos.x &&
+                        pos.y <= coord.y &&
+                        coord.y < pos.y + length;
+            }
+        } catch (NullPointerException ex) {
+            return false;
+        } 
+    }
+
+    /**
+     * Checks whether this ship intersects another
+     */
+    public ?(policyof(this) * policyof(ship)) boolean intersects(Ship ship) {
+        Coordinate c = this.pos;
+
+        try {
+            for (int i = 0; i < length && c != null; i++) {
+                if (ship.covers(c)) return true;
+
+                if (isHorizontal) {
+                    c = new Coordinate(c.x + 1, c.y);
+                } else {
+                    c = new Coordinate(c.x, c.y + 1);
+                }
+            }
+        } catch (NullPointerException ex) {}
+
+        return false;
+    }
+
+    public ?policyof(this) String toString() {
+        Coordinate pos = this.pos;
+        Coordinate end = null;
+
+        if (pos == null) pos = new Coordinate(0, 0);
+
+        if (isHorizontal) {
+            end = new Coordinate(pos.x + length, pos.y);
+        } else {
+            end = new Coordinate(pos.x, pos.y + length);
+        }
+
+        return pos.toString() + " to " + end.toString();
+    }
+
+    public ?policyof(this) int hashCode() {
+        Coordinate pos = this.pos;
+
+        if (pos == null) pos = new Coordinate(0, 0);
+
+        return pos.hashCode() ^ (4007 * length) ^ (isHorizontal ? 1861 : 2713);
+    }
+
+    public ?(policyof(this) * policyof(o)) boolean equals(Object o) {
+        try {
+            Ship that = (Ship)o;
+
+            Coordinate thispos = this.pos;
+            Coordinate thatpos = that.pos;
+
+            return this.length == that.length &&
+                    this.isHorizontal == that.isHorizontal &&
+                    (thispos == thatpos ||
+                        thispos != null && thispos.equals(thatpos));
+        } catch (ClassCastException ex) {
+            return false;
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+}

@@ -1,0 +1,145 @@
+package battleships;
+
+import java.util.LinkedList;
+
+public class Player {
+
+    public final Player self = (Player)this;
+
+    // Lock which is open when the given player has allowed the given object to access its board
+    private static final lock allowBoardAccess(Player);
+
+    private static final policy bottom = {Object x :};
+
+    public static final policy boardPolicy = {
+        self :
+      ; Object o : allowBoardAccess(self)
+    };
+
+    private ?bottom Board<boardPolicy> board;
+
+    private ?bottom LinkedList<Coordinate, bottom> opponentQueries;
+
+    private ?bottom Coordinate nextQuery = null;
+
+    public Player() {
+        opponentQueries = new LinkedList<Coordinate, bottom>();
+    }
+
+    /**
+     * Generate an initial board covering numCovered coordinates
+     */
+    public ?bottom !bp <policy bp> Board<bp> init(?bottom int numCovered) {
+        // Default 'strategy'
+        final Ship[]<bp> myCunningStrategy = {
+                new Ship(new Coordinate(1, 1), 1, true),
+                new Ship(new Coordinate(1, 3), 2, false),
+                new Ship(new Coordinate(2, 2), 3, true),
+                new Ship(new Coordinate(3, 4), 4, false),
+                new Ship(new Coordinate(5, 6), 5, true),
+                new Ship(new Coordinate(5, 7), 6, false),
+	    };
+
+        Board<bp> board = new Board<bp>();
+
+        int i = 0;
+        for (int count = numCovered; count > 0 && board != null;) {
+            try {
+                if (i > myCunningStrategy.length) i = 0;
+
+                ?bp Ship newPiece = myCunningStrategy[i++];
+                if (newPiece != null && newPiece.length > count) {
+                    // Ship is too long
+                    newPiece = new Ship(newPiece.pos, count, newPiece.isHorizontal);
+                }
+                board.addShip(newPiece);
+                count -= (newPiece == null ? 0 : newPiece.length);
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+            } catch (IllegalArgumentException ignored) {
+            } catch (NullPointerException ex) {
+            }
+        }
+        
+        return board;
+    }
+
+    /**
+     * Endorse the opponent's board as having integrity
+     */
+    // Board endorseBoard(Board b) {
+    //     if (b == null) return null;
+
+    //     return b.endorseBoard();
+    // }
+
+    /**
+     * Endorse an opponent's query as having integrity
+     */
+    // Coordinate endorseQuery(Coordinate q) {
+    //     if (q == null) return q;
+
+    //     int x = q.x;
+    //     int y = q.y;
+
+    //     return new Coordinate(x, y);
+    // }
+
+    !bottom void storeBoard(?bottom Board<boardPolicy> board) {
+        this.board = board;
+    }
+
+    public ?bottom !bottom Coordinate getNextQuery() {
+        // Default query strategy
+
+        Coordinate c = this.nextQuery;
+        if (c == null) {
+            c = new Coordinate(0, 0);
+        }
+
+        // Get the next query
+        boolean direction = ((c.x + c.y)%2 == 0);
+        int newX = c.x + (direction ? 1 : -1);
+        int newY = c.y + (direction ? -1 : 1);
+        if (newX < 0) newX = 0;
+        if (newY < 0) newY = 0;
+
+        this.nextQuery = new Coordinate(newX, newY);
+
+        return c;
+    }
+
+    -allowBoardAccess(self) !bottom boolean processQuery(?bottom Coordinate query) throws -allowBoardAccess(self) !bottom IllegalArgumentException {
+        ?bottom LinkedList<Coordinate, bottom> oppQueries = this.opponentQueries;
+
+        try {
+            if (oppQueries.contains(query)) {
+                throw new IllegalArgumentException("Opponent already asked the query " + query.toString());
+            }
+
+            oppQueries.add(query);
+
+            // Determine a result
+            ?bottom boolean result = testAndDeclassify(query);
+
+            return result;
+        } catch (NullPointerException ex) {
+            throw new IllegalArgumentException("Bad state or args");
+        } 
+    }
+
+    private -allowBoardAccess(self) ?bottom boolean testAndDeclassify(?bottom Coordinate query) {
+        ?boardPolicy boolean res = this.board.testPosition(query);
+        ?bottom boolean declassified = false;
+        
+        // Open the lock to allow declassification
+        open allowBoardAccess(self);
+
+        declassified = res;
+
+        // Close the lock again
+        close allowBoardAccess(self);
+
+        return declassified;
+    }
+
+}

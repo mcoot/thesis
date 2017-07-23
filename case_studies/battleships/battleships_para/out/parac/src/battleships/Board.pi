@@ -1,0 +1,12 @@
+package battleships;
+public class Board <policy shipPolicy>
+{
+  private ?shipPolicy java.util.LinkedList<battleships.Ship, shipPolicy> ships;
+  public Board ()
+  {
+  }
+  public !shipPolicy void addShip(?shipPolicy battleships.Ship s) throws !shipPolicy java.lang.IllegalArgumentException
+  ;
+  public ?(shipPolicy * policyof(coord)) boolean testPosition(battleships.Coordinate coord)
+  ;
+}
