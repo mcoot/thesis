@@ -4,21 +4,19 @@ public class Player
   public final battleships.Player self = (battleships.Player) this;
   private static final lock allowBoardAccess(battleships.Player);
   private static final policy bottom = {java.lang.Object x:};
-  public static final policy boardPolicy = {self:;java.lang.Object o: battleships.Player.allowBoardAccess(self)};
-  private ?battleships.Player.bottom battleships.Board<battleships.Player.boardPolicy> board;
+  public final policy boardPolicy = {self:;java.lang.Object o: battleships.Player.allowBoardAccess(self)};
+  private ?battleships.Player.bottom battleships.Board<boardPolicy> board;
   private ?battleships.Player.bottom java.util.LinkedList<battleships.Coordinate, battleships.Player.bottom> opponentQueries;
   private ?battleships.Player.bottom battleships.Coordinate nextQuery = null;
   public Player ()
   {
   }
-  public ?battleships.Player.bottom !bp <policy bp> battleships.Board<bp> init(?battleships.Player.bottom int numCovered)
-  ;
-  !battleships.Player.bottom void storeBoard(?battleships.Player.bottom battleships.Board<battleships.Player.boardPolicy> board)
+  public !battleships.Player.bottom void init(?battleships.Player.bottom int numCovered)
   ;
   public ?battleships.Player.bottom !battleships.Player.bottom battleships.Coordinate getNextQuery()
   ;
-  -(battleships.Player.allowBoardAccess(self)) !battleships.Player.bottom boolean processQuery(?battleships.Player.bottom battleships.Coordinate query) throws -(battleships.Player.allowBoardAccess(self)) !battleships.Player.bottom java.lang.IllegalArgumentException
+  !battleships.Player.bottom boolean processQuery(?battleships.Player.bottom battleships.Coordinate query) throws -(battleships.Player.allowBoardAccess(self)) !battleships.Player.bottom java.lang.IllegalArgumentException
   ;
-  private -(battleships.Player.allowBoardAccess(self)) ?battleships.Player.bottom boolean testAndDeclassify(?battleships.Player.bottom battleships.Coordinate query)
+  private ?battleships.Player.bottom boolean testAndDeclassify(?battleships.Player.bottom battleships.Coordinate query)
   ;
 }

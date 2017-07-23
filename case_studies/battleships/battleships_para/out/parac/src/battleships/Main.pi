@@ -1,0 +1,7 @@
+package battleships;
+public class Main
+{
+  public static final policy bottom = {java.lang.Object x:};
+  public static final !battleships.Main.bottom void main(java.lang.String[] args) throws !battleships.Main.bottom java.lang.IllegalArgumentException
+  ;
+}

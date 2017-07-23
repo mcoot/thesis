@@ -1,0 +1,11 @@
+package battleships;
+public class BattleShip
+{
+  public static final policy bottom = {java.lang.Object x:};
+  public static final int NUM_COVERED_COORDS = 10;
+  public BattleShip ()
+  {
+  }
+  public !battleships.BattleShip.bottom void play(?battleships.BattleShip.bottom java.io.PrintStream<battleships.BattleShip.bottom> output) throws !battleships.BattleShip.bottom java.lang.IllegalArgumentException
+  ;
+}

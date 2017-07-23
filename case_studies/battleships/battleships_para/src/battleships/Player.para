@@ -11,7 +11,7 @@ public class Player {
 
     private static final policy bottom = {Object x :};
 
-    public static final policy boardPolicy = {
+    public final policy boardPolicy = {
         self :
       ; Object o : allowBoardAccess(self)
     };
@@ -29,9 +29,9 @@ public class Player {
     /**
      * Generate an initial board covering numCovered coordinates
      */
-    public ?bottom !bp <policy bp> Board<bp> init(?bottom int numCovered) {
+    public !bottom void init(?bottom int numCovered) {
         // Default 'strategy'
-        final Ship[]<bp> myCunningStrategy = {
+        final Ship[]<boardPolicy> myCunningStrategy = {
                 new Ship(new Coordinate(1, 1), 1, true),
                 new Ship(new Coordinate(1, 3), 2, false),
                 new Ship(new Coordinate(2, 2), 3, true),
@@ -40,14 +40,14 @@ public class Player {
                 new Ship(new Coordinate(5, 7), 6, false),
 	    };
 
-        Board<bp> board = new Board<bp>();
+        Board<boardPolicy> board = new Board<boardPolicy>();
 
         int i = 0;
         for (int count = numCovered; count > 0 && board != null;) {
             try {
                 if (i > myCunningStrategy.length) i = 0;
 
-                ?bp Ship newPiece = myCunningStrategy[i++];
+                ?boardPolicy Ship newPiece = myCunningStrategy[i++];
                 if (newPiece != null && newPiece.length > count) {
                     // Ship is too long
                     newPiece = new Ship(newPiece.pos, count, newPiece.isHorizontal);
@@ -60,7 +60,7 @@ public class Player {
             }
         }
         
-        return board;
+        this.board = board;
     }
 
     /**
@@ -84,10 +84,6 @@ public class Player {
     //     return new Coordinate(x, y);
     // }
 
-    !bottom void storeBoard(?bottom Board<boardPolicy> board) {
-        this.board = board;
-    }
-
     public ?bottom !bottom Coordinate getNextQuery() {
         // Default query strategy
 
@@ -108,7 +104,7 @@ public class Player {
         return c;
     }
 
-    -allowBoardAccess(self) !bottom boolean processQuery(?bottom Coordinate query) throws -allowBoardAccess(self) !bottom IllegalArgumentException {
+    !bottom boolean processQuery(?bottom Coordinate query) throws -allowBoardAccess(self) !bottom IllegalArgumentException {
         ?bottom LinkedList<Coordinate, bottom> oppQueries = this.opponentQueries;
 
         try {
@@ -127,17 +123,14 @@ public class Player {
         } 
     }
 
-    private -allowBoardAccess(self) ?bottom boolean testAndDeclassify(?bottom Coordinate query) {
+    private ?bottom boolean testAndDeclassify(?bottom Coordinate query) {
         ?boardPolicy boolean res = this.board.testPosition(query);
         ?bottom boolean declassified = false;
         
-        // Open the lock to allow declassification
-        open allowBoardAccess(self);
-
-        declassified = res;
-
-        // Close the lock again
-        close allowBoardAccess(self);
+        // Briefly open the lock to declassify the result
+        open allowBoardAccess(self) {
+            declassified = res;
+        }
 
         return declassified;
     }

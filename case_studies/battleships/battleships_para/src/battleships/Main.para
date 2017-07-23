@@ -4,8 +4,10 @@ import java.io.PrintStream;
 
 public class Main {
 
-    public static final void main(String[] args) throws IllegalArgumentException {
-        PrintStream out = System.out;
+    public static final policy bottom = {Object x:};
+
+    public static final !bottom void main(String[] args) throws !bottom IllegalArgumentException {
+        ?bottom PrintStream<bottom> out = System.out;
 
         new BattleShip().play(out);
     }

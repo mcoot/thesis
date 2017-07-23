@@ -4,9 +4,15 @@ import java.io.PrintStream;
 
 public class BattleShip {
 
+    public static final policy bottom = {Object x:};
+
     public static final int NUM_COVERED_COORDS = 10;
 
-    public void play(PrintStream output) throws IllegalArgumentException {
+    public BattleShip() {
+
+    }
+
+    public !bottom void play(?bottom PrintStream<bottom> output) throws !bottom IllegalArgumentException {
         if (output == null) throw new IllegalArgumentException("Null output");
 
         output.println("Playing battleships, with each player having " + NUM_COVERED_COORDS + " covered coordinates");
@@ -16,13 +22,8 @@ public class BattleShip {
 
         output.print("  Initializing...");
 
-        Board proposed1 = player1.init(NUM_COVERED_COORDS);
-        Board accepted1 = player2.endorseBoard(proposed1);
-        player1.storeBoard(accepted1);
-
-        Board proposed2 = player2.init(NUM_COVERED_COORDS);
-        Board accepted2 = player1.endorseBoard(proposed2);
-        player2.storeBoard(accepted2);
+        player1.init(NUM_COVERED_COORDS);
+        player2.init(NUM_COVERED_COORDS);
 
         output.println(" Done.");
 
@@ -36,23 +37,22 @@ public class BattleShip {
 
             // Player 1 queries
             Coordinate play1Query = player1.getNextQuery();
-            Coordinate play1QueryEnd = player2.endorseQuery(play1Query);
+            // Coordinate play1QueryEnd = player2.endorseQuery(play1Query);
 
-            output.print("\t Alice: " + (play1QueryEnd == null ? "null" : play1QueryEnd.toString()) + "?  ");
+            output.print("\t Alice: " + (play1Query == null ? "null" : play1Query.toString()) + "?  ");
 
-            boolean result = player2.processQuery(play1QueryEnd);
+            boolean result = player2.processQuery(play1Query);
             player1Hits += result ? 1 : 0;
             output.print(result ? "Y" : "N");
 
             // If player 1 did not win the game with that query, player 2 now queries
             if (player1Hits < NUM_COVERED_COORDS) {
                 Coordinate play2Query = player2.getNextQuery();
-                Coordinate play2QueryEnd = player1.endorseQuery(play2Query);
+                // Coordinate play2QueryEnd = player1.endorseQuery(play2Query);
 
-                output.print("   Bob: " + (play2QueryEnd == null ? "null" : play2QueryEnd.toString()) + "?  ");
+                output.print("   Bob: " + (play2Query == null ? "null" : play2Query.toString()) + "?  ");
 
-                boolean result2 = player1.processQuery(play2QueryEnd);
-
+                boolean result2 = player1.processQuery(play2Query);
                 player2Hits += result2 ? 1 : 0;
                 output.print(result2 ? "Y" : "N");
 

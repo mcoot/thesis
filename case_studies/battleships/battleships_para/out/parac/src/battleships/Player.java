@@ -5,7 +5,7 @@ public class Player
   public final battleships.Player self = (battleships.Player) this;
   static final private se.chalmers.paragon.runtime.LockID allowBoardAccess = new se.chalmers.paragon.runtime.LockID("allowBoardAccess", battleships.Player.class);
   private static final se.chalmers.paragon.runtime.Policy bottom = new se.chalmers.paragon.runtime.Policy(new se.chalmers.paragon.runtime.Clause(new Class<?>[] {java.lang.Object.class}, new se.chalmers.paragon.runtime.Variable(0)));
-  public static final se.chalmers.paragon.runtime.Policy boardPolicy = new se.chalmers.paragon.runtime.Policy(new se.chalmers.paragon.runtime.Clause(new Class<?>[] {}, new se.chalmers.paragon.runtime.Actor(self)), new se.chalmers.paragon.runtime.Clause(new Class<?>[] {java.lang.Object.class}, new se.chalmers.paragon.runtime.Variable(0), new se.chalmers.paragon.runtime.Atom(allowBoardAccess, new se.chalmers.paragon.runtime.Actor(self))));
+  public final se.chalmers.paragon.runtime.Policy boardPolicy = new se.chalmers.paragon.runtime.Policy(new se.chalmers.paragon.runtime.Clause(new Class<?>[] {}, new se.chalmers.paragon.runtime.Actor(self)), new se.chalmers.paragon.runtime.Clause(new Class<?>[] {java.lang.Object.class}, new se.chalmers.paragon.runtime.Variable(0), new se.chalmers.paragon.runtime.Atom(allowBoardAccess, new se.chalmers.paragon.runtime.Actor(self))));
   private battleships.Board board;
   private java.util.LinkedList<battleships.Coordinate> opponentQueries;
   private battleships.Coordinate nextQuery = null;
@@ -13,10 +13,10 @@ public class Player
   {
     opponentQueries = new java.util.LinkedList<battleships.Coordinate>();
   }
-  public battleships.Board init(final se.chalmers.paragon.runtime.Policy bp, int numCovered)
+  public void init(int numCovered)
   {
     final battleships.Ship[] myCunningStrategy = {new battleships.Ship(new battleships.Coordinate(1, 1), 1, true), new battleships.Ship(new battleships.Coordinate(1, 3), 2, false), new battleships.Ship(new battleships.Coordinate(2, 2), 3, true), new battleships.Ship(new battleships.Coordinate(3, 4), 4, false), new battleships.Ship(new battleships.Coordinate(5, 6), 5, true), new battleships.Ship(new battleships.Coordinate(5, 7), 6, false)};
-    battleships.Board board = new battleships.Board(bp);
+    battleships.Board board = new battleships.Board(boardPolicy);
     int i = 0;
     for (int count = numCovered ; count > 0 && board != null ;)
     {
@@ -48,10 +48,6 @@ public class Player
       {
       }
     }
-    return board;
-  }
-  void storeBoard(battleships.Board board)
-  {
     this.board = board;
   }
   public battleships.Coordinate getNextQuery()
@@ -93,9 +89,9 @@ public class Player
   {
     boolean res = this.board.testPosition(query);
     boolean declassified = false;
-    se.chalmers.paragon.runtime.LockState.open(new se.chalmers.paragon.runtime.Lock(allowBoardAccess, new se.chalmers.paragon.runtime.Actor(self)));
-    declassified = res;
-    se.chalmers.paragon.runtime.LockState.close(new se.chalmers.paragon.runtime.Lock(allowBoardAccess, new se.chalmers.paragon.runtime.Actor(self)));
+    {
+      declassified = res;
+    }
     return declassified;
   }
 }
