@@ -1,52 +1,23 @@
 package scheduler;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
-public final class Calendar {
+public class Calendar {
 
-    // The user who owns the calendar
-    private final User user;
+    public final User user;
 
-    private final List<CalendarEntry> entries;
+    private LinkedList<Meeting> meetings;
 
-    /**
-     * Construct a calendar belonging to the given user
-     *
-     * @param user the user for this calendar
-     */
     public Calendar(User user) {
         this.user = user;
-        entries = new ArrayList<>();
+        this.meetings = new LinkedList<>();
     }
 
-    /**
-     * Returns whether a given entry could be added to the calendar
-     *
-     * @param day the day the engagement is on
-     * @param startHour the hour the engagement starts
-     * @param endHour the hour the engagement ends
-     * @param title the title of the engagement
-     * @param description the engagement description
-     * @param otherAttendees the attendees of the event, not including the calendar owner
-     * @return true iff adding the entry would succeed, false if it would cause an exception
-     */
-    public boolean canAddEntry(WeekDay day, int startHour, int endHour,
-                               String title, String description, List<User> otherAttendees) {
-        // The current user must attend events on their calendar
-        List<User> attendees = new ArrayList<>(otherAttendees);
-        attendees.add(user);
+    public boolean freeAtTime(int startHour, int endHour) {
+        if (endHour <= startHour) return false;
 
-        CalendarEntry entry;
-        try {
-            entry = new CalendarEntry(day, startHour, endHour, title, description, attendees);
-        } catch (CalendarException.InvalidEntryException ex) {
-            return false;
-        }
-
-        // Check that the entry does not overlap any existing entries
-        for (CalendarEntry existing : entries) {
-            if (entry.overlapsWith(existing)) {
+        for (int i = 0; i < meetings.size(); ++i) {
+            if (meetings.get(i).overlaps(startHour, endHour)) {
                 return false;
             }
         }
@@ -54,49 +25,26 @@ public final class Calendar {
         return true;
     }
 
-    /**
-     * Add an entry to the calendar
-     *
-     * @param day the day the engagement is on
-     * @param startHour the hour the engagement starts
-     * @param endHour the hour the engagement ends
-     * @param title the title of the engagement
-     * @param description the engagement description
-     * @param otherAttendees the attendees of the event, not including the calendar owner
-     * @throws CalendarException if the entry is impossible or clashes with an existing engagement
-     */
-    public void addEntry(WeekDay day, int startHour, int endHour,
-                         String title, String description, List<User> otherAttendees)
-            throws CalendarException {
-        // The current user must attend events on their calendar
-        List<User> attendees = new ArrayList<>(otherAttendees);
-        attendees.add(user);
-
-        CalendarEntry entry = new CalendarEntry(day, startHour, endHour, title, description, attendees);
-
-        // Check that the entry does not overlap any existing entries
-        for (CalendarEntry existing : entries) {
-            if (entry.overlapsWith(existing)) {
-                throw new CalendarException("Entry would clash with existing calendar");
-            }
+    public void addMeeting(Meeting meeting) throws InvalidMeetingException {
+        if (!freeAtTime(meeting.startHour, meeting.endHour) || !meeting.getUsers().contains(user)) {
+            throw new InvalidMeetingException();
         }
 
-        entries.add(entry);
+        meetings.add(meeting);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder s = new StringBuilder();
+    public LinkedList<Meeting> getMeetings() {
+        return new LinkedList<>(meetings);
+    }
 
-        s.append("Calendar for " + user.getName() + ":");
-        s.append(System.lineSeparator());
+    public String getCalendarRepresentation() {
+        String s = user.toString() + "'s Calendar:\n---";
 
-        for (CalendarEntry entry : entries) {
-            s.append(entry.toString());
-            s.append(System.lineSeparator());
+        for (int i = 0; i < meetings.size(); ++i) {
+            s += "\n" + meetings.get(i).toString();
         }
 
-        return s.toString();
+        return s;
     }
 
 }

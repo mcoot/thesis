@@ -1,35 +1,40 @@
 package scheduler;
 
-public final class User {
+import java.io.PrintStream;
 
-    // The username
-    private final String name;
+public class User {
 
-    /**
-     * @param name The username for this user
-     */
+    public final String name;
+
+    public PrintStream channel;
+
     public User(String name) {
         this.name = name;
+
+        this.channel = System.out;
     }
 
-    public String getName() {
-        return name;
+    public boolean equals(Object o) {
+        User that;
+        try {
+            that = (User)o;
+        } catch (ClassCastException ex) {
+            return false;
+        }
+
+        try {
+            return that.name.equals(name);
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof User)) return false;
-        return name.equals(((User)other).name);
-    }
-
-    @Override
     public int hashCode() {
         return name.hashCode();
     }
 
-    @Override
     public String toString() {
-        return "User: " + name;
+        return name;
     }
 
 }
