@@ -1,7 +1,0 @@
-package java.io;
-
-public native class FilterInputStream<policy p> extends java.io.InputStream<p> {
-	
-	public FilterInputStream() { }
-	
-}

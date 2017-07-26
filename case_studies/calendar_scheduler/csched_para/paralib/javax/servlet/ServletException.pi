@@ -1,4 +1,0 @@
-package javax.servlet;
-
-public native class ServletException extends Exception {
-}

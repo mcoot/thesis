@@ -1,7 +1,0 @@
-import java.io.*;
-
-public native class InputStreamReader<policy p> {
-
-    public InputStreamReader(?p InputStream<p> is) { }
-
-}

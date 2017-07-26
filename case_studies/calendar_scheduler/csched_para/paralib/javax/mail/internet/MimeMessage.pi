@@ -1,5 +1,0 @@
-package javax.mail.internet;
-
-public native class MimeMessage<policy p> extends javax.mail.Message<p> {
-  public MimeMessage(?p javax.mail.Session session) {}
-}

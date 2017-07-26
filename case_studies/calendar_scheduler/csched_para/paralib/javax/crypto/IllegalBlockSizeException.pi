@@ -1,5 +1,0 @@
-package javax.crypto;
-
-public native class IllegalBlockSizeException extends java.lang.Exception {
-
-}

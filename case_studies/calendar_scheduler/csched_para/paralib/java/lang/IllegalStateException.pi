@@ -1,5 +1,0 @@
-package java.lang;
-
-public native class IllegalStateException extends java.lang.Exception {
-
-}

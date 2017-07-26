@@ -1,5 +1,0 @@
-package javax.mail;
-
-public native class MessagingException extends java.lang.Exception {
-  public MessagingException(?policyof(this) String m){}
-}

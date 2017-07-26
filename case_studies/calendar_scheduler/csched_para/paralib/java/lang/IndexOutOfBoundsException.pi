@@ -1,5 +1,0 @@
-package java.lang;
-
-public native class IndexOutOfBoundsException extends java.lang.RuntimeException
-{
-}

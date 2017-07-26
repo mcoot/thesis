@@ -1,7 +1,0 @@
-package java.security;
-
-public native interface Key {
-
-  public ?policyof(this) byte[]<policyof(this)> getEncoded();
-
-}

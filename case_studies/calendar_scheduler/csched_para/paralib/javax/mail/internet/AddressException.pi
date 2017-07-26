@@ -1,4 +1,0 @@
-package javax.mail.internet;
-
-public native class AddressException extends java.lang.Exception {
-}

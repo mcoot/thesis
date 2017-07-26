@@ -1,5 +1,0 @@
-package javax.mail;
-
-public native class NoSuchProviderException extends java.lang.Exception {
-
-}

@@ -1,5 +1,0 @@
-package java.lang;
-
-public native class RuntimeException extends java.lang.Exception {
-	
-}

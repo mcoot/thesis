@@ -1,4 +1,0 @@
-package java.security.cert;
-
-public native class CertificateException extends java.security.GeneralSecurityException {
-}

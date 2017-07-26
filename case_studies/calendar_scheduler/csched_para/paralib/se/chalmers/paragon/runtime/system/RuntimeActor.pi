@@ -1,7 +1,0 @@
-package se.chalmers.paragon.runtime.system;
-
-public native class RuntimeActor {
-
-	public static final actor runtimeUser;
-
-}

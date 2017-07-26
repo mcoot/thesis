@@ -1,5 +1,0 @@
-public native class NullPointerException extends Exception {
-
-  public NullPointerException() { }
-
-}

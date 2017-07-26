@@ -1,3 +1,0 @@
-package javax.mail;
-public native class FolderNotFoundException extends javax.mail.MessagingException {
-}

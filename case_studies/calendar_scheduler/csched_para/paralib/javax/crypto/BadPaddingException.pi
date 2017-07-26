@@ -1,5 +1,0 @@
-package javax.crypto;
-
-public native class BadPaddingException extends java.security.GeneralSecurityException {
-
-}

@@ -1,7 +1,0 @@
-package java.io;
-
-public native class FileNotFoundException extends Exception {
-
-  public FileNotFoundException(?policyof(this) String msg){}
-
-}

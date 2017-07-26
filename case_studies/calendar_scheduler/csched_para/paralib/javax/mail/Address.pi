@@ -1,5 +1,0 @@
-package javax.mail;
-
-public native class Address extends java.lang.Object {
-
-}
