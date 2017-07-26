@@ -19,9 +19,9 @@ public class Scheduler {
         calendars.put(user, new Calendar(user));
     }
 
-    public boolean attendeesFreeAtTime(LinkedList<User> users, int startHour, int endHour) {
+    public boolean attendeesFreeAtTime(LinkedList<User> users, int day, int startHour, int endHour) {
         for (int i = 0; i < users.size(); ++i) {
-            if (!calendars.get(users.get(i)).freeAtTime(startHour, endHour)) {
+            if (!calendars.get(users.get(i)).freeAtTime(day, startHour, endHour)) {
                 return false;
             }
         }

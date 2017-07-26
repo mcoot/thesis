@@ -42,13 +42,13 @@ public class Meeting {
         return (day >= 0 && day <= 6) && (startHour >= 0 && startHour <= 23) && (endHour > startHour && endHour <= 24);
     }
 
-    public boolean overlaps(int startHour, int endHour) {
-        return (this.startHour >= startHour && this.startHour < endHour)
-                || (startHour >= this.startHour && startHour < this.endHour);
+    public boolean overlaps(int day, int startHour, int endHour) {
+        return this.day == day && ((this.startHour >= startHour && this.startHour < endHour)
+                || (startHour >= this.startHour && startHour < this.endHour));
     }
 
     public boolean overlaps(Meeting that) {
-        return overlaps(that.startHour, that.endHour);
+        return overlaps(that.day, that.startHour, that.endHour);
     }
 
     public int getDuration() {
@@ -102,19 +102,19 @@ public class Meeting {
     public static int getDayValue(String dayName) {
         String d = dayName.toLowerCase();
 
-        if (d.equals("Sunday")) {
+        if (d.equals("sunday")) {
             return 0;
-        } else if (d.equals("Monday")) {
+        } else if (d.equals("monday")) {
             return 1;
-        } else if (d.equals("Tuesday")) {
+        } else if (d.equals("tuesday")) {
             return 2;
-        } else if (d.equals("Wednesday")) {
+        } else if (d.equals("wednesday")) {
             return 3;
-        } else if (d.equals("Thursday")) {
+        } else if (d.equals("thursday")) {
             return 4;
-        } else if (d.equals("Friday")) {
+        } else if (d.equals("friday")) {
             return 5;
-        } else if (d.equals("Saturday")) {
+        } else if (d.equals("saturday")) {
             return 6;
         } else {
             return -1;
@@ -122,7 +122,7 @@ public class Meeting {
     }
 
     public String toString() {
-        String s = "< \"" + title + "\" | " + getDayName(this.day) + " " + this.startHour + " - " + this.endHour + " | ";
+        String s = "<\"" + title + "\" | " + getDayName(this.day) + " " + this.startHour + " - " + this.endHour + " | ";
 
         String sep = "";
         for (int i = 0; i < this.users.size(); ++i) {
@@ -130,7 +130,7 @@ public class Meeting {
             s += this.users.get(i).toString();
             sep = ", ";
         }
-        s += " >";
+        s += ">";
 
         return s;
     }

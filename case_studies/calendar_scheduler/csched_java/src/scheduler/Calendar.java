@@ -13,11 +13,11 @@ public class Calendar {
         this.meetings = new LinkedList<>();
     }
 
-    public boolean freeAtTime(int startHour, int endHour) {
+    public boolean freeAtTime(int day, int startHour, int endHour) {
         if (endHour <= startHour) return false;
 
         for (int i = 0; i < meetings.size(); ++i) {
-            if (meetings.get(i).overlaps(startHour, endHour)) {
+            if (meetings.get(i).overlaps(day, startHour, endHour)) {
                 return false;
             }
         }
@@ -26,7 +26,7 @@ public class Calendar {
     }
 
     public void addMeeting(Meeting meeting) throws InvalidMeetingException {
-        if (!freeAtTime(meeting.startHour, meeting.endHour) || !meeting.getUsers().contains(user)) {
+        if (!freeAtTime(meeting.day, meeting.startHour, meeting.endHour) || !meeting.getUsers().contains(user)) {
             throw new InvalidMeetingException();
         }
 
