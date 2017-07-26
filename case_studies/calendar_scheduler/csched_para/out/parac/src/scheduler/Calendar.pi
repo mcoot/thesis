@@ -1,0 +1,17 @@
+package scheduler;
+public class Calendar
+{
+  public final ?{java.lang.Object x:} scheduler.User user;
+  private java.util.LinkedList<scheduler.Meeting, {java.lang.Object x:}> meetings;
+  public Calendar (?{java.lang.Object x:} scheduler.User user)
+  {
+  }
+  public ?({java.lang.Object x:} * policyof(day) * policyof(startHour) * policyof(endHour)) boolean freeAtTime(int day, int startHour, int endHour)
+  ;
+  public void addMeeting(?{java.lang.Object x:} scheduler.Meeting meeting)
+  ;
+  public ?{java.lang.Object x:} java.util.LinkedList<scheduler.Meeting, {java.lang.Object x:}> getMeetings()
+  ;
+  public ?{user:} java.lang.String getCalendarRepresentation()
+  ;
+}

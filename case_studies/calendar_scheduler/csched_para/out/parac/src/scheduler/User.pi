@@ -1,0 +1,16 @@
+package scheduler;
+public class User
+{
+  public final scheduler.User self = (scheduler.User) this;
+  public final ?policyof(this) java.lang.String name;
+  public IOChannel<{java.lang.Object x:}, self> channel;
+  public User (?policyof(this) java.lang.String name)
+  {
+  }
+  public ?(policyof(this) * policyof(o)) boolean equals(java.lang.Object o)
+  ;
+  public ?policyof(this) int hashCode()
+  ;
+  public ?policyof(this) java.lang.String toString()
+  ;
+}

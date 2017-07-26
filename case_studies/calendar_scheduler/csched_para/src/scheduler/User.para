@@ -1,20 +1,19 @@
 package scheduler;
 
-import java.io.PrintStream;
-
 public class User {
 
-    public final String name;
+    public final User self = (User)this;
 
-    public PrintStream channel;
+    public final ?policyof(this) String name;
 
-    public User(String name) {
+    public IOChannel<{Object x:}, self> channel;
+
+    public User(?policyof(this) String name) {
         this.name = name;
-
-        this.channel = System.out;
+        this.channel = new IOChannel<{Object x:}, self>();
     }
 
-    public boolean equals(Object o) {
+    public ?(policyof(this)*policyof(o)) boolean equals(Object o) {
         User that;
         try {
             that = (User)o;
@@ -29,11 +28,11 @@ public class User {
         }
     }
 
-    public int hashCode() {
+    public ?policyof(this) int hashCode() {
         return name.hashCode();
     }
 
-    public String toString() {
+    public ?policyof(this) String toString() {
         return name;
     }
 

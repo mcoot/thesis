@@ -39,10 +39,11 @@
     <target name="parac">
         <mkdir dir="${bin.parac.dir}/src/scheduler" />
         <property name="classToBuild" value="all" />
+        <property name="verbose" value="false" />
         <mkdir dir="${bin.parac.dir}" />
         <exec executable="bash">
             <arg value="-c" />
-            <arg value="./run-parac.sh ${classToBuild}.para" />
+            <arg value="./run-parac.sh ${classToBuild}.para ${verbose}" />
         </exec>  
     </target>
 

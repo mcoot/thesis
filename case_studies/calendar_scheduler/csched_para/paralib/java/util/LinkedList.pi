@@ -18,4 +18,8 @@ public native class LinkedList<E, policy p> {
 	
 	public ?p boolean contains(E e);
 	
+	public ?(p * policyof(this)) boolean equals(Object o);
+	
+	//public ?(p * policyof(this)) boolean hashCode();
+	
 }

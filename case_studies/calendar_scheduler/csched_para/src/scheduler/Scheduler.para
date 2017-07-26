@@ -5,21 +5,27 @@ import java.util.LinkedList;
 
 public class Scheduler {
 
-    private HashMap<User, Calendar> calendars;
+    public static final policy bottom = {Object x:};
+
+    private ?bottom HashMap<User, bottom, Calendar, bottom> calendars;
 
     public Scheduler() {
-        calendars = new HashMap<>();
+        calendars = new HashMap<User, bottom, Calendar, bottom>();
     }
 
-    public Calendar getCalendar(User user) {
+    public ?bottom Calendar getCalendar(?{Object x:} User user) {
         return calendars.get(user);
     }
 
-    public void addUser(User user) {
-        calendars.put(user, new Calendar(user));
+    public !bottom void addUser(?bottom User user) {
+        try {
+            calendars.put(user, new Calendar(user.self));
+        } catch (NullPointerException ex) {
+            
+        }
     }
 
-    public boolean attendeesFreeAtTime(LinkedList<User> users, int day, int startHour, int endHour) {
+    public boolean attendeesFreeAtTime(LinkedList<User, bottom> users, int day, int startHour, int endHour) {
         for (int i = 0; i < users.size(); ++i) {
             if (!calendars.get(users.get(i)).freeAtTime(day, startHour, endHour)) {
                 return false;
@@ -29,7 +35,7 @@ public class Scheduler {
         return true;
     }
 
-    public void addMeeting(User user, Meeting meeting) throws InvalidMeetingException {
+    public void addMeeting(?bottom User user, ?bottom Meeting meeting) {
         calendars.get(user).addMeeting(meeting);
     }
 

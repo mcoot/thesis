@@ -4,16 +4,23 @@ import java.util.LinkedList;
 
 public class Calendar {
 
-    public final User user;
+    public final ?{Object x:} User user;
 
-    private LinkedList<Meeting> meetings;
+    private LinkedList<Meeting, {Object x:}> meetings;
 
-    public Calendar(User user) {
-        this.user = user;
-        this.meetings = new LinkedList<>();
+    public Calendar(?{Object x:} User user) {
+        User tmpUser = new User("WHY");
+        try {
+            tmpUser = user.self;
+        } catch (NullPointerException ex) {
+        
+        }
+        
+        this.user = tmpUser;
+        this.meetings = new LinkedList<Meeting, {Object x:}>();
     }
 
-    public boolean freeAtTime(int day, int startHour, int endHour) {
+    public ?({Object x:} * policyof(day) * policyof(startHour) * policyof(endHour)) boolean freeAtTime(int day, int startHour, int endHour) {
         if (endHour <= startHour) return false;
 
         for (int i = 0; i < meetings.size(); ++i) {
@@ -25,26 +32,41 @@ public class Calendar {
         return true;
     }
 
-    public void addMeeting(Meeting meeting) throws InvalidMeetingException {
-        if (!freeAtTime(meeting.day, meeting.startHour, meeting.endHour) || !meeting.getUsers().contains(user)) {
-            throw new InvalidMeetingException();
-        }
+    public void addMeeting(?{Object x:} Meeting meeting) {
+        // if (!freeAtTime(meeting.day, meeting.startHour, meeting.endHour) || !meeting.getUsers().contains(user)) {
+        //     throw new InvalidMeetingException();
+        // }
 
         meetings.add(meeting);
     }
 
-    public LinkedList<Meeting> getMeetings() {
-        return new LinkedList<>(meetings);
+    public ?{Object x:} LinkedList<Meeting, {Object x:}> getMeetings() {
+        return meetings;
+        // return new LinkedList<>(meetings);
     }
 
-    public String getCalendarRepresentation() {
-        String s = user.toString() + "'s Calendar:\n---";
+    public ?{user:} String getCalendarRepresentation() {
+        try {
+            ?{user:} String s = user.toString() + "'s Calendar:\n---";
 
-        for (int i = 0; i < meetings.size(); ++i) {
-            s += "\n" + meetings.get(i).toString();
+            for (int i = 0; i < meetings.size(); ++i) {
+                Meeting m = meetings.get(i);
+                s += "\n";
+
+                ?{User u : Meeting.isAttending(u, m.self)} String mString = m.toString();
+
+                if (Meeting.isAttending(user, m.self)) {
+                // if (m.self == null) {
+                    // s += "x";
+                    s += mString;
+                }
+                
+            }
+
+            return s;
+        } catch (NullPointerException ex) {
+            return "";
         }
-
-        return s;
     }
 
 }

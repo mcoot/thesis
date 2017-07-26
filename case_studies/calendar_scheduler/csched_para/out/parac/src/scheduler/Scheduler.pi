@@ -1,0 +1,17 @@
+package scheduler;
+public class Scheduler
+{
+  public static final policy bottom = {java.lang.Object x:};
+  private ?scheduler.Scheduler.bottom java.util.HashMap<scheduler.User, scheduler.Scheduler.bottom, scheduler.Calendar, scheduler.Scheduler.bottom> calendars;
+  public Scheduler ()
+  {
+  }
+  public ?scheduler.Scheduler.bottom scheduler.Calendar getCalendar(?{java.lang.Object x:} scheduler.User user)
+  ;
+  public !scheduler.Scheduler.bottom void addUser(?scheduler.Scheduler.bottom scheduler.User user)
+  ;
+  public boolean attendeesFreeAtTime(java.util.LinkedList<scheduler.User, scheduler.Scheduler.bottom> users, int day, int startHour, int endHour)
+  ;
+  public void addMeeting(?scheduler.Scheduler.bottom scheduler.User user, ?scheduler.Scheduler.bottom scheduler.Meeting meeting)
+  ;
+}

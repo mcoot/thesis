@@ -52,6 +52,8 @@ extends java.lang.Object
     public ?(policyof(this)*policyof(other)) boolean equals(String other);
 	
 	public ?policyof(this) int hashCode();
+	
+	public ?policyof(this) String toLowerCase();
     
     public ?(policyof(this)*policyof(substring)) int indexOf(String substring);
     

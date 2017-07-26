@@ -1,4 +1,4 @@
-package conf;
+package scheduler;
 
 import java.util.Scanner;
 

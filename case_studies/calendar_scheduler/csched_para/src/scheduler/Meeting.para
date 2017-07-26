@@ -4,62 +4,72 @@ import java.util.LinkedList;
 
 public class Meeting {
 
-    public final String title;
+    public final ?{Object x:} Meeting self = (Meeting)this;
 
-    public final int day;
+    // Lock which is open when a user is attending a given meeting
+    public static final ?{User u:} lock isAttending(User, Meeting);
 
-    public final int startHour;
+    public final policy attendeesOnly = {
+            User u : isAttending(u, self)
+    };
 
-    public final int endHour;
+    public final ?attendeesOnly String title;
 
-    private LinkedList<User> users;
+    public final ?policyof(this) int day;
 
-    public Meeting(int day, int startHour, int endHour, String title, LinkedList<User> attendees) throws InvalidMeetingException {
-        if (!meetingDetailsValid(day, startHour, endHour)) {
-            throw new InvalidMeetingException();
-        }
-        this.day = day;
-        this.startHour = startHour;
-        this.endHour = endHour;
-        this.title = title;
+    public final ?policyof(this) int startHour;
 
-        this.users = new LinkedList<>(attendees);
-    }
+    public final ?policyof(this) int endHour;
 
-    public Meeting(String dayName, int startHour, int endHour, String title, LinkedList<User> attendees) throws InvalidMeetingException {
-        if (!meetingDetailsValid(getDayValue(dayName), startHour, endHour)) {
-            throw new InvalidMeetingException();
-        }
+    private ?{Object x:} LinkedList<User, attendeesOnly> users;
+
+    public !{User u:} Meeting(?policyof(this) String dayName, ?policyof(this) int startHour, ?policyof(this) int endHour, 
+                   ?attendeesOnly String title, ?{Object x:} LinkedList<User, policyof(this)> attendees) {
+            // throws !(policyof(this) * attendeesOnly) InvalidMeetingException {
+        // if (!meetingDetailsValid(getDayValue(dayName), startHour, endHour)) {
+        //     throw new InvalidMeetingException();
+        // }
         this.day = getDayValue(dayName);
         this.startHour = startHour;
         this.endHour = endHour;
         this.title = title;
 
-        this.users = new LinkedList<>(attendees);
+        this.users = new LinkedList<User, attendeesOnly>();
+
+        for (?{Object x:} int i = 0; i < attendees.size(); ++i) {
+            User u = attendees.get(i);
+            open isAttending(u, self);
+            this.users.add(u);
+        }
     }
 
     private static boolean meetingDetailsValid(int day, int startHour, int endHour) {
         return (day >= 0 && day <= 6) && (startHour >= 0 && startHour <= 23) && (endHour > startHour && endHour <= 24);
     }
 
-    public boolean overlaps(int day, int startHour, int endHour) {
+    public ?(policyof(this) * policyof(day) * policyof(startHour) * policyof(endHour)) boolean overlaps(int day, int startHour, int endHour) {
         return this.day == day && ((this.startHour >= startHour && this.startHour < endHour)
                 || (startHour >= this.startHour && startHour < this.endHour));
     }
 
-    public boolean overlaps(Meeting that) {
-        return overlaps(that.day, that.startHour, that.endHour);
+    public ?(policyof(this) * policyof(that)) boolean overlaps(Meeting that) {
+        try {
+            return overlaps(that.day, that.startHour, that.endHour);
+        } catch (NullPointerException ex) {
+            return false;
+        }
+        
     }
 
-    public int getDuration() {
+    public ?policyof(this) int getDuration() {
         return endHour - startHour;
     }
 
-    public LinkedList<User> getUsers() {
-        return new LinkedList<>(users);
+    public ?attendeesOnly LinkedList<User, attendeesOnly> getUsers() {
+        return this.users;
     }
 
-    public boolean equals(Object o) {
+    public ?(policyof(this) * attendeesOnly * policyof(o)) boolean equals(Object o) {
         Meeting that;
         try {
             that = (Meeting)o;
@@ -75,9 +85,9 @@ public class Meeting {
         }
     }
 
-    public int hashCode() {
-        return 7 * title.hashCode() + 19 * this.day ^ 31 * this.startHour ^ 17 * this.endHour ^ 41 * this.users.hashCode();
-    }
+    // public ?(policyof(this) * attendeesOnly) int hashCode() {
+    //     return 7 * title.hashCode() + 19 * this.day ^ 31 * this.startHour ^ 17 * this.endHour ^ this.title.hashCode() ^ 41 * this.users.hashCode();
+    // }
 
     public static String getDayName(int day) {
         if (day == 0) {
@@ -121,7 +131,7 @@ public class Meeting {
         }
     }
 
-    public String toString() {
+    public ?(policyof(this) * attendeesOnly) String toString() {
         String s = "<\"" + title + "\" | " + getDayName(this.day) + " " + this.startHour + " - " + this.endHour + " | ";
 
         String sep = "";
