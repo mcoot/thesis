@@ -27,12 +27,16 @@
     </target>
 
     <target name="jifc">
+        <property name="classToBuild" value="all" />
+        <property name="verbose" value="false" />
         <exec executable="${cygwin.dir}/bin/bash.exe">
             <arg value="--login" />
             <arg value="${basedir}/run-jifc.sh" />
             <arg value="${src.dir}" />
             <arg value="${bin.dir}" /> 
             <arg value="${extra.dir}" />
+            <arg value="${classToBuild}" />
+            <arg value="${verbose}" />
         </exec>
     </target>
 
