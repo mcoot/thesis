@@ -5,7 +5,7 @@ import jif.util.HashMap;
 /**
  * A system to handle the submission, approval and session allocation of papers to a conference
  */
-public class ConferenceSystem[principal O] {
+public class ConferenceSystem[principal O] authority(O) {
     
     // private static final policy bottom = {Object x :};
 
@@ -86,7 +86,7 @@ public class ConferenceSystem[principal O] {
         }
     }
 
-    public int{O->_} getSessionNumber{O->_}(Paper[AL]{O->_} paper){
+    public int{O->_} getSessionNumber{O->_}(Paper[AL]{O->_} paper) where authority(O) {
         // try {
         //     if (allocationsVisible) {
         //         JifInteger[AL] sNo = (JifInteger[AL])allocations.get(paper);
@@ -102,13 +102,12 @@ public class ConferenceSystem[principal O] {
         // }
 
         if (allocationsVisible) {
-            // JifInteger[AL] sNo = new JifInteger[AL](-1);
             int{O->_} result;
             try {
                 JifInteger[AL] sNo = (JifInteger[AL])allocations.get(paper);
                 int{O->*} toDowngrade = sNo.intValue();
                 int rr = declassify(toDowngrade, {O->*} to {O->_});
-                // result = sNo.intValue();
+                result = rr;
             } catch (NullPointerException ex) {
 
             } catch (ClassCastException ex) {
