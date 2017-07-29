@@ -87,22 +87,72 @@ public class ConferenceSystem[principal O] authority(O) {
     }
 
     public int{O->_} getSessionNumber{O->_}(Paper[{O->*}]{O->_} paper) where authority(O) {
-        if (allocationsVisible) {
-            try {
-                JifInteger[{O->*}] sNo = (JifInteger[{O->*}])allocations.get(paper);
-                int{O->*} toDowngrade = sNo.intValue();
-                int{O->_} result = declassify(toDowngrade, {O->*} to {O->_});
-                return result;
-            } catch (NullPointerException ex) {
-
-            } catch (ClassCastException ex) {
-
-            }
-
-            return -1;
-        } else {
+        JifObject[{O->*}]{O->*} sNoObj;
+        try {
+            sNoObj = allocations.get(new label {O->*}, paper);
+        } catch (NullPointerException e) {
             return -1;
         }
+
+        // Declassify the object retrieved from the map
+        JifObject[{O->*}]{O->_} sNoObjDeclass = declassify(sNoObj, {O->*} to {O->_});
+
+        // Convert it to a JifInteger
+        JifInteger[{O->*}]{O->_} sNo;
+        try {
+            sNo = (JifInteger[{O->*}])sNoObjDeclass;
+        } catch (ClassCastException ex) {
+            return -1;
+        }
+
+        // Pull the int from the JifInteger
+        int{O->*} r;
+        try {
+            r = sNo.intValue();
+        } catch (NullPointerException ex) {
+            return -1;
+        }
+
+        // Declassify the int
+        int{O->_} result = declassify(r, {O->*} to {O->_});
+
+        return result;
+
+        // JifInteger[{O->*}]{} sNo = new JifInteger(7);
+        
+        // try {
+        //     sNo = (JifInteger[{O->*}])allocations.get(paper);
+        // } catch (NullPointerException ex) {
+
+        // } catch (ClassCastException ex) {
+
+        // }
+
+        // if (sNo == null) return -1;
+        
+        // if (allocationsVisible) {
+        //     int{O->*} toDowngrade = sNo.intValue();
+        //     return -1;
+        // } else {
+        //     return -1;
+        // }
+
+        // if (allocationsVisible) {
+        //     try {
+        //         JifInteger[{O->*}] sNo = (JifInteger[{O->*}])allocations.get(paper);
+        //         int{O->*} toDowngrade = sNo.intValue();
+        //         int{O->_} result = declassify(toDowngrade, {O->*} to {O->_});
+        //         return result;
+        //     } catch (NullPointerException ex) {
+
+        //     } catch (ClassCastException ex) {
+
+        //     }
+
+        //     return -1;
+        // } else {
+        //     return -1;
+        // }
     }
 
     public void performAllocations{}() {
