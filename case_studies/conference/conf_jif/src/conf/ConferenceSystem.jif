@@ -87,6 +87,16 @@ public class ConferenceSystem[principal O] authority(O) {
     }
 
     public int{O->_} getSessionNumber{O->_}(Paper[{O->*}]{O->_} paper) where authority(O) {
+        if (allocationsVisible) {
+            // return -1;
+            int{O->_} res = declassifySessionNumber(paper);
+            return -1;
+        } else {
+            return -1;
+        }
+    }
+
+    private int{O->} declassifySessionNumber{O->_}(Paper[{O->*}]{O->_} paper):{O->_} where authority(O) {
         JifObject[{O->*}]{O->*} sNoObj;
         try {
             sNoObj = allocations.get(new label {O->*}, paper);
@@ -117,42 +127,6 @@ public class ConferenceSystem[principal O] authority(O) {
         int{O->_} result = declassify(r, {O->*} to {O->_});
 
         return result;
-
-        // JifInteger[{O->*}]{} sNo = new JifInteger(7);
-        
-        // try {
-        //     sNo = (JifInteger[{O->*}])allocations.get(paper);
-        // } catch (NullPointerException ex) {
-
-        // } catch (ClassCastException ex) {
-
-        // }
-
-        // if (sNo == null) return -1;
-        
-        // if (allocationsVisible) {
-        //     int{O->*} toDowngrade = sNo.intValue();
-        //     return -1;
-        // } else {
-        //     return -1;
-        // }
-
-        // if (allocationsVisible) {
-        //     try {
-        //         JifInteger[{O->*}] sNo = (JifInteger[{O->*}])allocations.get(paper);
-        //         int{O->*} toDowngrade = sNo.intValue();
-        //         int{O->_} result = declassify(toDowngrade, {O->*} to {O->_});
-        //         return result;
-        //     } catch (NullPointerException ex) {
-
-        //     } catch (ClassCastException ex) {
-
-        //     }
-
-        //     return -1;
-        // } else {
-        //     return -1;
-        // }
     }
 
     public void performAllocations{}() {
