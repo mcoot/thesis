@@ -102,12 +102,12 @@ public class ConferenceSystem[principal O] authority(O) {
         // }
 
         if (allocationsVisible) {
-            int{O->_} result;
+            // int{O->_} result;
             try {
                 JifInteger[AL] sNo = (JifInteger[AL])allocations.get(paper);
                 int{O->*} toDowngrade = sNo.intValue();
-                int rr = declassify(toDowngrade, {O->*} to {O->_});
-                result = rr;
+                int{O->_} result = declassify(toDowngrade, {O->*} to {O->_});
+                return result;
             } catch (NullPointerException ex) {
 
             } catch (ClassCastException ex) {
