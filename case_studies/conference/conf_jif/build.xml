@@ -30,7 +30,39 @@
     <target name="jifc">
         <property name="classToBuild" value="all" />
         <property name="verbose" value="false" />
-        <exec executable="${cygwin.dir}/bin/bash.exe">
+
+        <!-- Set the shell to cygwin if windows, bash if linux -->
+        <condition property="sh_exe" value="${cygwin.dir}/bin/bash.exe">
+            <os family="windows" />
+        </condition>
+        <condition property="sh_exe" value="/bin/bash">
+            <os family="unix" />
+        </condition>   
+
+        <exec executable="${sh_exe}">
+            <arg value="--login" />
+            <arg value="${basedir}/run-jifc.sh" />
+            <arg value="${src.dir}" />
+            <arg value="${bin.dir}" /> 
+            <arg value="${extra.dir}:." />
+            <arg value="${classToBuild}" />
+            <arg value="${verbose}" />
+        </exec>
+    </target>
+
+    <target name="jifc-linux">
+        <property name="classToBuild" value="all" />
+        <property name="verbose" value="false" />
+
+        <!-- Set the shell to cygwin if windows, bash if linux -->
+        <condition property="sh_exe" value="${cygwin.dir}/bin/bash.exe">
+            <os family="windows" />
+        </condition>
+        <condition property="sh_exe" value="/bin/bash">
+            <os family="unix" />
+        </condition>   
+
+        <exec executable="${sh_exe}">
             <arg value="--login" />
             <arg value="${basedir}/run-jifc.sh" />
             <arg value="${src.dir}" />
