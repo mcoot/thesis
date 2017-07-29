@@ -16,23 +16,23 @@ public class ConferenceSystem[principal O] authority(O) {
     // The conference chair / organiser, who can see all information even before it is public
     public final Organiser{O->_} organiser;
 
-    public final label AL = new label {O->*};
+    // public final label AL = new label {O->*};
 
     private boolean{O->_} allocationsVisible;
 
     private int{O->_} numSubmissions;
-    private Paper[AL]{O->_}[]{O->_} submissions;
+    private Paper[{O->*}]{O->_}[]{O->_} submissions;
 
     // The allocation of accepted papers to allocations
-    private HashMap[AL, AL] allocations;
+    private HashMap[{O->*}, {O->*}] allocations;
 
     public ConferenceSystem() {
         organiser = new Organiser("TheOrganiser");
 
-        submissions = new Paper[AL][5];
+        submissions = new Paper[{O->*}][5];
         numSubmissions = 0;
 
-        allocations = new HashMap[AL, AL]();
+        allocations = new HashMap[{O->*}, {O->*}]();
     }
 
     /**
@@ -53,7 +53,7 @@ public class ConferenceSystem[principal O] authority(O) {
     //     return upgraded;
     // }
 
-    public void handleSubmission{O->_}(Paper[AL]{O->_} paper) {
+    public void handleSubmission{O->_}(Paper[{O->*}]{O->_} paper) {
         // Can't submit after the conference sessions are already allocated
         try {
             if (!allocationsVisible) {
@@ -62,7 +62,7 @@ public class ConferenceSystem[principal O] authority(O) {
 
                 // Resize array if required
                 if (numSubmissions >= submissions.length) {
-                    Paper[AL][]{O->_} newSubmissions = new Paper[numSubmissions * 2];
+                    Paper[{O->*}][]{O->_} newSubmissions = new Paper[numSubmissions * 2];
                     for (int i = 0; i < submissions.length; ++i) {
                         newSubmissions[i] = submissions[i];
                     }
@@ -78,35 +78,20 @@ public class ConferenceSystem[principal O] authority(O) {
         }
     }
 
-    public Paper[AL][]{O->_} getSubmissions() {
+    public Paper[{O->*}][]{O->_} getSubmissions() {
         try {
             return this.submissions.clone();
         } catch (NullPointerException ex) {
-            return new Paper[AL][2];
+            return new Paper[{O->*}][2];
         }
     }
 
-    public int{O->_} getSessionNumber{O->_}(Paper[AL]{O->_} paper) where authority(O) {
-        // try {
-        //     if (allocationsVisible) {
-        //         JifInteger[AL] sNo = (JifInteger[AL])allocations.get(paper);
-        //         int{AL} sNoVal = sNo.intValue();
-        //         return -1;
-        //     } else {
-        //         return -1;
-        //     }
-        // } catch (NullPointerException ex) {
-        //     return -1;
-        // } catch (ClassCastException ex) {
-        //     return -1;
-        // }
-
+    public int{O->_} getSessionNumber{O->_}(Paper[{O->*}]{O->_} paper) where authority(O) {
         if (allocationsVisible) {
-            // int{O->_} result;
             try {
-                JifInteger[AL] sNo = (JifInteger[AL])allocations.get(paper);
+                JifInteger[{O->*}] sNo = (JifInteger[{O->*}])allocations.get(paper);
                 int{O->*} toDowngrade = sNo.intValue();
-                int{O->_} result = declassify(toDowngrade, {*AL} to {O->_});
+                int{O->_} result = declassify(toDowngrade, {O->*} to {O->_});
                 return result;
             } catch (NullPointerException ex) {
 
@@ -124,7 +109,7 @@ public class ConferenceSystem[principal O] authority(O) {
         // Arbitrary allocation - just give each paper a unique session number
         try {
             for (int i = 0; i < numSubmissions; ++i) {
-                allocations.put(submissions[i], new JifInteger[AL](i));
+                allocations.put(submissions[i], new JifInteger[{O->*}](i));
             }
         } catch (ArrayIndexOutOfBoundsException ex) {
 
