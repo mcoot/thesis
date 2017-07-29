@@ -86,7 +86,7 @@ public class ConferenceSystem[principal O] {
         }
     }
 
-    public int getSessionNumber{}(Paper[AL] paper) {
+    public int getSessionNumber{O->}(Paper[AL]{O->} paper) {
         try {
             if (allocationsVisible) {
                 JifInteger[AL] sNo = (JifInteger[AL])allocations.get(paper);
