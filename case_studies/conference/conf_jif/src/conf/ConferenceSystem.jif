@@ -107,7 +107,7 @@ public class ConferenceSystem[principal O] {
             try {
                 JifInteger[AL] sNo = (JifInteger[AL])allocations.get(paper);
                 int{O->*} toDowngrade = sNo.intValue();
-                result = declassify(toDowngrade, {O->*} to {O->_});
+                int rr = declassify(toDowngrade, {O->*} to {O->_});
                 // result = sNo.intValue();
             } catch (NullPointerException ex) {
 
