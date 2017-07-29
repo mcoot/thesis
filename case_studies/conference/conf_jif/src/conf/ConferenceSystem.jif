@@ -86,18 +86,37 @@ public class ConferenceSystem[principal O] {
         }
     }
 
-    public int getSessionNumber{O->_}(Paper[AL]{O->_} paper) {
-        try {
-            if (allocationsVisible) {
+    public int{O->_} getSessionNumber{O->_}(Paper[AL]{O->_} paper){
+        // try {
+        //     if (allocationsVisible) {
+        //         JifInteger[AL] sNo = (JifInteger[AL])allocations.get(paper);
+        //         int{AL} sNoVal = sNo.intValue();
+        //         return -1;
+        //     } else {
+        //         return -1;
+        //     }
+        // } catch (NullPointerException ex) {
+        //     return -1;
+        // } catch (ClassCastException ex) {
+        //     return -1;
+        // }
+
+        if (allocationsVisible) {
+            // JifInteger[AL] sNo = new JifInteger[AL](-1);
+            int{O->_} result;
+            try {
                 JifInteger[AL] sNo = (JifInteger[AL])allocations.get(paper);
-                int{AL} sNoVal = sNo.intValue();
-                return -1;
-            } else {
-                return -1;
+                int{O->*} toDowngrade = sNo.intValue();
+                result = declassify(toDowngrade, {O->*} to {O->_});
+                // result = sNo.intValue();
+            } catch (NullPointerException ex) {
+
+            } catch (ClassCastException ex) {
+
             }
-        } catch (NullPointerException ex) {
+
             return -1;
-        } catch (ClassCastException ex) {
+        } else {
             return -1;
         }
     }
