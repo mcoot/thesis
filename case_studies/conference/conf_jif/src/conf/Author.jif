@@ -1,0 +1,44 @@
+package conf;
+
+/**
+ * An author who may have papers submitted to a conference
+ */
+public class Author {
+
+    private final String{this} name;
+
+    public Author(String{this} name) {
+        this.name = name;
+    }
+
+    public String{this} getName() {
+        return name;
+    }
+
+    public boolean{this;o} equals(Object o) {
+        try {
+            Author other;
+            try {
+                other = (Author)o;
+            } catch (ClassCastException ex) {
+                return false;
+            }
+
+            return other.name.equals(name);
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    public int{this} hashCode() {
+        if (name == null) {
+            return 0;
+        }
+        return name.hashCode();
+    }
+
+    public String{this} toString() {
+        return "Author: " + name;
+    }
+
+}

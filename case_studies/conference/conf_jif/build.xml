@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="battleships_jif" default="usage" basedir=".">
+<project name="conf_jif" default="usage" basedir=".">
     
     <property environment="env"/>
 
@@ -35,7 +35,7 @@
             <arg value="${basedir}/run-jifc.sh" />
             <arg value="${src.dir}" />
             <arg value="${bin.dir}" /> 
-            <arg value="${extra.dir}" />
+            <arg value="${extra.dir}:." />
             <arg value="${classToBuild}" />
             <arg value="${verbose}" />
         </exec>
@@ -47,7 +47,7 @@
             <arg value="${basedir}/run-jif.sh" />
             <arg value="${bin.dir}" />
             <arg value="${extra.dir}" />
-            <arg value="battleships.Main" />
+            <arg value="conf.Main" />
         </exec>
     </target>
 

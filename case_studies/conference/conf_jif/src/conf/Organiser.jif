@@ -1,0 +1,47 @@
+package conf;
+
+/**
+ * An organiser for the conference, who can see details as the conference is being organised
+ */
+public class Organiser {
+
+    private final String{this} name;
+
+    // public IOChannel<{Object x:}, self> channel;
+
+    public Organiser(String{this} name) {
+        this.name = name;
+        // channel = new IOChannel<{Object x:}, self>();
+    }
+
+    public String{this} getName() {
+        return name;
+    }
+
+    public boolean{this;o} equals(Object o) {
+        try {
+            Organiser other;
+            try {
+                other = (Organiser)o;
+            } catch (ClassCastException ex) {
+                return false;
+            }
+
+            return other.name.equals(name);
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    public int{this} hashCode() {
+        if (name == null) {
+            return 0;
+        }
+        return name.hashCode();
+    }
+
+    public String{this} toString() {
+        return "Organiser: " + name;
+    }
+
+}

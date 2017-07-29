@@ -1,0 +1,129 @@
+package conf;
+
+/**
+ * A paper which may be submitted to a conference
+ */
+public class Paper[label AuthorLabel] implements JifObject[AuthorLabel] {
+
+    private final String{this} title;
+    private final String{this} paperAbstract;
+
+    private final Author{AuthorLabel}[]{AuthorLabel} authors;
+
+    public Paper(String{this} title, String{this} paperAbstract, Author{AuthorLabel}[]{AuthorLabel} authors) {
+        this.title = title;
+        this.paperAbstract = paperAbstract;
+
+        try {
+            this.authors = new Author[authors.length];
+            for (int i = 0; i < authors.length; ++i) {
+                this.authors[i] = authors[i];
+            }
+        } catch (NullPointerException ex) {
+            this.authors = new Author[2];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+
+        }
+    }
+
+    public String{this} getTitle() {
+        return title;
+    }
+
+    public String{this} getAbstract() {
+        return paperAbstract;
+    }
+
+    public Author{AuthorLabel}[]{AuthorLabel} getAuthors() {
+        if (authors == null) {
+            return new Author[2];
+        }
+
+        return authors.clone();
+    }
+
+    public boolean{this;AuthorLabel;o} equals(Object o) {
+        try {
+            Paper other;
+            try {
+                other = (Paper)o;
+            } catch (ClassCastException ex) {
+                return false;
+            }
+
+            if (authors.length != other.authors.length) return false;
+
+            for (int i = 0; i < authors.length; ++i) {
+                try {
+                    if (!authors[i].equals(other.authors[i])) {
+                        return false;
+                    }
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    return false;
+                }
+            }
+
+            return other.title.equals(title) && other.paperAbstract.equals(paperAbstract);
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    public boolean{lbl;*lbl;AuthorLabel;o} equals(label lbl, IDComparable[{*lbl}] o) {
+        try {
+            return equals((Object)o);
+        } catch (ClassCastException ex) {
+            return false;
+        }
+    }
+
+    public boolean{AuthorLabel;o} equals(IDComparable[AuthorLabel] o) {
+        return equals(AuthorLabel, o);
+    }
+
+    public int{AuthorLabel} hashCode() {
+        try {
+            int result = 19;
+
+            result = 31 * result + title.hashCode();
+            result = 31 * result + paperAbstract.hashCode();
+            // Assuming order of authors matters
+            for (int i = 0; i < authors.length; ++i) {
+                try {
+                    result = 31 * result + authors[i].hashCode();
+                } catch (ArrayIndexOutOfBoundsException ex) {
+
+                }
+            }
+
+            return result;
+        } catch (NullPointerException ex) {
+            return 0;
+        }
+    }
+
+    public String{AuthorLabel} toString() {
+        String s = "";
+
+        s += "Title: " + title + "\n";
+
+        s += "Abstract: " + paperAbstract + "\n";
+
+        s += "Authors: ";
+
+        String sep = "";
+        try {
+            for (int i = 0; i < authors.length; ++i) {
+                s += sep + authors[i].toString();
+                sep = ",";
+            }
+        } catch (NullPointerException ex) {
+
+        } catch (ArrayIndexOutOfBoundsException ex) {
+
+        }
+
+        return s;
+    }
+
+}
