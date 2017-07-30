@@ -5,37 +5,35 @@ import jif.runtime.Runtime;
 
 public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
 
-    // private static ConferenceSystem conferenceSystem;
+    private static ConferenceSystem[Organiser] conferenceSystem;
 
     // private static Paper[O->_][] papers;
 
-    public static final void main{Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-*}
-            (String[] args) : {Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-*}
-            where authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
-        PrintStream[{}] organiserOut1 = null;
+    public static final void main{Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*}
+            (principal{} p, String[] args) : {Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*}
+            throws SecurityException, IllegalArgumentException
+            where authority (Alice, Bob, Charles, Dennis, Eve, Organiser), caller(p) {
+
+        PrintStream[{}] out1 = null;
         
-        // Construct an output stream for the organiser
+        // Construct an output stream for the principal who is running the application
         try {
-            Runtime[Organiser] runtime = Runtime[Organiser].getRuntime();
-            organiserOut1 = runtime==null?null:runtime.stdout(new label {});
+            Runtime[p] runtime = Runtime[p].getRuntime();
+            out1 = runtime==null?null:runtime.stdout(new label {});
         }
         catch (SecurityException e) {
             // just let organiserOut be null.
         }
 
-        PrintStream[{}] organiserOut2 = endorse(organiserOut1, {Organiser->*} to {Organiser->*;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-*});
-        PrintStream[{}] organiserOut = declassify(organiserOut2, {Organiser->*;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-*});
+        PrintStream[{}] out2 = endorse(out1, {p->*} to {p->*;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*});
+        PrintStream[{}] out = declassify(out2, {p->_;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*});
 
-        try {
-            organiserOut.println("Tats");
-        } catch (NullPointerException ex) {
+        if (out == null) throw new IllegalArgumentException("Out is null :(");
 
-        }
+        out.println("Conference system" +
+                         "\n-----------------\n");
 
-        // System.out.println("Conference system" +
-        //                  "\n-----------------\n");
-
-        // System.out.println("Initialising system...");
+        out.println("Initialising system...");
         // setupDummyData();
 
         // // Retrieve papers
