@@ -86,17 +86,15 @@ public class ConferenceSystem[principal O] authority(O) {
         }
     }
 
-    public int{O->_} getSessionNumber{O->_}(Paper[{O->*}]{O->_} paper) where authority(O) {
+    public int{O->_} getSessionNumber{O->_}(Paper[{O->*}]{O->_} paper) {
         if (allocationsVisible) {
-            // return -1;
-            int{O->_} res = declassifySessionNumber(paper);
-            return -1;
+            return declassifySessionNumber(paper);
         } else {
             return -1;
         }
     }
 
-    private int{O->} declassifySessionNumber{O->_}(Paper[{O->*}]{O->_} paper):{O->_} where authority(O) {
+    private int{O->_} declassifySessionNumber{O->_}(Paper[{O->*}]{O->_} paper):{O->_} where authority(O) {
         JifObject[{O->*}]{O->*} sNoObj;
         try {
             sNoObj = allocations.get(new label {O->*}, paper);
