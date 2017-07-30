@@ -4,6 +4,12 @@ verbString=""
 if [ "$5" == "true" ];
 then
     verbString="-e"
+elif [ "$5" == "debug" ];
+then
+    verbString="-e -report debug=2"
+elif [ "$5" == "solver" ];
+then
+    verbString="-e -report solver=3"
 fi
 
 echo $3

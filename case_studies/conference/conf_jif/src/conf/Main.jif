@@ -64,7 +64,7 @@ public class Main {
 
     }
 
-    private static final PrintStream[{owner->*}]{owner->_} getOutputStream(principal owner) {
+    private static final PrintStream[{owner->*}]{owner->_} getOutputStream{owner->*}(principal owner) {
         PrintStream[{owner->*}]{owner->*} out = null;
         try {
             Runtime[owner] runtime = Runtime[owner].getRuntime();
