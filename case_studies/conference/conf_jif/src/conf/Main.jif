@@ -7,7 +7,7 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
 
     private static ConferenceSystem[Organiser] conferenceSystem;
 
-    // private static Paper[O->_][] papers;
+    private static Paper[{Organiser->_}][]{Organiser->_} papers;
 
     public static final void main{Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*}
             (principal{} p, String[] args) : {Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*}
@@ -152,27 +152,34 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
     //     }
     // }
 
-    // private static void setupDummyData() {
-    //     conferenceSystem = new ConferenceSystem();
+    private static void setupDummyData{Organiser->_}() where authority (Organiser) {
+        conferenceSystem = new ConferenceSystem[Organiser]();
 
-    //     Author alice = new Author("Alice");
-    //     Author bob = new Author("Bob");
-    //     Author charles = new Author("Charles");
-    //     Author dennis = new Author("Dennis");
-    //     Author eve = new Author("Eve");
+        Author alice = new Author("Alice");
+        Author bob = new Author("Bob");
+        Author charles = new Author("Charles");
+        Author dennis = new Author("Dennis");
+        Author eve = new Author("Eve");
 
-    //     Author[] allAuthors = {alice, bob, charles, dennis, eve};
-    //     Author[] authorsABC = {alice, bob, charles};
-    //     Author[] authorsDE = {dennis, eve};
-    //     papers = new Paper[3];
-    //     papers[0] = new Paper[{O->_}]("A Paper We Did Together", "We all did it :3", allAuthors);
-    //     papers[1] = new Paper<{O->_}>("An Excellent Paper", "Truly excellent", authorsABC);
-    //     papers[2] = new Paper<{O->_}>("A Terrible Paper", "This paper is bad", authorsDE);
+        Author[] allAuthors = {alice, bob, charles, dennis, eve};
+        Author[] authorsABC = {alice, bob, charles};
+        Author[] authorsDE = {dennis, eve};
+        
+        try {
+            papers = new Paper[{Organiser->_}][3];
+            papers[0] = new Paper[{Organiser->_}]("A Paper We Did Together", "We all did it :3", allAuthors);
+            papers[1] = new Paper[{Organiser->_}]("An Excellent Paper", "Truly excellent", authorsABC);
+            papers[2] = new Paper[{Organiser->_}]("A Terrible Paper", "This paper is bad", authorsDE);
 
-    //     conferenceSystem.handleSubmission(papers[0]);
-    //     conferenceSystem.handleSubmission(papers[1]);
-    //     conferenceSystem.handleSubmission(papers[2]);
-    // }
+            conferenceSystem.handleSubmission(papers[0]);
+            conferenceSystem.handleSubmission(papers[1]);
+            conferenceSystem.handleSubmission(papers[2]);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+
+        } catch (NullPointerException ex) {
+
+        }
+    }
 
     // private static void printAllocations() {
     //     for (int i = 0; i < papers.length; ++i) {
