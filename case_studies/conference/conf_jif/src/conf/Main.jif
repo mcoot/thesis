@@ -3,13 +3,35 @@ package conf;
 import java.io.PrintStream;
 import jif.runtime.Runtime;
 
-public class Main {
+public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
 
     // private static ConferenceSystem conferenceSystem;
 
     // private static Paper[O->_][] papers;
 
-    public static final void main(String[] args) {
+    public static final void main{Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-*}
+            (String[] args) : {Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-*}
+            where authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
+        PrintStream[{}] organiserOut1 = null;
+        
+        // Construct an output stream for the organiser
+        try {
+            Runtime[Organiser] runtime = Runtime[Organiser].getRuntime();
+            organiserOut1 = runtime==null?null:runtime.stdout(new label {});
+        }
+        catch (SecurityException e) {
+            // just let organiserOut be null.
+        }
+
+        PrintStream[{}] organiserOut2 = endorse(organiserOut1, {Organiser->*} to {Organiser->*;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-*});
+        PrintStream[{}] organiserOut = declassify(organiserOut2, {Organiser->*;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-*});
+
+        try {
+            organiserOut.println("Tats");
+        } catch (NullPointerException ex) {
+
+        }
+
         // System.out.println("Conference system" +
         //                  "\n-----------------\n");
 
@@ -64,23 +86,23 @@ public class Main {
 
     }
 
-    private static final PrintStream[{owner->*}]{owner->_} getOutputStream{owner->*}(principal owner) {
-        PrintStream[{owner->*}]{owner->*} out = null;
-        try {
-            Runtime[owner] runtime = Runtime[owner].getRuntime();
-            out = runtime.out();
-        } catch (SecurityException ex) {
-            return null;
-        } catch (NullPointerException ex) {
-            return null;
-        }
+    // private static final PrintStream[{owner->*}]{owner->_} getOutputStream{owner->*}(principal owner) {
+    //     PrintStream[{owner->*}]{owner->*} out = null;
+    //     try {
+    //         Runtime[owner] runtime = Runtime[owner].getRuntime();
+    //         out = runtime.out();
+    //     } catch (SecurityException ex) {
+    //         return null;
+    //     } catch (NullPointerException ex) {
+    //         return null;
+    //     }
 
-        // Declassify output
-        PrintStream[{owner->*}]{owner->_} outDeclass = declassify(out, {owner->*} to {owner->_});
+    //     // Declassify output
+    //     PrintStream[{owner->*}]{owner->_} outDeclass = declassify(out, {owner->*} to {owner->_});
 
-        return null;
-        // return out;
-    }
+    //     return null;
+    //     // return out;
+    // }
 
     // /**
     //  * Print out the authors of a given set of papers; requires allocations to be visible
