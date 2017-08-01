@@ -7,7 +7,7 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
 
     private static ConferenceSystem[Organiser] conferenceSystem;
 
-    private static Paper[{Organiser->_}][]{Organiser->_} papers;
+    private static Paper[{Organiser->*}][]{Organiser->_} papers;
 
     public static final void main{Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*}
             (principal{} p, String[] args) : {Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*}
@@ -161,15 +161,15 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
         Author dennis = new Author("Dennis");
         Author eve = new Author("Eve");
 
-        Author[] allAuthors = {alice, bob, charles, dennis, eve};
-        Author[] authorsABC = {alice, bob, charles};
-        Author[] authorsDE = {dennis, eve};
+        Author{Organiser->*}[] allAuthors = {alice, bob, charles, dennis, eve};
+        Author{Organiser->*}[] authorsABC = {alice, bob, charles};
+        Author{Organiser->*}[] authorsDE = {dennis, eve};
         
         try {
-            papers = new Paper[{Organiser->_}][3];
-            papers[0] = new Paper[{Organiser->_}]("A Paper We Did Together", "We all did it :3", allAuthors);
-            papers[1] = new Paper[{Organiser->_}]("An Excellent Paper", "Truly excellent", authorsABC);
-            papers[2] = new Paper[{Organiser->_}]("A Terrible Paper", "This paper is bad", authorsDE);
+            papers = new Paper[{Organiser->*}][3];
+            papers[0] = new Paper[{Organiser->*}]("A Paper We Did Together", "We all did it :3", allAuthors);
+            papers[1] = new Paper[{Organiser->*}]("An Excellent Paper", "Truly excellent", authorsABC);
+            papers[2] = new Paper[{Organiser->*}]("A Terrible Paper", "This paper is bad", authorsDE);
 
             conferenceSystem.handleSubmission(papers[0]);
             conferenceSystem.handleSubmission(papers[1]);
