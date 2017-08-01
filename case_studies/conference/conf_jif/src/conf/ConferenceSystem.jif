@@ -38,7 +38,7 @@ public class ConferenceSystem[principal O] authority(O) {
     /**
      * Upgrade a paper's policy such that its authors may only be viewed under the double-blind conditions
      */
-    private Paper[{O->*}][] upgradePaper(Paper[{O->_}] paper) {
+    private Paper[{O->*}][] upgradePaper{O->_}(Paper[{O->_}]{O->_} paper) {
         if (paper == null) return null;
 
         Author{O->_}[] paperAuthors = paper.getAuthors();
