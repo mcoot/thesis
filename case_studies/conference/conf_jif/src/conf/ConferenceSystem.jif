@@ -1,6 +1,6 @@
 package conf;
 
-import jif.util.HashMap;
+import jif.util.ArrayMap;
 import java.io.PrintStream;
 
 /**
@@ -25,7 +25,7 @@ public class ConferenceSystem[principal O] authority(O) {
     private Paper[{O->*}]{O->_}[]{O->_} submissions;
 
     // The allocation of accepted papers to allocations
-    private HashMap[{O->*}, {O->*}] allocations;
+    private ArrayMap[{O->*}, {O->*}] allocations;
 
     public ConferenceSystem() {
         organiser = new Organiser("TheOrganiser");
@@ -33,7 +33,7 @@ public class ConferenceSystem[principal O] authority(O) {
         submissions = new Paper[{O->*}][5];
         numSubmissions = 0;
 
-        allocations = new HashMap[{O->*}, {O->*}]();
+        allocations = new ArrayMap[{O->*}, {O->*}]();
     }
 
     /**
@@ -100,18 +100,23 @@ public class ConferenceSystem[principal O] authority(O) {
     }
 
     public int{O->_} getSessionNumber{O->_}(Paper[{O->_}]{O->_} paper) {
-        Paper[{O->*}]{O->_} upgradedPaper = upgradePaper(paper);
+        if (paper == null) return -1;
+        String{O->_} title = paper.getTitle();
+
+        if (title == null) return -1;
+
         if (allocationsVisible) {
-            return declassifySessionNumber(upgradedPaper);
+            return declassifySessionNumber(title);
         } else {
             return -1;
         }
     }
 
-    private int{O->_} declassifySessionNumber{O->_}(Paper[{O->*}]{O->_} paper):{O->_} where authority(O) {
+    private int{O->_} declassifySessionNumber{O->_}(String{O->_} title):{O->_} where authority(O) {
+        JifString[{O->_}] titleObj = new JifString[{O->_}](title);
         JifObject[{O->*}]{O->*} sNoObj;
         try {
-            sNoObj = allocations.get(new label {O->*}, paper);
+            sNoObj = allocations.get(new label {O->*}, titleObj);
         } catch (NullPointerException e) {
             return -2;
         }
@@ -145,8 +150,9 @@ public class ConferenceSystem[principal O] authority(O) {
         // Arbitrary allocation - just give each paper a unique session number
         try {
             for (int i = 0; i < numSubmissions; ++i) {
-                allocations.put(submissions[i], new JifInteger[{O->*}](i));
-                
+                // Use the title as the key due to equality checking issues
+                // Means that you can't have duplicate paper titles, but w/e
+                allocations.put(new JifString[{O->_}](submissions[i].getTitle()), new JifInteger[{O->*}](i));
             }
         } catch (ArrayIndexOutOfBoundsException ex) {
 
