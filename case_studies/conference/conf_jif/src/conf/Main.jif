@@ -18,15 +18,15 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
         
         // Construct an output stream for the principal who is running the application
         try {
-            Runtime[Organiser] runtime = Runtime[Organiser].getRuntime();
+            Runtime[p] runtime = Runtime[p].getRuntime();
             out1 = runtime==null?null:runtime.stdout(new label {});
         }
         catch (SecurityException e) {
             // just let organiserOut be null.
         }
 
-        PrintStream[{}] out2 = endorse(out1, {Organiser->*} to {Organiser->*;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*});
-        PrintStream[{}] out = declassify(out2, {Organiser->_;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*});
+        PrintStream[{}] out2 = endorse(out1, {p->*} to {p->*;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*});
+        PrintStream[{}] out = declassify(out2, {p->_;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*});
 
         if (out == null) throw new IllegalArgumentException("Out is null :(");
 
@@ -56,10 +56,10 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
         // Allocations to sessions have been made, but are not visible to authors yet!
         out.println("Allocations completed [secret]: attempting to retrieve session numbers:");
 
-        // // Attempt to print out allocations (should return consistent default value of -1)
-        // printAllocations();
+        // Attempt to print out allocations (should return consistent default value of -1)
+        printAllocations(out);
 
-        // System.out.println();
+        out.println();
         
 
         // // Cannot attempt to show authors of submissions as this causes compile error!
@@ -72,17 +72,17 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
         //     printOutAuthorsOrganiser(conferenceSystem.organiser, retrievedPapers);
         // } catch (NullPointerException ex) {}
         
-        // System.out.println();
+        out.println();
 
-        // // Mark allocations as visible (i.e. notification date expired)
-        // conferenceSystem.setAllocationsVisible();
+        // Mark allocations as visible (i.e. notification date expired)
+        conferenceSystem.setAllocationsVisible();
 
-        // System.out.println("Allocations made public: attempting to retrieve session numbers:");
+        out.println("Allocations made public: attempting to retrieve session numbers:");
 
-        // // Print out allocations again (now available)
-        // printAllocations();
+        // Print out allocations again (now available)
+        printAllocations(out);
         
-        // System.out.println();
+        out.println();
 
         // System.out.println("Printing out (no longer secret) author information via public channel:");
 
@@ -190,13 +190,12 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
         }
     }
 
-    private static void printAllocations{Organiser->_}(PrintStream[{}] out) {
+    private static void printAllocations{Organiser->_}(PrintStream[{}]{Organiser->_} out) {
         try {
             for (int i = 0; i < papers.length; ++i) {
                 Paper[{Organiser->_}]{Organiser->_} curPaper = papers[i];
                 int sessionNumber = conferenceSystem.getSessionNumber(curPaper);
-                String{Organiser->_} result = "Session number for \"" + curPaper.getTitle() + "\": " + sessionNumber;
-                out.println(result);
+                out.println("Session number for \"" + curPaper.getTitle() + "\": " + sessionNumber);
             }
         } catch (ArrayIndexOutOfBoundsException ex) {
 

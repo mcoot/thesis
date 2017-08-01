@@ -1,6 +1,7 @@
 package conf;
 
 import jif.util.HashMap;
+import java.io.PrintStream;
 
 /**
  * A system to handle the submission, approval and session allocation of papers to a conference
@@ -112,7 +113,7 @@ public class ConferenceSystem[principal O] authority(O) {
         try {
             sNoObj = allocations.get(new label {O->*}, paper);
         } catch (NullPointerException e) {
-            return -1;
+            return -2;
         }
 
         // Declassify the object retrieved from the map
@@ -123,7 +124,7 @@ public class ConferenceSystem[principal O] authority(O) {
         try {
             sNo = (JifInteger[{O->*}])sNoObjDeclass;
         } catch (ClassCastException ex) {
-            return -1;
+            return -3;
         }
 
         // Pull the int from the JifInteger
@@ -131,7 +132,7 @@ public class ConferenceSystem[principal O] authority(O) {
         try {
             r = sNo.intValue();
         } catch (NullPointerException ex) {
-            return -1;
+            return -4;
         }
 
         // Declassify the int
@@ -145,6 +146,7 @@ public class ConferenceSystem[principal O] authority(O) {
         try {
             for (int i = 0; i < numSubmissions; ++i) {
                 allocations.put(submissions[i], new JifInteger[{O->*}](i));
+                
             }
         } catch (ArrayIndexOutOfBoundsException ex) {
 
