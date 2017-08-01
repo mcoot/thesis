@@ -18,15 +18,15 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
         
         // Construct an output stream for the principal who is running the application
         try {
-            Runtime[p] runtime = Runtime[p].getRuntime();
+            Runtime[Organiser] runtime = Runtime[Organiser].getRuntime();
             out1 = runtime==null?null:runtime.stdout(new label {});
         }
         catch (SecurityException e) {
             // just let organiserOut be null.
         }
 
-        PrintStream[{}] out2 = endorse(out1, {p->*} to {p->*;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*});
-        PrintStream[{}] out = declassify(out2, {p->_;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*});
+        PrintStream[{}] out2 = endorse(out1, {Organiser->*} to {Organiser->*;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*});
+        PrintStream[{}] out = declassify(out2, {Organiser->_;Alice<-* meet Bob<-* meet Charles<-* meet Dennis<-* meet Eve<-* meet Organiser<-* meet p<-*});
 
         if (out == null) throw new IllegalArgumentException("Out is null :(");
 
@@ -34,20 +34,27 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
                          "\n-----------------\n");
 
         out.println("Initialising system...");
-        // setupDummyData();
+        setupDummyData();
 
-        // // Retrieve papers
-        // Paper<ConferenceSystem.ifAllocationsVisible>[] retrievedPapers = conferenceSystem.getSubmissions();
+        // if (conferenceSystem == null) throw new IllegalArgumentException("Conference system borked :(");
 
-        // System.out.println("Performing session allocations [secret]");
+        // Retrieve papers
+        Paper[{Organiser->*}][] retrievedPapers = new Paper[{Organiser->*}][2];
+        try {
+            retrievedPapers = conferenceSystem.getSubmissions();
+        } catch (NullPointerException ex) {
 
-        // // Perform the allocations
-        // conferenceSystem.performAllocations();
+        } 
 
-        // System.out.println();
+        out.println("Performing session allocations [secret]");
+
+        // Perform the allocations
+        conferenceSystem.performAllocations();
+
+        out.println();
         
-        // // Allocations to sessions have been made, but are not visible to authors yet!
-        // System.out.println("Allocations completed [secret]: attempting to retrieve session numbers:");
+        // Allocations to sessions have been made, but are not visible to authors yet!
+        out.println("Allocations completed [secret]: attempting to retrieve session numbers:");
 
         // // Attempt to print out allocations (should return consistent default value of -1)
         // printAllocations();
@@ -165,8 +172,10 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
         Author{Organiser->_}[] authorsABC = {alice, bob, charles};
         Author{Organiser->_}[] authorsDE = {dennis, eve};
         
+        papers = new Paper[{Organiser->_}][3];
+
         try {
-            papers = new Paper[{Organiser->_}][3];
+            
             papers[0] = new Paper[{Organiser->_}]("A Paper We Did Together", "We all did it :3", allAuthors);
             papers[1] = new Paper[{Organiser->_}]("An Excellent Paper", "Truly excellent", authorsABC);
             papers[2] = new Paper[{Organiser->_}]("A Terrible Paper", "This paper is bad", authorsDE);
@@ -181,11 +190,19 @@ public class Main authority (Alice, Bob, Charles, Dennis, Eve, Organiser) {
         }
     }
 
-    // private static void printAllocations() {
-    //     for (int i = 0; i < papers.length; ++i) {
-    //         int sessionNumber = conferenceSystem.getSessionNumber(papers[i]);
-    //         System.out.println("Session number for \"" + papers[i].getTitle() + "\": " + sessionNumber);
-    //     }
-    // }
+    private static void printAllocations{Organiser->_}(PrintStream[{}] out) {
+        try {
+            for (int i = 0; i < papers.length; ++i) {
+                Paper[{Organiser->_}]{Organiser->_} curPaper = papers[i];
+                int sessionNumber = conferenceSystem.getSessionNumber(curPaper);
+                String{Organiser->_} result = "Session number for \"" + curPaper.getTitle() + "\": " + sessionNumber;
+                out.println(result);
+            }
+        } catch (ArrayIndexOutOfBoundsException ex) {
+
+        } catch (NullPointerException ex) {
+
+        }
+    }
 
 }

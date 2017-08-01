@@ -98,9 +98,10 @@ public class ConferenceSystem[principal O] authority(O) {
         }
     }
 
-    public int{O->_} getSessionNumber{O->_}(Paper[{O->*}]{O->_} paper) {
+    public int{O->_} getSessionNumber{O->_}(Paper[{O->_}]{O->_} paper) {
+        Paper[{O->*}]{O->_} upgradedPaper = upgradePaper(paper);
         if (allocationsVisible) {
-            return declassifySessionNumber(paper);
+            return declassifySessionNumber(upgradedPaper);
         } else {
             return -1;
         }
