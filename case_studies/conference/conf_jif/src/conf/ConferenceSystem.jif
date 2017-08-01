@@ -38,36 +38,38 @@ public class ConferenceSystem[principal O] authority(O) {
     /**
      * Upgrade a paper's policy such that its authors may only be viewed under the double-blind conditions
      */
-    private Paper[{O->*}][] upgradePaper{O->_}(Paper[{O->_}]{O->_} paper) {
-        if (paper == null) return null;
-
-        Author{O->_}[] paperAuthors = paper.getAuthors();
-        Author{O->*}[] upgradedAuthors = new Author[paperAuthors.length];
-
-        // Need to upgrade the policy of all authors from bottom -> ifAllocationsVisible
+    private Paper[{O->*}]{O->_} upgradePaper{O->_}(Paper[{O->_}]{O->_} paper) {
         try {
-            for (int i = 0; i < paperAuthors.length; ++i) {
-                Author{O->_} u = paperAuthors[i];
-                upgradedAuthors[i] = u;
+            Author{O->_}[] paperAuthors = paper.getAuthors();
+            Author{O->*}[] upgradedAuthors = new Author[paperAuthors.length];
+
+            // Need to upgrade the policy of all authors from bottom -> ifAllocationsVisible
+            try {
+                for (int i = 0; i < paperAuthors.length; ++i) {
+                    Author{O->_} u = paperAuthors[i];
+                    upgradedAuthors[i] = u;
+                }
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                return null;
             }
-        } catch (ArrayIndexOutOfBoundsException ex) {
+
+            Paper[{O->*}]{O->_} upgraded = new Paper[{O->*}](paper.getTitle(), paper.getAbstract(), upgradedAuthors);
+
+            return upgraded;
+        } catch (NullPointerException ex) {
             return null;
         }
-
-        return null;
-
-        
 
         // Paper[???] upgraded = new Paper[???](paper.getTitle(), paper.getAbstract(), upgradedAuthors);
 
         // return upgraded;
     }
 
-    public void handleSubmission{O->_}(Paper[{O->*}]{O->_} paper) {
+    public void handleSubmission{O->_}(Paper[{O->_}]{O->_} paper) {
         // Can't submit after the conference sessions are already allocated
         try {
             if (!allocationsVisible) {
-                submissions[numSubmissions] = paper; //upgradePaper(paper);
+                submissions[numSubmissions] = upgradePaper(paper);
                 numSubmissions++;
 
                 // Resize array if required
