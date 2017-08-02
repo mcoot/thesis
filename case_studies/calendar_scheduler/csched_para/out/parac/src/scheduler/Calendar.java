@@ -48,6 +48,7 @@ public class Calendar
       {
         scheduler.Meeting m = meetings.get(i);
         s += "\n";
+        s += "isOwner("+ user +", "+m.self+") = " + se.chalmers.paragon.runtime.LockState.isOpen(new se.chalmers.paragon.runtime.Lock(scheduler.Meeting.isOwner, new se.chalmers.paragon.runtime.Actor(user), new se.chalmers.paragon.runtime.Actor(m.self))) + "\n";
         if (se.chalmers.paragon.runtime.LockState.isOpen(new se.chalmers.paragon.runtime.Lock(scheduler.Meeting.isOwner, new se.chalmers.paragon.runtime.Actor(user), new se.chalmers.paragon.runtime.Actor(m.self))))
         {
           s += m.toString();

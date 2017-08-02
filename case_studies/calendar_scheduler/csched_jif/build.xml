@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="csched_jif" default="usage" basedir=".">
+    
+    <property environment="env"/>
+
+    <property name="cygwin.dir" value="D:/cygwin64" />
+
+    <property name="src.dir" value="${basedir}/src" />
+    <property name="bin.dir" value="${basedir}/out" />
+    <property name="extra.dir" value="${basedir}/extra" />
+
+    <target name="usage">
+        <echo message="USAGE instructions" />
+        <echo message="" />
+        <echo message="Run ant with one of the following targets:" />
+        <echo message="clean            - Cleans up." />
+        <echo message="jifc             - Compiles JIF source" />
+        <echo message="run              - Runs the Main class from the javac output" />
+    </target>
+
+    <target name="clean">
+        <delete includeemptydirs="true" failonerror="false">
+            <fileset dir="${bin.dir}">
+            <include name="**/*.java" />
+                <include name="**/*.class" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="jifc">
+        <property name="classToBuild" value="all" />
+        <property name="verbose" value="false" />
+
+        <!-- Set the shell to cygwin if windows, bash if linux -->
+        <condition property="sh_exe" value="${cygwin.dir}/bin/bash.exe">
+            <os family="windows" />
+        </condition>
+        <condition property="sh_exe" value="/bin/bash">
+            <os family="unix" />
+        </condition>   
+
+        <exec executable="${sh_exe}">
+            <arg value="--login" />
+            <arg value="${basedir}/run-jifc.sh" />
+            <arg value="${src.dir}" />
+            <arg value="${bin.dir}" /> 
+            <arg value="${extra.dir}:." />
+            <arg value="${classToBuild}" />
+            <arg value="${verbose}" />
+        </exec>
+    </target>
+
+    <target name="jifc-linux">
+        <property name="classToBuild" value="all" />
+        <property name="verbose" value="false" />
+
+        <!-- Set the shell to cygwin if windows, bash if linux -->
+        <condition property="sh_exe" value="${cygwin.dir}/bin/bash.exe">
+            <os family="windows" />
+        </condition>
+        <condition property="sh_exe" value="/bin/bash">
+            <os family="unix" />
+        </condition>   
+
+        <exec executable="${sh_exe}">
+            <arg value="--login" />
+            <arg value="${basedir}/run-jifc.sh" />
+            <arg value="${src.dir}" />
+            <arg value="${bin.dir}" /> 
+            <arg value="${extra.dir}:." />
+            <arg value="${classToBuild}" />
+            <arg value="${verbose}" />
+        </exec>
+    </target>
+
+    <target name="run">
+        <exec executable="${cygwin.dir}/bin/bash.exe">
+            <arg value="--login" />
+            <arg value="${basedir}/run-jif.sh" />
+            <arg value="${bin.dir}" />
+            <arg value="${extra.dir}" />
+            <arg value="scheduler.Main" />
+        </exec>
+    </target>
+
+</project>

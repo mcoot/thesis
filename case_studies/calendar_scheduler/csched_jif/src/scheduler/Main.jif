@@ -1,0 +1,135 @@
+package scheduler;
+
+import java.util.LinkedList;
+
+public class Main {
+
+    public static final policy bottom = {Object x:};
+
+    private static Scheduler theScheduler = new Scheduler();
+
+    private static notnull ?bottom User alice;
+    private static notnull ?bottom User bob;
+    private static notnull ?bottom User charles;
+
+    private static ?bottom LinkedList<User, bottom> aliceOnly = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> bobOnly = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> charlesOnly = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> alicebob = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> alicecharles = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> bobcharles = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> allUsers = new LinkedList<User, bottom>();
+
+    private static Meeting meetingAliceBobAttend;
+
+    public static !bottom void main(String[] args) throws !bottom NullPointerException {
+        System.out.println("Calendar scheduler" +
+                           "\n----------------\n");
+
+        System.out.println("Initialising system...");
+
+        alice = new User("Alice");
+        bob = new User("Bob");
+        charles = new User("Charles");
+
+        setupDummyData(alice, bob, charles);
+
+        // Finding out whether other users are free or not has no confidentiality constraints
+        boolean scheduleCheck1 = theScheduler.attendeesFreeAtTime(allUsers,
+                Meeting.getDayValue("Monday"), 9, 10);
+        System.out.println("Are all users available at 9 - 10 on a Monday? " + scheduleCheck1);
+        boolean scheduleCheck2 = theScheduler.attendeesFreeAtTime(allUsers,
+                Meeting.getDayValue("Tuesday"), 9, 10);
+        System.out.println("Are all users available at 9 - 10 on a Tuesday? " + scheduleCheck2);
+
+        System.out.println();
+        System.out.println("Alice prints her calendar:");
+        System.out.println("Memes");
+
+        // ?{aliceFromCal.self:} String aliceCalendarRep = theScheduler.getCalendar(alice).getCalendarRepresentation();
+        // A user may print out all events in their own calendar (since they attend all events in their calendar)
+        Calendar aliceCal = theScheduler.getCalendar(alice);
+        IOChannel<bottom, aliceCal.user> aliceOut = new IOChannel<bottom, aliceCal.user>();
+        aliceOut.println(theScheduler.getCalendar(alice).getCalendarRepresentation());
+
+        //  [exec] Adding for name: scheduler.User
+        //  [exec] fetchType[pkg]
+        //  [exec] Evaluated field "self" to have actor id: @0
+        //  [exec] Evaluated field "name" to have actor id: @1
+
+        // [exec] Adding for name: scheduler.Calendar
+        // [exec] fetchType[pkg]
+        // [exec] Evaluated field "user" to have actor id: @2
+
+        // A user may not print out another user's calendar since it cannot be statically determined whether the printing user attends all of them!
+        aliceOut.println(theScheduler.getCalendar(bob).getCalendarRepresentation());
+
+        // System.out.println();
+        // System.out.println("Alice and bob print an event both attend:");
+
+        // // Alice and bob may both print out a meeting they attend
+        // alice.channel.println(meetingAliceBobAttend.toString());
+        // bob.channel.println(meetingAliceBobAttend.toString());
+        // // Charles may not
+        // // charles.channel.println(meetingAliceBobAttend);
+
+
+
+    }
+
+    private static !bottom void setupDummyData(notnull ?bottom User alice, notnull ?bottom User bob, notnull ?bottom User charles) {
+
+        // Add the users to the scheduler
+        theScheduler.addUser(alice);
+        theScheduler.addUser(bob);
+        theScheduler.addUser(charles);
+
+        // Combinations of attendees
+        aliceOnly.add(alice);
+        bobOnly.add(bob);
+        charlesOnly.add(charles);
+        alicebob.add(alice);
+        alicebob.add(bob);
+        alicecharles.add(alice);
+        alicecharles.add(charles);
+        bobcharles.add(bob);
+        bobcharles.add(charles);
+        allUsers.add(alice);
+        allUsers.add(bob);
+        allUsers.add(charles);
+
+        // Only making dummy schedules for Monday
+
+        // Alice
+        theScheduler.addMeeting(alice, new Meeting(alice, "Monday", 8, 10, "Coming in late", aliceOnly));
+        theScheduler.addMeeting(alice, new Meeting(alice, "Monday", 12, 13, "Lunch break", aliceOnly));
+        theScheduler.addMeeting(alice, new Meeting(alice, "Monday", 16, 18, "Leaving early", aliceOnly));
+
+
+        // Bob meetings
+        theScheduler.addMeeting(bob, new Meeting(bob, "Monday", 7, 9, "Long breaky", bobOnly));
+        theScheduler.addMeeting(bob, new Meeting(bob, "Monday", 13, 14, "Nap time", bobOnly));
+
+        // Charles meetings
+        theScheduler.addMeeting(charles, new Meeting(charles, "Monday", 10, 11, "Important Serious Work", charlesOnly));
+
+        // Some combinations
+        meetingAliceBobAttend = new Meeting(alice, "Monday", 10, 12, "Catch up sesh", alicebob);
+        theScheduler.addMeeting(alice, meetingAliceBobAttend);
+        theScheduler.addMeeting(bob, meetingAliceBobAttend);
+
+        Meeting m = new Meeting(alice, "Monday", 13, 14, "Alice's disciplinary hearing", alicecharles);
+        theScheduler.addMeeting(alice, m);
+        theScheduler.addMeeting(charles, m);
+
+        m = new Meeting(bob, "Monday", 9, 10, "Bob's disciplinary hearing", bobcharles);
+        theScheduler.addMeeting(bob, m);
+        theScheduler.addMeeting(charles, m);
+
+        m = new Meeting(alice, "Monday", 14, 15, "Departmental meeting", allUsers);
+        theScheduler.addMeeting(alice, m);
+        theScheduler.addMeeting(bob, m);
+        theScheduler.addMeeting(charles, m);
+    }
+
+}

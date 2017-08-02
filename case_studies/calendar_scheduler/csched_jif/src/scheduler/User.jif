@@ -1,0 +1,40 @@
+package scheduler;
+
+public class User {
+
+    public final notnull User self;
+
+    public final ?policyof(this) String name;
+
+    public notnull IOChannel<{Object x:}, self> channel;
+
+    public User(?policyof(this) String uname) {
+        self = (User)this;
+        name = uname;
+        channel = new IOChannel<{Object x:}, self>();
+    }
+
+    public ?(policyof(this)*policyof(o)) boolean equals(Object o) {
+        User that;
+        try {
+            that = (User)o;
+        } catch (ClassCastException ex) {
+            return false;
+        }
+
+        try {
+            return that.name.equals(name);
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    public ?policyof(this) int hashCode() {
+        return name.hashCode();
+    }
+
+    public ?policyof(this) String toString() {
+        return name;
+    }
+
+}
