@@ -2,19 +2,16 @@ package scheduler;
 
 public class User {
 
-    public final notnull User self;
+    public final String{this} name;
 
-    public final ?policyof(this) String name;
+    // public notnull IOChannel<{Object x:}, self> channel;
 
-    public notnull IOChannel<{Object x:}, self> channel;
-
-    public User(?policyof(this) String uname) {
-        self = (User)this;
+    public User(String{this} uname) {
         name = uname;
-        channel = new IOChannel<{Object x:}, self>();
+        // channel = new IOChannel<{Object x:}, self>();
     }
 
-    public ?(policyof(this)*policyof(o)) boolean equals(Object o) {
+    public boolean{this;o} equals(Object o) {
         User that;
         try {
             that = (User)o;
@@ -29,11 +26,15 @@ public class User {
         }
     }
 
-    public ?policyof(this) int hashCode() {
-        return name.hashCode();
+    public int{this} hashCode() {
+        try {
+            return name.hashCode();
+        } catch (NullPointerException ex) {
+            return 0;
+        }
     }
 
-    public ?policyof(this) String toString() {
+    public String{this} toString() {
         return name;
     }
 

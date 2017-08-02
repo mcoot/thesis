@@ -1,50 +1,39 @@
 package scheduler;
 
-import java.util.LinkedList;
+import jif.util.LinkedList;
 
-public class Meeting {
-
-    public final notnull ?{Object x:} Meeting self;
-
-    public final notnull ?{Object x:} User owner;
-
+public class Meeting[label Owner] {
     // Lock which is open when a user is attending a given meeting
-    public static final ?{User u:} lock isAttending(User, Meeting);
+    // public static final ?{User u:} lock isAttending(User, Meeting);
 
-    public static final ?{Object x:} lock isOwner(User, Meeting);
+    // public static final ?{Object x:} lock isOwner(User, Meeting);
 
-    public final policy attendeesOnly = {
-            User u : isAttending(u, self)
-    };
+    // public final policy attendeesOnly = {
+    //         User u : isAttending(u, self)
+    // };
 
-    public final policy ownerOnly = {
-        User u : isOwner(u, self)
-    };
+    // public final policy ownerOnly = {
+    //     User u : isOwner(u, self)
+    // };
 
-    public final ?ownerOnly String title;
+    public final String title;
 
-    public final ?policyof(this) int day;
+    public final int day;
 
-    public final ?policyof(this) int startHour;
+    public final int startHour;
 
-    public final ?policyof(this) int endHour;
+    public final int endHour;
 
-    private notnull ?{Object x:} LinkedList<User, {Object x:}> users;
+    private LinkedList[Owner->_] users;
 
-    public
-    +isOwner(owner, self) 
-    !{Object x:}
-    Meeting(notnull ?{Object x:} User uowner, ?policyof(this) String dayName, ?policyof(this) int startHour, ?policyof(this) int endHour, 
-                   ?ownerOnly String title, ?{Object x:} LinkedList<User, policyof(this)> attendees) {
-        self = (Meeting)this;
-            
+    public Meeting(User uowner, String dayName, int startHour, int endHour, String title, LinkedList attendees) {            
             // throws !(policyof(this) * attendeesOnly) InvalidMeetingException {
         // if (!meetingDetailsValid(getDayValue(dayName), startHour, endHour)) {
         //     throw new InvalidMeetingException();
         // }
         owner = uowner;
 
-        open isOwner(owner, self);
+        // open isOwner(owner, self);
 
         this.day = getDayValue(dayName);
         this.startHour = startHour;
@@ -53,11 +42,11 @@ public class Meeting {
 
         
 
-        users = new LinkedList<User, {Object x:}>();
+        users = new LinkedList();
 
         for (int i = 0; i < attendees.size(); ++i) {
             User u = attendees.get(i);
-            open isAttending(u, self);
+            // open isAttending(u, self);
             this.users.add(u);
         }
     }
