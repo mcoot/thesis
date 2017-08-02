@@ -4,19 +4,13 @@ import java.util.LinkedList;
 
 public class Calendar {
 
-    public final ?{Object x:} User user;
+    public notnull final ?{Object x:} User user;
 
     private LinkedList<Meeting, {Object x:}> meetings;
 
-    public Calendar(?{Object x:} User user) {
-        User tmpUser = new User("WHY");
-        try {
-            tmpUser = user.self;
-        } catch (NullPointerException ex) {
-        
-        }
-        
-        this.user = tmpUser;
+    public Calendar(notnull ?{Object x:} User inputUser) {
+        user = inputUser;
+
         this.meetings = new LinkedList<Meeting, {Object x:}>();
     }
 
@@ -36,8 +30,13 @@ public class Calendar {
         // if (!freeAtTime(meeting.day, meeting.startHour, meeting.endHour) || !meeting.getUsers().contains(user)) {
         //     throw new InvalidMeetingException();
         // }
+        try {
+            if (meeting != null && user.equals(meeting.owner)) {
+                meetings.add(meeting);
+            }
+        } catch (NullPointerException impossible) {
 
-        meetings.add(meeting);
+        }
     }
 
     public ?{Object x:} LinkedList<Meeting, {Object x:}> getMeetings() {
@@ -50,15 +49,11 @@ public class Calendar {
             ?{user:} String s = user.toString() + "'s Calendar:\n---";
 
             for (int i = 0; i < meetings.size(); ++i) {
-                Meeting m = meetings.get(i);
+                ?{Object x:} Meeting m = meetings.get(i);
                 s += "\n";
-
-                ?{User u : Meeting.isAttending(u, m.self)} String mString = m.toString();
-
-                if (Meeting.isAttending(user, m.self)) {
-                // if (m.self == null) {
-                    // s += "x";
-                    s += mString;
+                
+                if (Meeting.isOwner(user, m.self)) {
+                    s += m.toString();
                 }
                 
             }

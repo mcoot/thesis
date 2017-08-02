@@ -3,19 +3,19 @@ public class Main
 {
   public static final policy bottom = {java.lang.Object x:};
   private static scheduler.Scheduler theScheduler = new scheduler.Scheduler();
-  private static scheduler.User alice = new scheduler.User("Alice");
-  private static scheduler.User bob = new scheduler.User("Bob");
-  private static scheduler.User charles = new scheduler.User("Charles");
-  private static java.util.LinkedList<scheduler.User, scheduler.Main.bottom> aliceOnly = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
-  private static java.util.LinkedList<scheduler.User, scheduler.Main.bottom> bobOnly = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
-  private static java.util.LinkedList<scheduler.User, scheduler.Main.bottom> charlesOnly = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
-  private static java.util.LinkedList<scheduler.User, scheduler.Main.bottom> alicebob = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
-  private static java.util.LinkedList<scheduler.User, scheduler.Main.bottom> alicecharles = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
-  private static java.util.LinkedList<scheduler.User, scheduler.Main.bottom> bobcharles = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
-  private static java.util.LinkedList<scheduler.User, scheduler.Main.bottom> allUsers = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
+  private static notnull ?scheduler.Main.bottom scheduler.User alice;
+  private static notnull ?scheduler.Main.bottom scheduler.User bob;
+  private static notnull ?scheduler.Main.bottom scheduler.User charles;
+  private static ?scheduler.Main.bottom java.util.LinkedList<scheduler.User, scheduler.Main.bottom> aliceOnly = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
+  private static ?scheduler.Main.bottom java.util.LinkedList<scheduler.User, scheduler.Main.bottom> bobOnly = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
+  private static ?scheduler.Main.bottom java.util.LinkedList<scheduler.User, scheduler.Main.bottom> charlesOnly = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
+  private static ?scheduler.Main.bottom java.util.LinkedList<scheduler.User, scheduler.Main.bottom> alicebob = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
+  private static ?scheduler.Main.bottom java.util.LinkedList<scheduler.User, scheduler.Main.bottom> alicecharles = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
+  private static ?scheduler.Main.bottom java.util.LinkedList<scheduler.User, scheduler.Main.bottom> bobcharles = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
+  private static ?scheduler.Main.bottom java.util.LinkedList<scheduler.User, scheduler.Main.bottom> allUsers = new java.util.LinkedList<scheduler.User, scheduler.Main.bottom>();
   private static scheduler.Meeting meetingAliceBobAttend;
   public static !scheduler.Main.bottom void main(java.lang.String[] args) throws !scheduler.Main.bottom java.lang.NullPointerException
   ;
-  private static !scheduler.Main.bottom void setupDummyData()
+  private static !scheduler.Main.bottom void setupDummyData(notnull ?scheduler.Main.bottom scheduler.User alice, notnull ?scheduler.Main.bottom scheduler.User bob, notnull ?scheduler.Main.bottom scheduler.User charles)
   ;
 }

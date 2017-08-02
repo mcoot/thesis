@@ -8,7 +8,7 @@ public class Scheduler
   }
   public ?scheduler.Scheduler.bottom scheduler.Calendar getCalendar(?{java.lang.Object x:} scheduler.User user)
   ;
-  public !scheduler.Scheduler.bottom void addUser(?scheduler.Scheduler.bottom scheduler.User user)
+  public !scheduler.Scheduler.bottom void addUser(notnull ?scheduler.Scheduler.bottom scheduler.User user)
   ;
   public boolean attendeesFreeAtTime(java.util.LinkedList<scheduler.User, scheduler.Scheduler.bottom> users, int day, int startHour, int endHour)
   ;

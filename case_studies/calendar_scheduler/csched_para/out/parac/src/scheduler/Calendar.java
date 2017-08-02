@@ -4,17 +4,9 @@ public class Calendar
 {
   public final scheduler.User user;
   private java.util.LinkedList<scheduler.Meeting> meetings;
-  public Calendar (scheduler.User user)
+  public Calendar (scheduler.User inputUser)
   {
-    scheduler.User tmpUser = new scheduler.User("WHY");
-    try
-    {
-      tmpUser = user.self;
-    }
-    catch (java.lang.NullPointerException ex)
-    {
-    }
-    this.user = tmpUser;
+    user = inputUser;
     this.meetings = new java.util.LinkedList<scheduler.Meeting>();
   }
   public boolean freeAtTime(int day, int startHour, int endHour)
@@ -32,7 +24,16 @@ public class Calendar
   }
   public void addMeeting(scheduler.Meeting meeting)
   {
-    meetings.add(meeting);
+    try
+    {
+      if (meeting != null && user.equals(meeting.owner))
+      {
+        meetings.add(meeting);
+      }
+    }
+    catch (java.lang.NullPointerException impossible)
+    {
+    }
   }
   public java.util.LinkedList<scheduler.Meeting> getMeetings()
   {
@@ -47,10 +48,9 @@ public class Calendar
       {
         scheduler.Meeting m = meetings.get(i);
         s += "\n";
-        java.lang.String mString = m.toString();
-        if (se.chalmers.paragon.runtime.LockState.isOpen(new se.chalmers.paragon.runtime.Lock(scheduler.Meeting.isAttending, new se.chalmers.paragon.runtime.Actor(user), new se.chalmers.paragon.runtime.Actor(m.self))))
+        if (se.chalmers.paragon.runtime.LockState.isOpen(new se.chalmers.paragon.runtime.Lock(scheduler.Meeting.isOwner, new se.chalmers.paragon.runtime.Actor(user), new se.chalmers.paragon.runtime.Actor(m.self))))
         {
-          s += mString;
+          s += m.toString();
         }
       }
       return s;

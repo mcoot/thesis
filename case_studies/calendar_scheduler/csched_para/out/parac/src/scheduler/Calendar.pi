@@ -1,9 +1,9 @@
 package scheduler;
 public class Calendar
 {
-  public final ?{java.lang.Object x:} scheduler.User user;
+  public notnull final ?{java.lang.Object x:} scheduler.User user;
   private java.util.LinkedList<scheduler.Meeting, {java.lang.Object x:}> meetings;
-  public Calendar (?{java.lang.Object x:} scheduler.User user)
+  public Calendar (notnull ?{java.lang.Object x:} scheduler.User inputUser)
   {
   }
   public ?({java.lang.Object x:} * policyof(day) * policyof(startHour) * policyof(endHour)) boolean freeAtTime(int day, int startHour, int endHour)

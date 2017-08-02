@@ -3,7 +3,7 @@
     
     <property environment="env"/>
 
-    <property name="cygwin.dir" value="C:/cygwin64" />
+    <property name="cygwin.dir" value="D:/cygwin64" />
 
     <property name="src.dir" value="${basedir}/src" />
     <property name="bin.dir" value="${basedir}/out" />

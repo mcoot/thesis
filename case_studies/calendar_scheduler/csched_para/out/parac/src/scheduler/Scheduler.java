@@ -17,7 +17,7 @@ public class Scheduler
   {
     try
     {
-      calendars.put(user, new scheduler.Calendar(user.self));
+      calendars.put(user, new scheduler.Calendar(user));
     }
     catch (java.lang.NullPointerException ex)
     {

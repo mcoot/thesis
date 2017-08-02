@@ -1,15 +1,18 @@
 package scheduler;
 public class Meeting
 {
-  public final ?{java.lang.Object x:} scheduler.Meeting self = (scheduler.Meeting) this;
+  public final notnull ?{java.lang.Object x:} scheduler.Meeting self;
+  public final notnull ?{java.lang.Object x:} scheduler.User owner;
   public static final ?{scheduler.User u:} lock isAttending(scheduler.User, scheduler.Meeting);
+  public static final ?{java.lang.Object x:} lock isOwner(scheduler.User, scheduler.Meeting);
   public final policy attendeesOnly = {scheduler.User u: scheduler.Meeting.isAttending(u,self)};
-  public final ?attendeesOnly java.lang.String title;
+  public final policy ownerOnly = {scheduler.User u: scheduler.Meeting.isOwner(u,self)};
+  public final ?ownerOnly java.lang.String title;
   public final ?policyof(this) int day;
   public final ?policyof(this) int startHour;
   public final ?policyof(this) int endHour;
-  private ?{java.lang.Object x:} java.util.LinkedList<scheduler.User, attendeesOnly> users;
-  public !{scheduler.User u:} Meeting (?policyof(this) java.lang.String dayName, ?policyof(this) int startHour, ?policyof(this) int endHour, ?attendeesOnly java.lang.String title, ?{java.lang.Object x:} java.util.LinkedList<scheduler.User, policyof(this)> attendees)
+  private notnull ?{java.lang.Object x:} java.util.LinkedList<scheduler.User, {java.lang.Object x:}> users;
+  public +(scheduler.Meeting.isOwner(owner,self)) !{java.lang.Object x:} Meeting (notnull ?{java.lang.Object x:} scheduler.User uowner, ?policyof(this) java.lang.String dayName, ?policyof(this) int startHour, ?policyof(this) int endHour, ?ownerOnly java.lang.String title, ?{java.lang.Object x:} java.util.LinkedList<scheduler.User, policyof(this)> attendees)
   {
   }
   private static boolean meetingDetailsValid(int day, int startHour, int endHour)
@@ -20,14 +23,14 @@ public class Meeting
   ;
   public ?policyof(this) int getDuration()
   ;
-  public ?attendeesOnly java.util.LinkedList<scheduler.User, attendeesOnly> getUsers()
+  public ?{java.lang.Object x:} java.util.LinkedList<scheduler.User, {java.lang.Object x:}> getUsers()
   ;
-  public ?(policyof(this) * attendeesOnly * policyof(o)) boolean equals(java.lang.Object o)
+  public ?(policyof(this) * ownerOnly * policyof(o)) boolean equals(java.lang.Object o)
   ;
   public static java.lang.String getDayName(int day)
   ;
   public static int getDayValue(java.lang.String dayName)
   ;
-  public ?(policyof(this) * attendeesOnly) java.lang.String toString()
+  public ?(policyof(this) * ownerOnly) java.lang.String toString()
   ;
 }

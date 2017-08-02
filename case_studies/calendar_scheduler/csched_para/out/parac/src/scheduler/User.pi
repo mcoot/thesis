@@ -1,10 +1,10 @@
 package scheduler;
 public class User
 {
-  public final scheduler.User self = (scheduler.User) this;
+  public final notnull scheduler.User self;
   public final ?policyof(this) java.lang.String name;
-  public IOChannel<{java.lang.Object x:}, self> channel;
-  public User (?policyof(this) java.lang.String name)
+  public notnull IOChannel<{java.lang.Object x:}, self> channel;
+  public User (?policyof(this) java.lang.String uname)
   {
   }
   public ?(policyof(this) * policyof(o)) boolean equals(java.lang.Object o)

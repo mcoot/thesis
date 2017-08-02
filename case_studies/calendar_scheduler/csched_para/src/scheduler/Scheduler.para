@@ -17,9 +17,9 @@ public class Scheduler {
         return calendars.get(user);
     }
 
-    public !bottom void addUser(?bottom User user) {
+    public !bottom void addUser(notnull ?bottom User user) {
         try {
-            calendars.put(user, new Calendar(user.self));
+            calendars.put(user, new Calendar(user));
         } catch (NullPointerException ex) {
             
         }

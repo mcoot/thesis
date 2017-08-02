@@ -1,13 +1,14 @@
 package scheduler;
 public class User
 {
-  public final scheduler.User self = (scheduler.User) this;
+  public final scheduler.User self;
   public final java.lang.String name;
   public IOChannel channel;
-  public User (java.lang.String name)
+  public User (java.lang.String uname)
   {
-    this.name = name;
-    this.channel = new IOChannel(new se.chalmers.paragon.runtime.Policy(new se.chalmers.paragon.runtime.Clause(new Class<?>[] {java.lang.Object.class}, new se.chalmers.paragon.runtime.Variable(0))), self);
+    self = (scheduler.User) this;
+    name = uname;
+    channel = new IOChannel(new se.chalmers.paragon.runtime.Policy(new se.chalmers.paragon.runtime.Clause(new Class<?>[] {java.lang.Object.class}, new se.chalmers.paragon.runtime.Variable(0))), self);
   }
   public boolean equals(java.lang.Object o)
   {

@@ -2,15 +2,16 @@ package scheduler;
 
 public class User {
 
-    public final User self = (User)this;
+    public final notnull User self;
 
     public final ?policyof(this) String name;
 
-    public IOChannel<{Object x:}, self> channel;
+    public notnull IOChannel<{Object x:}, self> channel;
 
-    public User(?policyof(this) String name) {
-        this.name = name;
-        this.channel = new IOChannel<{Object x:}, self>();
+    public User(?policyof(this) String uname) {
+        self = (User)this;
+        name = uname;
+        channel = new IOChannel<{Object x:}, self>();
     }
 
     public ?(policyof(this)*policyof(o)) boolean equals(Object o) {

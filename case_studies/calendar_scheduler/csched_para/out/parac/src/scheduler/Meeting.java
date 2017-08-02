@@ -2,21 +2,27 @@ package scheduler;
 import java.util.LinkedList;
 public class Meeting
 {
-  public final scheduler.Meeting self = (scheduler.Meeting) this;
+  public final scheduler.Meeting self = this;
+  public final scheduler.User owner;
   static final public se.chalmers.paragon.runtime.LockID isAttending = new se.chalmers.paragon.runtime.LockID("isAttending", scheduler.User.class, scheduler.Meeting.class);
+  static final public se.chalmers.paragon.runtime.LockID isOwner = new se.chalmers.paragon.runtime.LockID("isOwner", scheduler.User.class, scheduler.Meeting.class);
   public final se.chalmers.paragon.runtime.Policy attendeesOnly = new se.chalmers.paragon.runtime.Policy(new se.chalmers.paragon.runtime.Clause(new Class<?>[] {scheduler.User.class}, new se.chalmers.paragon.runtime.Variable(0), new se.chalmers.paragon.runtime.Atom(isAttending, new se.chalmers.paragon.runtime.Variable(0), new se.chalmers.paragon.runtime.Actor(self))));
+  public final se.chalmers.paragon.runtime.Policy ownerOnly = new se.chalmers.paragon.runtime.Policy(new se.chalmers.paragon.runtime.Clause(new Class<?>[] {scheduler.User.class}, new se.chalmers.paragon.runtime.Variable(0), new se.chalmers.paragon.runtime.Atom(isOwner, new se.chalmers.paragon.runtime.Variable(0), new se.chalmers.paragon.runtime.Actor(self))));
   public final java.lang.String title;
   public final int day;
   public final int startHour;
   public final int endHour;
   private java.util.LinkedList<scheduler.User> users;
-  public Meeting (java.lang.String dayName, int startHour, int endHour, java.lang.String title, java.util.LinkedList<scheduler.User> attendees)
+  public Meeting (scheduler.User uowner, java.lang.String dayName, int startHour, int endHour, java.lang.String title, java.util.LinkedList<scheduler.User> attendees)
   {
+    // self = (scheduler.Meeting) this;
+    owner = uowner;
+    se.chalmers.paragon.runtime.LockState.open(new se.chalmers.paragon.runtime.Lock(isOwner, new se.chalmers.paragon.runtime.Actor(owner), new se.chalmers.paragon.runtime.Actor(self)));
     this.day = getDayValue(dayName);
     this.startHour = startHour;
     this.endHour = endHour;
     this.title = title;
-    this.users = new java.util.LinkedList<scheduler.User>();
+    users = new java.util.LinkedList<scheduler.User>();
     for (int i = 0 ; i < attendees.size() ; ++i)
     {
       scheduler.User u = attendees.get(i);

@@ -4,16 +4,24 @@ import java.util.LinkedList;
 
 public class Meeting {
 
-    public final ?{Object x:} Meeting self = (Meeting)this;
+    public final notnull ?{Object x:} Meeting self;
+
+    public final notnull ?{Object x:} User owner;
 
     // Lock which is open when a user is attending a given meeting
     public static final ?{User u:} lock isAttending(User, Meeting);
+
+    public static final ?{Object x:} lock isOwner(User, Meeting);
 
     public final policy attendeesOnly = {
             User u : isAttending(u, self)
     };
 
-    public final ?attendeesOnly String title;
+    public final policy ownerOnly = {
+        User u : isOwner(u, self)
+    };
+
+    public final ?ownerOnly String title;
 
     public final ?policyof(this) int day;
 
@@ -21,22 +29,33 @@ public class Meeting {
 
     public final ?policyof(this) int endHour;
 
-    private ?{Object x:} LinkedList<User, attendeesOnly> users;
+    private notnull ?{Object x:} LinkedList<User, {Object x:}> users;
 
-    public !{User u:} Meeting(?policyof(this) String dayName, ?policyof(this) int startHour, ?policyof(this) int endHour, 
-                   ?attendeesOnly String title, ?{Object x:} LinkedList<User, policyof(this)> attendees) {
+    public
+    +isOwner(owner, self) 
+    !{Object x:}
+    Meeting(notnull ?{Object x:} User uowner, ?policyof(this) String dayName, ?policyof(this) int startHour, ?policyof(this) int endHour, 
+                   ?ownerOnly String title, ?{Object x:} LinkedList<User, policyof(this)> attendees) {
+        self = (Meeting)this;
+            
             // throws !(policyof(this) * attendeesOnly) InvalidMeetingException {
         // if (!meetingDetailsValid(getDayValue(dayName), startHour, endHour)) {
         //     throw new InvalidMeetingException();
         // }
+        owner = uowner;
+
+        open isOwner(owner, self);
+
         this.day = getDayValue(dayName);
         this.startHour = startHour;
         this.endHour = endHour;
         this.title = title;
 
-        this.users = new LinkedList<User, attendeesOnly>();
+        
 
-        for (?{Object x:} int i = 0; i < attendees.size(); ++i) {
+        users = new LinkedList<User, {Object x:}>();
+
+        for (int i = 0; i < attendees.size(); ++i) {
             User u = attendees.get(i);
             open isAttending(u, self);
             this.users.add(u);
@@ -65,11 +84,11 @@ public class Meeting {
         return endHour - startHour;
     }
 
-    public ?attendeesOnly LinkedList<User, attendeesOnly> getUsers() {
+    public ?{Object x:} LinkedList<User, {Object x:}> getUsers() {
         return this.users;
     }
 
-    public ?(policyof(this) * attendeesOnly * policyof(o)) boolean equals(Object o) {
+    public ?(policyof(this) * ownerOnly * policyof(o)) boolean equals(Object o) {
         Meeting that;
         try {
             that = (Meeting)o;
@@ -131,7 +150,7 @@ public class Meeting {
         }
     }
 
-    public ?(policyof(this) * attendeesOnly) String toString() {
+    public ?(policyof(this) * ownerOnly) String toString() {
         String s = "<\"" + title + "\" | " + getDayName(this.day) + " " + this.startHour + " - " + this.endHour + " | ";
 
         String sep = "";

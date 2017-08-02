@@ -8,17 +8,17 @@ public class Main {
 
     private static Scheduler theScheduler = new Scheduler();
 
-    private static User alice = new User("Alice");
-    private static User bob = new User("Bob");
-    private static User charles = new User("Charles");
+    private static notnull ?bottom User alice;
+    private static notnull ?bottom User bob;
+    private static notnull ?bottom User charles;
 
-    private static LinkedList<User, bottom> aliceOnly = new LinkedList<User, bottom>();
-    private static LinkedList<User, bottom> bobOnly = new LinkedList<User, bottom>();
-    private static LinkedList<User, bottom> charlesOnly = new LinkedList<User, bottom>();
-    private static LinkedList<User, bottom> alicebob = new LinkedList<User, bottom>();
-    private static LinkedList<User, bottom> alicecharles = new LinkedList<User, bottom>();
-    private static LinkedList<User, bottom> bobcharles = new LinkedList<User, bottom>();
-    private static LinkedList<User, bottom> allUsers = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> aliceOnly = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> bobOnly = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> charlesOnly = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> alicebob = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> alicecharles = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> bobcharles = new LinkedList<User, bottom>();
+    private static ?bottom LinkedList<User, bottom> allUsers = new LinkedList<User, bottom>();
 
     private static Meeting meetingAliceBobAttend;
 
@@ -28,7 +28,11 @@ public class Main {
 
         System.out.println("Initialising system...");
 
-        setupDummyData();
+        alice = new User("Alice");
+        bob = new User("Bob");
+        charles = new User("Charles");
+
+        setupDummyData(alice, bob, charles);
 
         // Finding out whether other users are free or not has no confidentiality constraints
         boolean scheduleCheck1 = theScheduler.attendeesFreeAtTime(allUsers,
@@ -40,6 +44,7 @@ public class Main {
 
         System.out.println();
         System.out.println("Alice prints her calendar:");
+        System.out.println("Memes");
 
         // ?{aliceFromCal.self:} String aliceCalendarRep = theScheduler.getCalendar(alice).getCalendarRepresentation();
         // A user may print out all events in their own calendar (since they attend all events in their calendar)
@@ -57,7 +62,7 @@ public class Main {
         // [exec] Evaluated field "user" to have actor id: @2
 
         // A user may not print out another user's calendar since it cannot be statically determined whether the printing user attends all of them!
-        // alice.channel.println(theScheduler.getCalendar(bob).getCalendarRepresentation());
+        aliceOut.println(theScheduler.getCalendar(bob).getCalendarRepresentation());
 
         // System.out.println();
         // System.out.println("Alice and bob print an event both attend:");
@@ -72,7 +77,8 @@ public class Main {
 
     }
 
-    private static !bottom void setupDummyData() {
+    private static !bottom void setupDummyData(notnull ?bottom User alice, notnull ?bottom User bob, notnull ?bottom User charles) {
+
         // Add the users to the scheduler
         theScheduler.addUser(alice);
         theScheduler.addUser(bob);
@@ -95,32 +101,32 @@ public class Main {
         // Only making dummy schedules for Monday
 
         // Alice
-        theScheduler.addMeeting(alice, new Meeting("Monday", 8, 10, "Coming in late", aliceOnly));
-        theScheduler.addMeeting(alice, new Meeting("Monday", 12, 13, "Lunch break", aliceOnly));
-        theScheduler.addMeeting(alice, new Meeting("Monday", 16, 18, "Leaving early", aliceOnly));
+        theScheduler.addMeeting(alice, new Meeting(alice, "Monday", 8, 10, "Coming in late", aliceOnly));
+        theScheduler.addMeeting(alice, new Meeting(alice, "Monday", 12, 13, "Lunch break", aliceOnly));
+        theScheduler.addMeeting(alice, new Meeting(alice, "Monday", 16, 18, "Leaving early", aliceOnly));
 
 
         // Bob meetings
-        theScheduler.addMeeting(bob, new Meeting("Monday", 7, 9, "Long breaky", bobOnly));
-        theScheduler.addMeeting(bob, new Meeting("Monday", 13, 14, "Nap time", bobOnly));
+        theScheduler.addMeeting(bob, new Meeting(bob, "Monday", 7, 9, "Long breaky", bobOnly));
+        theScheduler.addMeeting(bob, new Meeting(bob, "Monday", 13, 14, "Nap time", bobOnly));
 
         // Charles meetings
-        theScheduler.addMeeting(charles, new Meeting("Monday", 10, 11, "Important Serious Work", charlesOnly));
+        theScheduler.addMeeting(charles, new Meeting(charles, "Monday", 10, 11, "Important Serious Work", charlesOnly));
 
         // Some combinations
-        meetingAliceBobAttend = new Meeting("Monday", 10, 12, "Catch up sesh", alicebob);
+        meetingAliceBobAttend = new Meeting(alice, "Monday", 10, 12, "Catch up sesh", alicebob);
         theScheduler.addMeeting(alice, meetingAliceBobAttend);
         theScheduler.addMeeting(bob, meetingAliceBobAttend);
 
-        Meeting m = new Meeting("Monday", 13, 14, "Alice's disciplinary hearing", alicecharles);
+        Meeting m = new Meeting(alice, "Monday", 13, 14, "Alice's disciplinary hearing", alicecharles);
         theScheduler.addMeeting(alice, m);
         theScheduler.addMeeting(charles, m);
 
-        m = new Meeting("Monday", 9, 10, "Bob's disciplinary hearing", bobcharles);
+        m = new Meeting(bob, "Monday", 9, 10, "Bob's disciplinary hearing", bobcharles);
         theScheduler.addMeeting(bob, m);
         theScheduler.addMeeting(charles, m);
 
-        m = new Meeting("Monday", 14, 15, "Departmental meeting", allUsers);
+        m = new Meeting(alice, "Monday", 14, 15, "Departmental meeting", allUsers);
         theScheduler.addMeeting(alice, m);
         theScheduler.addMeeting(bob, m);
         theScheduler.addMeeting(charles, m);
