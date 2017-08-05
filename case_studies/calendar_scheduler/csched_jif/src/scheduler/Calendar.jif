@@ -2,23 +2,21 @@ package scheduler;
 
 import java.util.LinkedList;
 
-public class Calendar {
+public class Calendar[principal Owner] {
 
-    public notnull final ?{Object x:} User user;
+    private LinkedList[{Owner->_}] meetings;
 
-    private LinkedList<Meeting, {Object x:}> meetings;
-
-    public Calendar(notnull ?{Object x:} User inputUser) {
-        user = inputUser;
-
-        this.meetings = new LinkedList<Meeting, {Object x:}>();
+    public Calendar() {
+        this.meetings = new LinkedList[{Owner->_}]();
     }
 
-    public ?({Object x:} * policyof(day) * policyof(startHour) * policyof(endHour)) boolean freeAtTime(int day, int startHour, int endHour) {
+    public boolean{Owner->_; day; startHour; endHour} freeAtTime(int day, int startHour, int endHour) {
         if (endHour <= startHour) return false;
 
         for (int i = 0; i < meetings.size(); ++i) {
-            if (meetings.get(i).overlaps(day, startHour, endHour)) {
+            JifObjectWrapper[{Owner->_}] w = (JifObjectWrapper[{Owner->_}])meetings.get(i);
+            Meeting[Owner] m = (Meeting[Owner])w.getObject();
+            if (m.overlaps(day, startHour, endHour)) {
                 return false;
             }
         }
@@ -26,36 +24,29 @@ public class Calendar {
         return true;
     }
 
-    public void addMeeting(?{Object x:} Meeting meeting) {
-        // if (!freeAtTime(meeting.day, meeting.startHour, meeting.endHour) || !meeting.getUsers().contains(user)) {
-        //     throw new InvalidMeetingException();
-        // }
+    public void addMeeting(Meeting[Owner] meeting) {
         try {
-            if (meeting != null && user.equals(meeting.owner)) {
-                meetings.add(meeting);
+            if (meeting != null) {
+                meetings.add(new JifObjectWrapper[{Owner->_}](meeting));
             }
         } catch (NullPointerException impossible) {
 
         }
     }
 
-    public ?{Object x:} LinkedList<Meeting, {Object x:}> getMeetings() {
+    public LinkedList[{Owner->_}] getMeetings() {
         return meetings;
-        // return new LinkedList<>(meetings);
     }
 
-    public ?{user:} String getCalendarRepresentation() {
+    public String{Owner->*} getCalendarRepresentation() {     
         try {
-            ?{user:} String s = user.toString() + "'s Calendar:\n---";
+            String s = user.toString() + "'s Calendar:\n---";
 
             for (int i = 0; i < meetings.size(); ++i) {
-                ?{Object x:} Meeting m = meetings.get(i);
+                JifObjectWrapper[{Owner->_}] w = (JifObjectWrapper[{Owner->_}])meetings.get(i);
+                Meeting[Owner] m = (Meeting[Owner])w.getObject();
                 s += "\n";
-                
-                if (Meeting.isOwner(user, m.self)) {
-                    s += m.toString();
-                }
-                
+                s += m.toString();
             }
 
             return s;
