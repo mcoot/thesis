@@ -2,7 +2,7 @@ package scheduler;
 
 import jif.util.LinkedList;
 
-public class Meeting[label Owner] {
+public class Meeting[principal Owner] {
     // Lock which is open when a user is attending a given meeting
     // public static final ?{User u:} lock isAttending(User, Meeting);
 
@@ -16,51 +16,57 @@ public class Meeting[label Owner] {
     //     User u : isOwner(u, self)
     // };
 
-    public final String title;
+    public final String{Owner->*} title;
 
-    public final int day;
+    public final int{Owner->_} day;
 
-    public final int startHour;
+    public final int{Owner->_} startHour;
 
-    public final int endHour;
+    public final int{Owner->_} endHour;
 
-    private LinkedList[Owner->_] users;
+    private LinkedList[{Owner->_}] users;
 
-    public Meeting(User uowner, String dayName, int startHour, int endHour, String title, LinkedList attendees) {            
+    public Meeting(String{Owner->_} dayName, int{Owner->_} startHour, int{Owner->_} endHour, String{Owner->_} title, LinkedList[{Owner->_}]{Owner->_} attendees) {            
             // throws !(policyof(this) * attendeesOnly) InvalidMeetingException {
         // if (!meetingDetailsValid(getDayValue(dayName), startHour, endHour)) {
         //     throw new InvalidMeetingException();
         // }
-        owner = uowner;
 
         // open isOwner(owner, self);
 
         this.day = getDayValue(dayName);
         this.startHour = startHour;
         this.endHour = endHour;
-        this.title = title;
+        this.title = title; 
 
-        
+        users = new LinkedList[{Owner->_}]();
 
-        users = new LinkedList();
+        try {
+            for (int i = 0; i < attendees.size(); ++i) {
+                JifObjectWrapper[{Owner->_}] w = (JifObjectWrapper[{Owner->_}])attendees.get(i);
+                User u = (User)w.getObject();
+                // open isAttending(u, self);
+                this.users.add(new JifObjectWrapper[{Owner->_}](u));
+            }
+        } catch (ClassCastException ex) {
 
-        for (int i = 0; i < attendees.size(); ++i) {
-            User u = attendees.get(i);
-            // open isAttending(u, self);
-            this.users.add(u);
-        }
+        } catch (IndexOutOfBoundsException ex) {
+            
+        } catch (NullPointerException ex) {
+            
+        } 
     }
 
-    private static boolean meetingDetailsValid(int day, int startHour, int endHour) {
+    private static boolean{day; startHour; endHour} meetingDetailsValid(int day, int startHour, int endHour) {
         return (day >= 0 && day <= 6) && (startHour >= 0 && startHour <= 23) && (endHour > startHour && endHour <= 24);
     }
 
-    public ?(policyof(this) * policyof(day) * policyof(startHour) * policyof(endHour)) boolean overlaps(int day, int startHour, int endHour) {
+    public boolean{Owner->_; day; startHour; endHour} overlaps(int day, int startHour, int endHour) {
         return this.day == day && ((this.startHour >= startHour && this.startHour < endHour)
                 || (startHour >= this.startHour && startHour < this.endHour));
     }
 
-    public ?(policyof(this) * policyof(that)) boolean overlaps(Meeting that) {
+    public boolean{Owner->_;that;P->_} overlaps(principal P, Meeting[P] that) {
         try {
             return overlaps(that.day, that.startHour, that.endHour);
         } catch (NullPointerException ex) {
@@ -69,15 +75,15 @@ public class Meeting[label Owner] {
         
     }
 
-    public ?policyof(this) int getDuration() {
+    public int{Owner->_} getDuration() {
         return endHour - startHour;
     }
 
-    public ?{Object x:} LinkedList<User, {Object x:}> getUsers() {
+    public LinkedList[{Owner->_}]{Owner->_} getUsers() {
         return this.users;
     }
 
-    public ?(policyof(this) * ownerOnly * policyof(o)) boolean equals(Object o) {
+    public boolean{Owner->*;o} equals(Object o) {
         Meeting that;
         try {
             that = (Meeting)o;
@@ -93,11 +99,16 @@ public class Meeting[label Owner] {
         }
     }
 
-    // public ?(policyof(this) * attendeesOnly) int hashCode() {
-    //     return 7 * title.hashCode() + 19 * this.day ^ 31 * this.startHour ^ 17 * this.endHour ^ this.title.hashCode() ^ 41 * this.users.hashCode();
-    // }
+    public int{Owner->*} hashCode() {
+        try {
+            return 7 * title.hashCode() + 19 * this.day ^ 31 * this.startHour ^ 17 * this.endHour ^ this.title.hashCode() ^ 41 * this.users.hashCode();
+        } catch (NullPointerException ex) {
+            return 0;
+        }
+        
+    }
 
-    public static String getDayName(int day) {
+    public static String{day} getDayName(int day) {
         if (day == 0) {
             return "Sunday";
         } else if (day == 1) {
@@ -117,40 +128,51 @@ public class Meeting[label Owner] {
         }
     }
 
-    public static int getDayValue(String dayName) {
-        String d = dayName.toLowerCase();
+    public static int{dayName} getDayValue(String dayName) {
+        try {
+            String d = dayName.toLowerCase();
 
-        if (d.equals("sunday")) {
-            return 0;
-        } else if (d.equals("monday")) {
-            return 1;
-        } else if (d.equals("tuesday")) {
-            return 2;
-        } else if (d.equals("wednesday")) {
-            return 3;
-        } else if (d.equals("thursday")) {
-            return 4;
-        } else if (d.equals("friday")) {
-            return 5;
-        } else if (d.equals("saturday")) {
-            return 6;
-        } else {
+            if (d.equals("sunday")) {
+                return 0;
+            } else if (d.equals("monday")) {
+                return 1;
+            } else if (d.equals("tuesday")) {
+                return 2;
+            } else if (d.equals("wednesday")) {
+                return 3;
+            } else if (d.equals("thursday")) {
+                return 4;
+            } else if (d.equals("friday")) {
+                return 5;
+            } else if (d.equals("saturday")) {
+                return 6;
+            } else {
+                return -1;
+            }
+        } catch (NullPointerException ex) {
             return -1;
         }
     }
 
-    public ?(policyof(this) * ownerOnly) String toString() {
-        String s = "<\"" + title + "\" | " + getDayName(this.day) + " " + this.startHour + " - " + this.endHour + " | ";
+    public String{Owner->*} toString() {
+        try {
+            String s = "<\"" + title + "\" | " + getDayName(this.day) + " " + this.startHour + " - " + this.endHour + " | ";
 
-        String sep = "";
-        for (int i = 0; i < this.users.size(); ++i) {
-            s += sep;
-            s += this.users.get(i).toString();
-            sep = ", ";
+            String sep = "";
+            for (int i = 0; i < this.users.size(); ++i) {
+                s += sep;
+                s += this.users.get(i).toString();
+                sep = ", ";
+            }
+            s += ">";
+
+            return s;
+        } catch (IndexOutOfBoundsException ex) {
+            return "";
+        }  catch (NullPointerException ex) {
+            return "";
         }
-        s += ">";
-
-        return s;
+        
     }
 
 }
