@@ -1,10 +1,10 @@
 package scheduler;
 
-import java.util.LinkedList;
+import jif.util.LinkedList;
 
 public class Calendar[principal Owner] {
 
-    private LinkedList[{Owner->_}] meetings;
+    private LinkedList[{Owner->_}]{Owner->_} meetings;
 
     public Calendar() {
         this.meetings = new LinkedList[{Owner->_}]();
@@ -13,18 +13,26 @@ public class Calendar[principal Owner] {
     public boolean{Owner->_; day; startHour; endHour} freeAtTime(int day, int startHour, int endHour) {
         if (endHour <= startHour) return false;
 
-        for (int i = 0; i < meetings.size(); ++i) {
-            JifObjectWrapper[{Owner->_}] w = (JifObjectWrapper[{Owner->_}])meetings.get(i);
-            Meeting[Owner] m = (Meeting[Owner])w.getObject();
-            if (m.overlaps(day, startHour, endHour)) {
-                return false;
+        try {
+            for (int i = 0; i < meetings.size(); ++i) {
+                JifObjectWrapper[{Owner->_}] w = (JifObjectWrapper[{Owner->_}])meetings.get(i);
+                Meeting[Owner] m = (Meeting[Owner])w.getObject();
+                if (m.overlaps(day, startHour, endHour)) {
+                    return false;
+                }
             }
+        } catch (ClassCastException ex) {
+            return false;
+        } catch (IndexOutOfBoundsException ex) {
+            return false;
+        } catch (NullPointerException ex) {
+            return false;
         }
 
         return true;
     }
 
-    public void addMeeting(Meeting[Owner] meeting) {
+    public void addMeeting{Owner->_}(Meeting[Owner]{Owner->_} meeting) {
         try {
             if (meeting != null) {
                 meetings.add(new JifObjectWrapper[{Owner->_}](meeting));
@@ -34,13 +42,13 @@ public class Calendar[principal Owner] {
         }
     }
 
-    public LinkedList[{Owner->_}] getMeetings() {
+    public LinkedList[{Owner->_}]{Owner->_} getMeetings() {
         return meetings;
     }
 
     public String{Owner->*} getCalendarRepresentation() {     
         try {
-            String s = user.toString() + "'s Calendar:\n---";
+            String s = "Calendar:\n---";
 
             for (int i = 0; i < meetings.size(); ++i) {
                 JifObjectWrapper[{Owner->_}] w = (JifObjectWrapper[{Owner->_}])meetings.get(i);
@@ -50,6 +58,10 @@ public class Calendar[principal Owner] {
             }
 
             return s;
+        } catch (IndexOutOfBoundsException ex) {
+            return "";
+        } catch (ClassCastException ex) {
+            return "";
         } catch (NullPointerException ex) {
             return "";
         }
