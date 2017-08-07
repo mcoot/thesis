@@ -1,0 +1,20 @@
+Buildfile: /home/students/s4359044/thesis/case_studies/calendar_scheduler/csched_jif/build.xml
+
+jifc:
+
+                                   __..--''``\--....___   _..,_
+                               _.-'    .-/";  `        ``<._  ``-+'~=.
+                           _.-' _..--.'_    \                    `(^) )
+                          ((..-'    (< _     ;_..__               ; `'   fL
+                                     `-._,_)'      ``--...____..-'
+
+= Welcome to the EAIT Student Server =
+
+lichen.labs.eait.uq.edu.au is also available for alternate cats.
+
+jifc: Uncaught exceptions in private static void setupDummyData(...) at 
+    /home/students/s4359044/thesis/case_studies/calendar_scheduler/csched_jif/src/scheduler/Main.jif:92,19-38
+     will be treated as fatal errors: [java.lang.NullPointerException]
+
+BUILD SUCCESSFUL
+Total time: 4 seconds

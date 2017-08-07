@@ -5,6 +5,14 @@
 
     <property name="cygwin.dir" value="D:/cygwin64" />
 
+    <!-- Set the shell to cygwin if windows, bash if linux -->
+    <condition property="sh_exe" value="${cygwin.dir}/bin/bash.exe">
+        <os family="windows" />
+    </condition>
+    <condition property="sh_exe" value="/bin/bash">
+        <os family="unix" />
+    </condition>  
+
     <property name="src.dir" value="${basedir}/src" />
     <property name="bin.dir" value="${basedir}/out" />
     <property name="extra.dir" value="${basedir}/extra" />
@@ -31,20 +39,20 @@
         <property name="classToBuild" value="all" />
         <property name="verbose" value="false" />
 
-        <!-- Set the shell to cygwin if windows, bash if linux -->
+         <!-- Set the shell to cygwin if windows, bash if linux 
         <condition property="sh_exe" value="${cygwin.dir}/bin/bash.exe">
             <os family="windows" />
         </condition>
         <condition property="sh_exe" value="/bin/bash">
             <os family="unix" />
-        </condition>   
+        </condition>    -->
 
         <exec executable="${sh_exe}">
             <arg value="--login" />
             <arg value="${basedir}/run-jifc.sh" />
             <arg value="${src.dir}" />
             <arg value="${bin.dir}" /> 
-            <arg value="${extra.dir}:." />
+            <arg value="${extra.dir}:${bin.dir}:." />
             <arg value="${classToBuild}" />
             <arg value="${verbose}" />
         </exec>
@@ -53,14 +61,6 @@
     <target name="jifc-linux">
         <property name="classToBuild" value="all" />
         <property name="verbose" value="false" />
-
-        <!-- Set the shell to cygwin if windows, bash if linux -->
-        <condition property="sh_exe" value="${cygwin.dir}/bin/bash.exe">
-            <os family="windows" />
-        </condition>
-        <condition property="sh_exe" value="/bin/bash">
-            <os family="unix" />
-        </condition>   
 
         <exec executable="${sh_exe}">
             <arg value="--login" />
@@ -74,7 +74,7 @@
     </target>
 
     <target name="run">
-        <exec executable="${cygwin.dir}/bin/bash.exe">
+        <exec executable="${sh_exe}">
             <arg value="--login" />
             <arg value="${basedir}/run-jif.sh" />
             <arg value="${bin.dir}" />

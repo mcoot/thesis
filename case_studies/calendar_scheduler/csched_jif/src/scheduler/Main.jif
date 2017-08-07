@@ -1,6 +1,8 @@
 package scheduler;
 
-import java.util.LinkedList;
+import java.io.PrintStream;
+import jif.runtime.Runtime;
+import jif.util.LinkedList;
 import jif.lang.Principal;
 import jif.principals.Alice;
 import jif.principals.Bob;
@@ -10,25 +12,11 @@ public class Main authority(Alice, Bob, Charles) {
 
     // public static final policy bottom = {Object x:};
 
-    private static Scheduler{_->_} theScheduler = new Scheduler();
-
-    private static Principal{_->_} alice;
-    private static Principal{_->_} bob;
-    private static Principal{_->_} charles;
-
-    private static LinkedList[{_->_}]{_->_} aliceOnly = new LinkedList[{_->_}]();
-    private static LinkedList[{_->_}]{_->_} bobOnly = new LinkedList[{_->_}]();
-    private static LinkedList[{_->_}]{_->_} charlesOnly = new LinkedList[{_->_}]();
-    private static LinkedList[{_->_}]{_->_} alicebob = new LinkedList[{_->_}]();
-    private static LinkedList[{_->_}]{_->_} alicecharles = new LinkedList[{_->_}]();
-    private static LinkedList[{_->_}]{_->_} bobcharles = new LinkedList[{_->_}]();
-    private static LinkedList[{_->_}]{_->_} allUsers = new LinkedList[{_->_}]();
-
-    // private static Meeting meetingAliceBobAttend;
+    private static Meeting[Alice] meetingAliceBobAttend;
 
     public static void main{Alice<-* meet Bob<-* meet Charles<-* meet p<-*}
             (principal{} p, String[] args) : {Alice<-* meet Bob<-* meet Charles<-* meet p<-*}
-            throws NullPointerException
+            throws NullPointerException, IllegalArgumentException
             where authority(Alice, Bob, Charles), caller(p) {
          PrintStream[{}] out1 = null;
         
@@ -51,19 +39,21 @@ public class Main authority(Alice, Bob, Charles) {
 
         out.println("Initialising system...");
 
-        alice = Alice.getInstance();
-        bob = Bob.getInstance();
-        charles = Charles.getInstance();
+        Scheduler{_->_} theScheduler = new Scheduler();
+        Principal{_->_} alice = ((Alice)Alice).getInstance();
+        Principal{_->_} bob = ((Bob)Bob).getInstance();
+        Principal{_->_} charles = ((Charles)Charles).getInstance();
 
-        setupDummyData(alice, bob, charles);
+        LinkedList[{_->_}]{_->_} allUsers = new LinkedList[{_->_}]();
+        setupDummyData(theScheduler, allUsers, alice, bob, charles);
 
         // Finding out whether other users are free or not has no confidentiality constraints
-        boolean scheduleCheck1 = theScheduler.attendeesFreeAtTime(allUsers,
-                Meeting.getDayValue("Monday"), 9, 10);
-        out.println("Are all users available at 9 - 10 on a Monday? " + scheduleCheck1);
-        boolean scheduleCheck2 = theScheduler.attendeesFreeAtTime(allUsers,
-                Meeting.getDayValue("Tuesday"), 9, 10);
-        out.println("Are all users available at 9 - 10 on a Tuesday? " + scheduleCheck2);
+        // boolean scheduleCheck1 = theScheduler.attendeesFreeAtTime(allUsers,
+        //         Meeting.getDayValue("Monday"), 9, 10);
+        // out.println("Are all users available at 9 - 10 on a Monday? " + scheduleCheck1);
+        // boolean scheduleCheck2 = theScheduler.attendeesFreeAtTime(allUsers,
+        //         Meeting.getDayValue("Tuesday"), 9, 10);
+        // out.println("Are all users available at 9 - 10 on a Tuesday? " + scheduleCheck2);
 
         out.println();
         out.println("Alice prints her calendar:");
@@ -99,7 +89,14 @@ public class Main authority(Alice, Bob, Charles) {
 
     }
 
-    private static void setupDummyData(Principal alice, Principal bob, Principal charles) {
+    private static void setupDummyData{_->_}(Scheduler{_->_} theScheduler, LinkedList[{_->_}]{_->_} allUsers, Principal{_->_} alice, Principal{_->_} bob, Principal{_->_} charles) {
+        LinkedList[{_->_}]{_->_} aliceOnly = new LinkedList[{_->_}]();
+        LinkedList[{_->_}]{_->_} bobOnly = new LinkedList[{_->_}]();
+        LinkedList[{_->_}]{_->_} charlesOnly = new LinkedList[{_->_}]();
+        LinkedList[{_->_}]{_->_} alicebob = new LinkedList[{_->_}]();
+        LinkedList[{_->_}]{_->_} alicecharles = new LinkedList[{_->_}]();
+        LinkedList[{_->_}]{_->_} bobcharles = new LinkedList[{_->_}]();
+
 
         // Add the users to the scheduler
         theScheduler.addUser(alice);
@@ -107,18 +104,21 @@ public class Main authority(Alice, Bob, Charles) {
         theScheduler.addUser(charles);
 
         // Combinations of attendees
-        aliceOnly.add(alice);
-        bobOnly.add(bob);
-        charlesOnly.add(charles);
-        alicebob.add(alice);
-        alicebob.add(bob);
-        alicecharles.add(alice);
-        alicecharles.add(charles);
-        bobcharles.add(bob);
-        bobcharles.add(charles);
-        allUsers.add(alice);
-        allUsers.add(bob);
-        allUsers.add(charles);
+        JifObjectWrapper[{_->_}]{_->_} aliceWrapper = new JifObjectWrapper[{_->_}](alice);
+        JifObjectWrapper[{_->_}]{_->_} bobWrapper = new JifObjectWrapper[{_->_}](bob);
+        JifObjectWrapper[{_->_}]{_->_} charlesWrapper = new JifObjectWrapper[{_->_}](charles);
+        aliceOnly.add(aliceWrapper);
+        bobOnly.add(bobWrapper);
+        charlesOnly.add(charlesWrapper);
+        alicebob.add(aliceWrapper);
+        alicebob.add(bobWrapper);
+        alicecharles.add(aliceWrapper);
+        alicecharles.add(charlesWrapper);
+        bobcharles.add(bobWrapper);
+        bobcharles.add(charlesWrapper);
+        allUsers.add(aliceWrapper);
+        allUsers.add(bobWrapper);
+        allUsers.add(charlesWrapper);
 
         // Only making dummy schedules for Monday
 

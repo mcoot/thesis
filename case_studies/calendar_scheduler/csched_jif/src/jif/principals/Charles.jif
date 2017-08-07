@@ -1,0 +1,15 @@
+package jif.principals;
+
+public class Charles extends ExternalPrincipal {
+    public Charles() {
+	super("Charles");
+    }
+
+    private static Charles{*!:_} P;
+    public static Principal{*!:_} getInstance{*!:_}() {
+	if (P == null) {
+	    P = new Charles();
+	}
+	return P;
+    }
+}
