@@ -39,21 +39,21 @@ public class Main authority(Alice, Bob, Charles) {
 
         out.println("Initialising system...");
 
-        Scheduler{_->_} theScheduler = new Scheduler();
-        Principal{_->_} alice = ((Alice)Alice).getInstance();
-        Principal{_->_} bob = ((Bob)Bob).getInstance();
-        Principal{_->_} charles = ((Charles)Charles).getInstance();
+        final Scheduler{_->_} theScheduler = new Scheduler();
+        final Principal{_->_} alice = ((Alice)Alice).getInstance();
+        final Principal{_->_} bob = ((Bob)Bob).getInstance();
+        final Principal{_->_} charles = ((Charles)Charles).getInstance();
 
         LinkedList[{_->_}]{_->_} allUsers = new LinkedList[{_->_}]();
         setupDummyData(theScheduler, allUsers, alice, bob, charles);
 
         // Finding out whether other users are free or not has no confidentiality constraints
-        // boolean scheduleCheck1 = theScheduler.attendeesFreeAtTime(allUsers,
-        //         Meeting.getDayValue("Monday"), 9, 10);
-        // out.println("Are all users available at 9 - 10 on a Monday? " + scheduleCheck1);
-        // boolean scheduleCheck2 = theScheduler.attendeesFreeAtTime(allUsers,
-        //         Meeting.getDayValue("Tuesday"), 9, 10);
-        // out.println("Are all users available at 9 - 10 on a Tuesday? " + scheduleCheck2);
+        boolean scheduleCheck1 = theScheduler.attendeesFreeAtTime(allUsers,
+                Meeting.getDayValue("Monday"), 9, 10);
+        out.println("Are all users available at 9 - 10 on a Monday? " + scheduleCheck1);
+        boolean scheduleCheck2 = theScheduler.attendeesFreeAtTime(allUsers,
+                Meeting.getDayValue("Tuesday"), 9, 10);
+        out.println("Are all users available at 9 - 10 on a Tuesday? " + scheduleCheck2);
 
         out.println();
         out.println("Alice prints her calendar:");
@@ -62,6 +62,7 @@ public class Main authority(Alice, Bob, Charles) {
         // A user may print out all events in their own calendar (since they attend all events in their calendar)
         // Calendar aliceCal = theScheduler.getCalendar(alice);
         // IOChannel<bottom, aliceCal.user> aliceOut = new IOChannel<bottom, aliceCal.user>();
+        out.println(theScheduler.getCalendar(alice).getCalendarRepresentation());
         // aliceOut.println(theScheduler.getCalendar(alice).getCalendarRepresentation());
 
         //  [exec] Adding for name: scheduler.User

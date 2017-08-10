@@ -14,9 +14,9 @@ public class Scheduler {
         calendars = new HashMap[{_->_}, {_->_}]();
     }
 
-    public Calendar[User]{_->_} getCalendar{_->_}(principal{_->_} User) {
+    public Calendar[User]{_->_} getCalendar{_->_}(Principal{_->_} User) {
         try {
-            Principal pUser = (Principal)User;
+            Principal pUser = User;
             JifObjectWrapper[{_->_}] wP = new JifObjectWrapper[{_->_}](pUser);
             JifObjectWrapper[{_->_}] w = (JifObjectWrapper[{_->_}])calendars.get(wP);
             Calendar[User] c = (Calendar[User])w.getObject();
@@ -39,15 +39,24 @@ public class Scheduler {
         }
     }
 
-    // public boolean{users; day; startHour; endHour} attendeesFreeAtTime(LinkedList[{_->_}] users, int day, int startHour, int endHour) {
-    //     for (int i = 0; i < users.size(); ++i) {
-    //         if (!calendars.get(users.get(i)).freeAtTime(day, startHour, endHour)) {
-    //             return false;
-    //         }
-    //     }
-
-    //     return true;
-    // }
+    public boolean{_->_} attendeesFreeAtTime{_->_}(LinkedList[{_->_}]{_->_} users, int{_->_} day, int{_->_} startHour, int{_->_} endHour) {
+        try {
+            for (int i = 0; i < users.size(); ++i) {
+                JifObjectWrapper[{_->_}]{_->_} w = (JifObjectWrapper[{_->_}])users.get(i);
+                final Principal{_->_} p = (Principal)w.getObject();
+                if (!getCalendar(p).freeAtTime(day, startHour, endHour)) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (NullPointerException ex) {
+            return false;
+        } catch (IndexOutOfBoundsException nex) {
+            return false;
+        } catch (ClassCastException ex) {
+            return false;
+        }
+    }
 
     public void addMeeting{_->_}(principal{_->_} User, Meeting[User]{User->_} meeting) {
         try {
