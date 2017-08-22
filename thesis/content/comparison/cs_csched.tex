@@ -1,0 +1,31 @@
+\section{Case Study 3: Calendar Scheduler}
+
+\textbf{Explanation}
+
+Users have calendars, which in turn have events. Events have a beginning and start time, a title and a list of attending users (users must attend events on their calendars).
+
+The application has multiple users, and allows users to schedule a time for a new meeting when all users are free. Hence, the times of meetings are not confidential. The titles however are restricted to be visible only to attendees of that meeting.
+
+\textbf{Security properties:}
+
+Some properties of each event are confidential but not others.
+
+The confidentiality of events is bound to their list of attendees (i.e. quantified over some list)
+
+\textbf{Key points:}
+
+Both Paragon and JIF cannot encode the required policies.
+
+JIF fails entirely since lists are a dynamic construct and JIF cannot handle dynamic policies.
+
+Paragon's policy language can encode the idea of the dynamic construct but annotations don't allow universal quantification -- hence the language can express the idea of a singular `owner' of a meeting, but not a list of attendees.
+
+Paragon's compiler cannot however statically determine that different instances are different actors in this case, even in the single owner example.
+
+JIF and Paragon can express the `owner' policy in a way that will (to some degree) work, but it relies on using principals/actors as type parameters.
+
+\textbf{Toy examples:}
+
+Demonstration of failure to determine actors (Paragon)
+
+Simple example where quantification is required

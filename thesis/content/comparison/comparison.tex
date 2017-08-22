@@ -1,9 +1,27 @@
 \chapter{A Comparison of JIF and Paragon}
 
-As discussed in the Theory section, the `JFlow' language, through bot the original paper \cite{myers1999jflow} and its subsequent implementation as Java Information Flow (JIF), has become the dominant language and the dominant paradigm in the field of security-typing implementations.
+As discussed in the \nameref{chap_theory} section, the Java Information Flow (JIF) and Paragon languages take substantively different approaches to expressing security policies. JIF provides a concrete policy framework in the form of the Decentralised Label Model whereas Paragon effectively abstracts over that to allow for logic-based policy expression.
 
-As articulated by \citeauthor{broberg2013paragon} in \citetitle{broberg2013paragon} \cite{broberg2013paragon}, JIF may be regarded as a `second-generation Information Flow language'. Its Decentralised Label Model allowed for more flexible and more useful policies to be expressed than the straight Mandatory Access Control lattice that had been at the centre of most prior work, and its implementation as an extension of the popular Java language made it comparatively practical to work with.
+The differences between these languages are impactful upon how and where they can be applied to real world programs. In this section the languages are compared in concrete terms through a set of three case study applications, with each demonstrating the applicability or the limitations of each language to a class of problems.
 
-Under this taxonomy, Paragon is then a `third-generation Information Flow language'. It discards lattice-based policy definition entirely in favour of policies which may defined through logical expressions. This abstraction broadens the scope of what security requirements can be expressed.
+In addition, the process of using these languages for development is described in terms of the additional burden they place on the programmer when compared to writing in standard Java. The practicalities of developing in each is discussed, though as research languages both JIF and Paragon suffer from a lack of documentation, and of `production-ready' polish.
 
-The Paralock construct which Paragon introduces allow for policies which vary over the lifetime of a running program, something which cannot be represented effectively under JIF's policy model. In addition, Paralocks can model relations between actors of arity zero, one or two, and through the use of binary relations, the Decentralised Label Model can in fact be written within Paragon's policy language. That is, JIF's policy mechanism can be encoded using Paragon's.
+\newpage
+
+\input{content/comparison/cs_battleships}
+
+\newpage
+
+\input{content/comparison/cs_conf}
+
+\newpage
+
+\input{content/comparison/cs_csched}
+
+\newpage
+
+\input{content/comparison/burden}
+
+\newpage
+
+\input{content/comparison/practicalities}

@@ -1,0 +1,29 @@
+\section{Case Study 1: Battleships}
+
+\textbf{Explanation:}
+
+`Battleships' game in which two players have a secret board with ships at various locations. The opposing player may not learn the locations of the enemy ships, except through querying individual coordinates on their turn to test whether that is a battleship position.
+
+\textbf{Security properties:}
+
+Two instances of the Player class which are `mutually distrustful'.
+
+Confidential information must be allowed to be released under specific circumstances (through querying).
+
+\textbf{Key points:}
+
+Modelling a principal-per-player fits well into JIF's policy model.
+
+Fits within JIF's declassification framework -- secret data can be released, but only through specific `escaping' channels.
+
+Paragon also fits well; doesn't need to concretely model actors at all (for confidentiality at least).
+
+Makes good use of Paragon's `escaping block' construct.
+
+Overall: a fairly trivial example which allows for easy expression in both languages. Paragon's expressivity allows for much less work/burden than JIF.
+
+\textbf{Toy examples:}
+
+JIF declassification procedure
+
+Paragon declassification block
