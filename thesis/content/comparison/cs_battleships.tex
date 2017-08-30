@@ -27,3 +27,126 @@ Overall: a fairly trivial example which allows for easy expression in both langu
 JIF declassification procedure
 
 Paragon declassification block
+
+\newpage
+
+\subsection{Overview}
+
+The first case study is that of an implementation of the well known board game Battleships. The premise of this game is that two opposing players each have a separate `board', which is a grid of (x, y) coordinates. Each player places a set number of ships on the board, which cover some number of contiguous coordinates either horizontally or vertically. A player is not allowed to learn the layout of the other's board, but from here players take it in turns to guess (or `query') coordinates, and the other player must reveal whether or not the guessed coordinate contains a ship -- if so, that ship is destroyed. The game continues until one player has no remaining ships on the board.
+
+Essentially, this is an incomplete information game: the rules require that each player cannot know the layout of the opponent's board, but they must trust the integrity of the information they receive through querying (i.e. it is not permissible to lie about whether a queried position contains a ship).
+
+\newpage
+
+\subsection{Key Security Properties}
+
+There are two facets to the security policy represented in this case study: the confidentiality and the integrity of each player's board.
+
+\subsubsection{Confidentiality of the Board}
+
+The confidentiality policy is simply stated: a player's board is secret, and information about the positions of ships on the board may flow to the player owning the board and no-one else. The one exception to this is the querying process: an opponent may, on their `turn' in the game, query a coordinate and learn whether or not a ship overlaps the given point.
+
+This exception represents a `declassification' of some information regarding the location of ships on the board (after all, the opponent could gain perfect information by simply querying every point on the board), but it restricts the \textit{quantity} of information which is leaked to one coordinate and hence at most one ship per query, and it ensures that the information may be declassified only through this method and no other.
+
+\subsubsection{Integrity of the Board}
+
+A corollary to the above confidentiality policy is that, in order for the game to proceed according to the rules, the information declassified by a query must be accurate to the state of the queried player's board. Thus, the player must `trust' their opponent to reveal the truth about a queried coordinate.
+
+\subsection{Implementation Structure}\label{battleships_impstructure}
+
+Unlike the other case studies presented here, a JIF implementation of Battleships already exists -- it comes standard with a download of the compiler \cite{jifwebsite}. This implementation not only provides the confidentiality policy described above, but also the integrity policy. Though this is relevant to the overall problem, expression of confidentiality policies is the main focus of this comparison and so the integrity policy is not examined in depth.
+
+In order to provide an effective comparison, the Paragon implementation was developed using the same basic structure as the JIF implementation -- this pattern is repeated for the other case studies, where a common code structure is used for both JIF and Paragon implementations.
+
+This structure is uses the following Java / JIF / Paragon classes:
+
+\begin{itemize}
+	\item \mono{Coordinate}: a simple immutable representation of an (x, y) pair
+	
+	\begin{itemize}
+		\item Polymorphic with respect to security policy (i.e. it has no inherent policy, but a policy may be placed upon a coordinate)
+	\end{itemize}
+	
+	\item \mono{Ship}: an immutable single ship in the game
+	
+	\begin{itemize}
+		\item Has a length, a Coordinate for the bottom left point, and a flag indicating whether the ship is aligned horizontally or vertically
+		
+		\item Provides methods to check whether a given Coordinate is covered by the ship, and whether another given ship intersects this one
+		
+		\item Polymorphic with respect to security policy
+	\end{itemize}
+	
+	\item \mono{Board}: a board of coordinates containing a list of Ships
+	
+	\begin{itemize}
+
+		\item Provides a method to test whether a given Coordinate contains a Ship
+		
+		\item Polymorphic in terms of policy: all ships take on the Board's policy
+	\end{itemize}
+	
+	\item \mono{Player}: a player in the game, with their own secret Board
+	
+	\begin{itemize}
+		\item On creation, the player initialises its board with ship positions
+		\item Provides methods to generate new queries, and to receive and answer queries from the opponent
+		\item Defines the policy on its board: no-one but the player may view its board, except through its \mono{processQuery} method (which declassifies information about the queried point)
+	\end{itemize}
+	
+	\item \mono{BattleShip}: coordinates the gameplay between two players
+	
+	\begin{itemize}
+		\item Provides the method which runs the game logic
+	\end{itemize}
+	
+	\item \mono{Main}: provides the program's main method
+\end{itemize}
+
+\newpage
+
+\subsection{JIF Implementation}
+
+\subsubsection{Impact of Integrity Policy}
+
+As per the \nameref{battleships_impstructure} section, the existing JIF implementation, developed by the creators of JIF themselves, includes an implementation of not only the game's confidentiality policy but also its integrity policy.
+
+The inclusion of this policy significantly increases the complexity of the code: it requires the addition of a number of methods to allow for the `endorsement' of information to a higher level of integrity, with method signatures such as the following from the \mono{Board} class:
+
+\begin{minted}{Java}
+public Board[{p->*; p<-* meet o<-*}]{p<-* meet o<-*} 
+					endorseBoard{p<-* meet o<-*}
+			(principal{p<-* meet o<-*} p, principal{p<-* meet o<-*} o)
+where {L} equiv {p->*; p<-*}, caller(p,o) {
+\end{minted}
+
+These method signatures are not particularly readable, and when combined as in other areas with JIF's confidentiality labeling system, it can become very difficult to discern even what the return type and parameters of a method mean.
+
+The integrity policy and its implications are not considered more generally here -- for the purposes of this comparison, it is assumed that preventing the downward flow of information is the goal of developing with a security-type system, as opposed to preventing the upward flow of `trust' or integrity.
+
+\subsubsection{Confidentiality Policy}
+
+In contrast with the integrity policy, the implementation of the confidentiality of ship locations is relatively simple.
+
+ The \mono{Player} class has two principal type parameters \mono{P} and \mono{O}, specifying the principals acting as this player and their opponent. The \mono{Board} class takes one label type parameter, specifying the policy on its ships, and hence each Player's Board is parametrised by the policy label \jiflabel{P->*; P<-* meet O<-*}. The confidentiality portion of this (\mono{P->*}) simply states that the Board belongs to \mono{P}, and \mono{P} allows this information to be viewed only by the top principal.
+ 
+ This policy prevents the opposing player (principal \mono{O}) from accessing the information. Only through a declassification statement may information about the state of the board flow to another principal.
+ 
+ The \mono{processQuery} method is the only method which allows for this, through the following two lines (which run after various input checking conditions):
+ 
+ \begin{minted}{Java}
+ // find the result.
+ boolean result = brd.testPosition(query, new label {P<-* meet O<-*});
+ // declassify the result
+ return declassify(result, {P->*;P<-* meet O<-*} to {P<-* meet O<-*});
+ \end{minted}
+ 
+ The result is calculated by querying the board. The \mono{result} variable is inferred by the type system to be of confidentiality policy \jiflabel{P->*}, and so the \mono{declassify} statement is used to declassify it to the empty confidentiality policy \jiflabel{} (equivalent to \jiflabel{\_->\_}). Hence, the return value of this method may flow to any principal.
+
+\subsubsection{Boilerplate \& General Details}
+
+\subsection{Paragon Implementation}
+
+\subsection{Comparison}
+
+\subsection{Toy Examples}

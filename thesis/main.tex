@@ -9,11 +9,36 @@
 \usepackage{hyperref}
 \usepackage{nameref}
 \usepackage[parfill]{parskip}
+\usepackage{listings}
+
+\usepackage{minted}
+\setminted{tabsize=4}
 
 \usepackage{graphics}
 
 \usepackage{titling}
+\usepackage{titlesec}
 
 %\usepackage{showframe}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\titlespacing*{\subsubsection}
+{0pt}{\baselineskip}{0.5\baselineskip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\mono}[1]{\texttt{#1}}
+
+% JIF
+\newcommand{\jiflabel}[1]{\mono{\{#1\}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \input{content}
