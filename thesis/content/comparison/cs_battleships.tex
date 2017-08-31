@@ -250,6 +250,12 @@ Paragon does not require boilerplate to make use of standard output streams: the
 
 As a result of the conciseness of the policy definition and the lack of boilerplate, the Paragon implementation of Battleships quite closely resembles a plain Java implementation, whereas the JIF implementation has large numbers of annotations on each function as well as additional steps and boilerplate code required to perform simple Java tasks. It is worth noting, however, that some of this need for extra annotation may be attributed to the inclusion of the integrity policy.
 
-\subsection{Comparison}
+\subsection{Conclusion}
 
-\subsection{Toy Examples}
+The Battleships examples can be represented under the policy models of both JIF and Paragon with relative ease. The interacting principals of the Decentralised Label Model can be adapted to the problem simply by mapping a principal to each player of the game. In the case of Paragon, these interacting actors may be implicitly modelled by the \mono{Player} instances themselves.
+
+The declassification action required to allow for querying of the board aligns well with JIF's declassification construct: the query is an `escape hatch' for the confidentiality policy, and the \mono{declassify} statement is an `escape hatch' from the security type system. Paragon's system is more general than this, but the use of a briefly opened paralock to approximate declassification is common enough that Paragon includes syntactic sugar for it. Hence, in both languages this is quite easily expressed.
+
+The largest difference between the two implementations lies in how Paragon's syntax reduces the need for complex boilerplate code. Using standard output, necessary for virtually all useful programs, requires non-trivial setup in JIF and none in Paragon. Similarly, Paragon provides the \mono{policyof()} operator to eliminate the need for security type parametrisation on simple datatypes -- and when Paragon does use security type generics, it extends the standard Java generics syntax where JIF uses entirely different syntax incompatible with Java generics.
+
+Hence, while this example can be equivalently represented using both JIF and Paragon, Paragon's syntax produces a more concise and more readable program.
