@@ -27,3 +27,29 @@ JIF can't model these two separate options -- only the former `default value' op
 Time-release policy
 
 `Default value' versus compile-time checked
+
+\newpage
+
+\subsection{Overview}
+
+The second case study is a simplified Conference Management system. Papers have a title and list of authors; these papers may then be submitted to the conference. Some submitted papers are then accepted and allocated to a conference session, in secret. Then at some point in time the final conference schedule is made available, and previously secret information about which papers were accepted becomes publicly available.
+
+In addition, until the reveal the submitted papers' titles are publicly viewable, but their authors lists are secret (this could represent, for instance, a policy for blind review).
+
+\subsection{Key Security Properties}
+
+There are essentially two parts to the security policy required for this program, which both derive from essentially the same principle of `timed release':
+
+\begin{enumerate}
+	\item Until the timed release, whether a paper has been accepted or not may be known only to the conference organiser
+	
+	\item Until the timed release, the list of authors of a paper is not available to anyone except the conference organiser
+\end{enumerate}
+
+\subsection{Implementation Structure}
+
+\subsection{JIF Implementation}
+
+\subsection{Paragon Implementation}
+
+\subsection{Conclusion}
