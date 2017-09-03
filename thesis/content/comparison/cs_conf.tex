@@ -46,6 +46,24 @@ There are essentially two parts to the security policy required for this program
 	\item Until the timed release, the list of authors of a paper is not available to anyone except the conference organiser
 \end{enumerate}
 
+\subsubsection{Timed Release}
+
+Timed release requires that confidentiality be time-variant -- equivalent pieces of code may be acceptable or unacceptable depending on \textit{when} they are called.
+
+This is an inherently dynamic policy: it cannot be represented in a static lattice structure. Hence, its representation requires either some notion of declassification so that information can be allowed to `escape' from a lattice policy structure or some way of representing policy state directly. As will be discussed in the following sections, the former method is problematic as declassification bypasses the security-type system entirely, preventing the type system from properly enforcing the conditions of the timed release.
+
+\subsubsection{Paper Acceptance}
+
+The first aspect of the policy, that papers' acceptance status remain hidden until release, provides an illustration of how implicit information flows must be taken into consideration. It is relatively straightforward to prevent an explicit leak of this information (for example, from a method that returns whether or not the paper has been accepted), but in order to prevent \textit{all} flow, the security type system must also prevent any information whose value depends on the acceptance status from being leaked.
+
+In the example application, this requirement is demonstrated through the ability for users to retrieve the session allocation for a given paper. Since any paper which has been allocated to a session must have been accepted, leaking the session allocation implies a leak of the acceptance status. This precise issue occurred in the EDAS conference management system \cite{agrawal2016edas_conf}, and is discussed in relation to an alternative approach to information flow by \citeauthor{polikarpova2016lifty} \cite{polikarpova2016lifty}.
+
+Hence, the session allocation for a given paper must also be guarded at the same level of confidentiality as its acceptance status.
+
+\subsubsection{Author Confidentiality}
+
+The other aspect of the policy is more straightforward: until the timed release, papers' authors must be hidden from everybody except the conference organiser. This is novel when compared to the Battleships example in that the papers themselves --- their title, abstract and contents --- are not secret; so only \textit{some} information about the paper need be constrained by the timed release policy.
+
 \subsection{Implementation Structure}
 
 \subsection{JIF Implementation}
