@@ -66,6 +66,24 @@ The other aspect of the policy is more straightforward: until the timed release,
 
 \subsection{Implementation Structure}
 
+The JIF and Paragon implementations for the Conference Management case study were written to follow the same class structure. Each implementation attempts to provide essentially the same security policy mechanisms, but as discussed the degree to which the security typing can correctly encode the timed release mechanism varies between them.
+
+The structure uses the following classes:
+
+\begin{itemize}
+	
+	\item \mono{Author}: a simple immutable paper author with a name
+	
+	\item \mono{Organiser}: an immutable conference organiser with a name
+	
+	\item \mono{Paper}: an immutable paper with a title, abstract and list of authors
+	
+	\item \mono{ConferenceSystem}: a conference representation with an organiser, a set of submitted papers, and a set of accepted / allocated papers
+	
+	\item \mono{Main}: a main class which creates and runs a conference system
+	 
+\end{itemize}
+
 \subsection{JIF Implementation}
 
 \subsection{Paragon Implementation}
