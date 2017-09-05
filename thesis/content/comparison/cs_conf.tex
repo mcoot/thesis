@@ -74,11 +74,29 @@ The structure uses the following classes:
 	
 	\item \mono{Author}: a simple immutable paper author with a name
 	
+	\begin{itemize}
+		\item Polymorphic with respect to security policy
+	\end{itemize}
+	
 	\item \mono{Organiser}: an immutable conference organiser with a name
+	
+	\begin{itemize}
+		\item Polymorphic with respect to security policy
+	\end{itemize}
 	
 	\item \mono{Paper}: an immutable paper with a title, abstract and list of authors
 	
+	\begin{itemize}
+		\item Title and abstract may have a separate policy to the list of authors, though both are polymorphic
+	\end{itemize}
+	
 	\item \mono{ConferenceSystem}: a conference representation with an organiser, a set of submitted papers, and a set of accepted / allocated papers
+	
+	\begin{itemize}
+		\item Contains a list of submitted papers, as well as a map of accepted players to their allocated sessions, and provides the methods which perform the allocation in secret and perform the timed release
+		
+		\item Defines the security policy placed upon the acceptance status / session allocation, as well as that placed upon the author lists of submitted papers
+	\end{itemize}
 	
 	\item \mono{Main}: a main class which creates and runs a conference system
 	 
