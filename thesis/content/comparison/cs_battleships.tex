@@ -188,11 +188,11 @@ Hence, for practical purposes it is necessary to make full use of declassificati
 
 \subsubsection{Data Types}
 
-The Paragon version of Battleships is based on the same overall structure as the JIF implementation. The first notable difference, seen in the simple data type classes \mono{Coordinate} and \mono{Ship}, is that where JIF must rely on type parameters for polymorphism in the security-type system, Paragon has the special \mono{policyof(this)} annotation, allowing these classes to be fully polymorphic in policy without being explicitly parametrised.
-
-As a side note, use of the \mono{policyof(this)} annotation is somewhat limited in practice -- it is available only for methods and \mono{final} fields. However, this suffices for the simple data types required by Battleships.
+The Paragon version of Battleships is based on the same overall structure as the JIF implementation. The first notable difference, seen in the simple data type classes \mono{Coordinate} and \mono{Ship}, is that Paragon has the special \mono{policyof(this)} annotation, allowing these classes to be fully polymorphic in policy without being explicitly parametrised. Though use of the \mono{policyof(this)} annotation is somewhat limited in practice -- it is available only for methods and \mono{final} fields -- it greatly simplifies the implementation of simple data type classes.
 
 In addition, defining the overridden Java methods \mono{equals}, \mono{hashCode} and \mono{toString} for data types requires substantially less effort in Paragon than in JIF. JIF uses its own wrappers (\mono{JIFObject} and descendents) as it cannot easily represent polymorphic method parameters. In Paragon, the \mono{policyof(arg)} operator may be used to define a method's return policy in terms of a completely free argument policy.
+
+JIF does include the similar \jiflabel{this} label, but the construct cannot simply be applied to arguments and the existing Battleships implementation does not make use of it.
 
 The difference to annotation burden and readability can be easily seen in the method signatures of the JIF and Paragon equals methods respectively:
 
@@ -256,6 +256,6 @@ The Battleships examples can be represented under the policy models of both JIF 
 
 The declassification action required to allow for querying of the board aligns well with JIF's declassification construct: the query is an `escape hatch' for the confidentiality policy, and the \mono{declassify} statement is an `escape hatch' from the security type system. Paragon's system is more general than this, but the use of a briefly opened paralock to approximate declassification is common enough that Paragon includes syntactic sugar for it. Hence, in both languages this is quite easily expressed.
 
-The largest difference between the two implementations lies in how Paragon's syntax reduces the need for complex boilerplate code. Using standard output, necessary for virtually all useful programs, requires non-trivial setup in JIF and none in Paragon. Similarly, Paragon provides the \mono{policyof()} operator to eliminate the need for security type parametrisation on simple datatypes -- and when Paragon does use security type generics, it extends the standard Java generics syntax where JIF uses entirely different syntax incompatible with Java generics.
+The largest difference between the two implementations lies in how Paragon's syntax reduces the need for complex boilerplate code. Using standard output, necessary for virtually all useful programs, requires non-trivial setup in JIF and none in Paragon. Similarly, Paragon provides the \mono{policyof()} operator to eliminate the need for security type parametrisation in a number of common scenarios -- and when Paragon does use security type generics, it extends the standard Java generics syntax where JIF uses entirely different syntax incompatible with Java generics.
 
 Hence, while this example can be equivalently represented using both JIF and Paragon, Paragon's syntax produces a more concise and more readable program.

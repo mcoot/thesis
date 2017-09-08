@@ -104,6 +104,28 @@ The structure uses the following classes:
 
 \subsection{JIF Implementation}
 
+\subsubsection{`Semi-parametric' Paper Policy}
+
+The \mono{Paper} class requires that the title and abstract fields be low confidentiality, but that the list of authors be restricted. Since \mono{Paper} is essentially a data type class, it is desirable to make it as generic as possible. In order to avoid hard coding each policy, it is possible to simply use two label type parameters. However, this reduces readability, as it is not immediately clear what the implications of instantiating a \mono{Paper[\jiflabel{O->*}, \jiflabel{O->\_}]} are.
+
+For this reason, the implementation instead uses a single label type parameter to represent the restriction on the author list, and makes use of the special \jiflabel{this} label so that a given \mono{Paper}'s title and abstract have their policy determined by that of the instance itself.
+
+\subsubsection{Timed Release Policy}
+
+The JIF implementation for the Conference Management system is made more complex by the nature of JIF's Decentralised Label Model. The core security principle of timed release cannot be modelled by the DLM, as it is inherently `stateful'. That is, timed release is tied to a boolean variable which may change at runtime.
+
+A straightforward lattice model cannot represent a runtime-variant policy, and while the DLM allows for more complex policy formulation than a traditional lattice model, the reader set for a variable must be known statically.
+
+Therefore, JIF's security type system is unable to model the timed release policy and so the functionality must be approximated through the use of declassification.
+
+\subsubsection{Data Structures in JIF}
+
+The Conference Management system requires the use of a map data structure in order to store the mapping from an accepted paper to its session allocation. This presents 
+
 \subsection{Paragon Implementation}
+
+\subsubsection{`Semi-parametric' Paper Policy}
+
+\subsubsection{Timed Release Policy}
 
 \subsection{Conclusion}
