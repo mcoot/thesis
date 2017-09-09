@@ -64,6 +64,8 @@ Hence, the session allocation for a given paper must also be guarded at the same
 
 The other aspect of the policy is more straightforward: until the timed release, papers' authors must be hidden from everybody except the conference organiser. This is novel when compared to the Battleships example in that the papers themselves --- their title, abstract and contents --- are not secret; so only \textit{some} information about the paper need be constrained by the timed release policy.
 
+\newpage
+
 \subsection{Implementation Structure}
 
 The JIF and Paragon implementations for the Conference Management case study were written to follow the same class structure. Each implementation attempts to provide essentially the same security policy mechanisms, but as discussed the degree to which the security typing can correctly encode the timed release mechanism varies between them.
@@ -102,6 +104,8 @@ The structure uses the following classes:
 	 
 \end{itemize}
 
+\newpage
+
 \subsection{JIF Implementation}
 
 \subsubsection{`Semi-parametric' Paper Policy}
@@ -109,6 +113,86 @@ The structure uses the following classes:
 The \mono{Paper} class requires that the title and abstract fields be low confidentiality, but that the list of authors be restricted. Since \mono{Paper} is essentially a data type class, it is desirable to make it as generic as possible. In order to avoid hard coding each policy, it is possible to simply use two label type parameters. However, this reduces readability, as it is not immediately clear what the implications of instantiating a \mono{Paper[\jiflabel{O->*}, \jiflabel{O->\_}]} are.
 
 For this reason, the implementation instead uses a single label type parameter to represent the restriction on the author list, and makes use of the special \jiflabel{this} label so that a given \mono{Paper}'s title and abstract have their policy determined by that of the instance itself.
+
+\subsubsection{Data Structures in JIF}
+
+The Conference Management system requires the use of a map data structure in order to store the mapping from an accepted paper to its session allocation. This exposes one of the practical concerns that working with JIF presents: JIF is built upon Java 1.4 and so lacks Java's generics.
+
+The process of actually retrieving a value from the map is complicated further by JIF's own type system. Maps have label generics for the keys and value types, and as a result both the key and value objects must be of type \mono{JifObject[L]} where \mono{L} is the label for the key or the value respectively. Hence, it is not trivial to use any type as the key or value for a map -- it must either conform to one of JIF's provided types or be wrapped in one.
+
+In the case of the allocations map, where the desired value is simply an integer classified to be visible only to the conference organiser \mono{O}, this requires wrapping the value in a \mono{JifInteger[\jiflabel{O->*}]} (so that it is a subtype of the required \mono{JifObject[\jiflabel{O->*}]}). Retrieving the object is then a complex process, made more complex when combined with the declassification of the result, as is necessary in this case.
+
+This process, of retrieving the session number for an accepted paper and declassifying it, is most easily described by annotating the code for it.
+
+\subsubsection{Retrieving and Declassifying the Session Number}
+%First, the method to perform this declassification requires a quite specific signature. The ultimate goal is that all confidentiality is to be removed from the session number -- hence we have the resulting label \jiflabel{O->\_}.
+%
+%The \mono{where authority(O)} clause is also required here so that the method is allowed to actually perform declassifications on the high confidentiality data belonging to principal \mono{O}.
+
+%Next, note that the key for the map is not the \mono{Paper} object itself but the paper's title wrapped in a \mono{JifString}; this could instead be avoided by having \mono{Paper} subclass \mono{JifObject}, but this would conflict with the polymorphism and use of label type parameters by \mono{Paper}.
+
+Note references are annotated in the code in the style of \mono{<1>} to remain distinct from the code itself.
+
+\begin{minted}{Java}
+int{O->_} <1> 
+declassifySessionNumber{O->_}<2>(String{O->_} title):{O->_} 
+		where authority(O) <3> {
+	JifString[{O->_}] titleObj = new JifString[{O->_}](title); <4>
+	JifObject[{O->*}]{O->*} sNoObj;
+	try {
+		sNoObj = allocations.get(new label {O->*}, titleObj); <5>
+	} catch (NullPointerException e) { <6>
+		return -2;
+	}
+	
+	// Declassify the object retrieved from the map
+	JifObject[{O->*}]{O->_} sNoObjDeclass <7> 
+								= declassify(sNoObj, {O->*} to {O->_});
+	
+	// Convert it to a JifInteger
+	JifInteger[{O->*}]{O->_} sNo;
+	try {
+		sNo = (JifInteger[{O->*}])sNoObjDeclass; <8>
+	} catch (ClassCastException ex) {
+		return -3;
+	}
+		
+	// Pull the int from the JifInteger
+	int{O->*} r;
+	try {
+		r = sNo.intValue(); <9>
+	} catch (NullPointerException ex) {
+		return -4;
+	}
+	
+	// Declassify the int
+	int{O->_} result = declassify(r, {O->*} to {O->_}); <10>
+	return result;
+}
+\end{minted}
+
+\begin{enumerate}
+	\item The return label is \jiflabel{O->\_} -- the information belongs to the organiser but may be read by anyone
+	
+	\item The begin and end labels of the method must also be \jiflabel{O->\_} since after timed release this declassification process must be available to any principal.
+	
+	\item The authority clause is necessary since only principal \mono{O} (the organiser) may actually perform this declassification.
+	
+	\item Rather than using the \mono{Paper} as the key, its title is wrapped in a \mono{JifString} and used as the key. To avoid this would require making \mono{Paper} a subtype of \mono{JifObject} and cause issues with security type polymorphism.
+	
+	\item The actual \mono{get} call itself requires a runtime label parameter, and the resulting object is at the combination of this label and the key label parameter of the map. In this case the label, \jiflabel{O->*}, is the same as that of the internally stored value but it is not necessarily the case.
+	
+	\item The extensive use of try-catch constructs is required because \textit{all} exceptions are checked in JIF, including \mono{NullPointerException} and \mono{ClassCastException}. In this method negative sentinel values are returned to represent failure.
+	
+	\item This declassification merely allows the code to work with the \mono{JifObject} -- the value stored within is still at the level indicated by the type parameter, \jiflabel{O->*}.
+	
+	\item Since JIF lacks generics, the result of the map must be explicitly cast to \mono{JifInteger}. This cast would fail and give a \mono{ClassCastException} if the object stored actually had a different policy than \jiflabel{O->*}.
+	
+	\item At this point, the actual integer value may be retrieved, at the classification of the \mono{JifInteger}'s type parameter.
+	
+	\item The result which has finally been retrieved can then be declassified appropriately and returned.
+	
+\end{enumerate}
 
 \subsubsection{Timed Release Policy}
 
@@ -118,9 +202,9 @@ A straightforward lattice model cannot represent a runtime-variant policy, and w
 
 Therefore, JIF's security type system is unable to model the timed release policy and so the functionality must be approximated through the use of declassification.
 
-\subsubsection{Data Structures in JIF}
+\subsubsection{Modelling Timed Release with Declassification}
 
-The Conference Management system requires the use of a map data structure in order to store the mapping from an accepted paper to its session allocation. This presents 
+The code for declassifying the session number of an accepted paper (and hence also its acceptance status) was described in detail above. However, nothing in that declassification procedure \textit{required} that it only be performed once timed release had occurred.
 
 \subsection{Paragon Implementation}
 
