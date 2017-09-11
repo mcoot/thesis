@@ -204,7 +204,33 @@ Therefore, JIF's security type system is unable to model the timed release polic
 
 \subsubsection{Modelling Timed Release with Declassification}
 
-The code for declassifying the session number of an accepted paper (and hence also its acceptance status) was described in detail above. However, nothing in that declassification procedure \textit{required} that it only be performed once timed release had occurred.
+The code for declassifying the session number of an accepted paper (and hence also its acceptance status) was described in detail above. However, nothing in the declassification procedure \textit{required} that it only be performed once timed release had occurred.
+
+This issue presents a significant issue with using JIF to implement a timed release policy. Since the security type system cannot encode timed release, implementing it necessarily requires giving up the safety that the security type system provides.
+
+This is best illustrated with the relevant code snippet:
+
+\begin{minted}{Java}
+if (allocationsVisible) {
+	return declassifySessionNumber(title);
+} else {
+	return -1;
+}
+\end{minted}
+
+This method prevents the leak of the session number of a paper, and hence its acceptance status, by guarding with a boolean condition that is true only after timed release. If the method is called before timed release it will return a sentinel value that gives no information about acceptance status.
+
+With the JIF implementation, the following snippet -- only a single character change from the previous -- would also compile:
+
+\begin{minted}{Java}
+if (!allocationsVisible) {
+	return declassifySessionNumber(title);
+} else {
+	return -1;
+}
+\end{minted}
+
+This snippet instead releases the session number (and hence leaks the acceptance status) \textit{before} timed release. This violates the security properties of the case study, but JIF's type system does not provide any means by which to control this, and hence provides no more guarantee of confidentiality than plain Java would in this scenario.
 
 \subsection{Paragon Implementation}
 
