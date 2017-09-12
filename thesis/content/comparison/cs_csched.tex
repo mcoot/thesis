@@ -34,7 +34,15 @@ Simple example where quantification is required
 
 \subsection{Overview}
 
+The final case study is an implementation of a multi-user `calendar scheduler' application. The application has multiple users, each with their own calendar. A calendar consists of a list of events; each event has a title, and is associated with a day of the week and starting and finishing time. In addition, each event has a list of users who are attending the event.
+
+The application allows users to schedule new events so as to avoid conflicting with existing events. Each event's details are secret -- only the attendees may know the title of the meeting. However, the times of the meetings need to be available to all users in order to schedule new meetings.
+
 \subsection{Key Security Properties}
+
+On the surface the security property here may seem to lack complexity: as with the second case study we have a data structure in the form of an event which contains some high confidentiality data and some low confidentiality data. Unlike that case, the data is not time-variant but instead dependent on the involvement of particular users -- which seems like a natural fit for the principals of JIF.
+
+However, there are a number of key differences that make 
 
 \subsection{Implementation Structure}
 
