@@ -202,7 +202,7 @@ A straightforward lattice model cannot represent a runtime-variant policy, and w
 
 Therefore, JIF's security type system is unable to model the timed release policy and so the functionality must be approximated through the use of declassification.
 
-\subsubsection{Modelling Timed Release with Declassification}
+\subsubsection{Modeling Timed Release with Declassification}
 
 The code for declassifying the session number of an accepted paper (and hence also its acceptance status) was described in detail above. However, nothing in the declassification procedure \textit{required} that it only be performed once timed release had occurred.
 
@@ -236,6 +236,45 @@ This snippet instead releases the session number (and hence leaks the acceptance
 
 \subsubsection{`Semi-parametric' Paper Policy}
 
+As with the JIF implementation, consideration must be given to the need for differing policies on the fields of the \mono{Paper} class. To allow for polymorphism, the Paragon implementation uses a similar strategy as for JIF: use of the \mono{policyof(this)} policy for the title and abstract, and a policy type parameter for the restriction upon authors.
+
+Unlike JIF, Paragon uses the standard Java syntax for generics, so the class is defined as \mono{public class Paper\generic<policy authorRestriction>}. Beyond this, the Paragon implementation benefits from being able to use the standard Java signatures for \mono{equals}, \mono{hashCode} and \mono{toString}, but is broadly similar to the JIF implementation.
+
+\subsubsection{Data Structures}
+
+Where the JIF implementation made interacting with data structures (like the map used to store sessions allocation) quite verbose, in Paragon the process is mostly similar to plain Java. Where a \mono{HashMap<K, V>} in Java takes as type parameters the key and value type, in Paragon, a \mono{HashMap<K, policy KeyPol, V, policy ValPol>} takes a further two -- the policies for keys and values. Policy and actor type parameters use the same notation as regular Java generics and can be mixed with them as required.
+
+In addition, manipulating or retrieving values from a map is simple in Paragon. Compare the code sample above for retrieving and declassifying a session allocation with the below Paragon equivalent:
+
+\begin{minted}{Java}
+return allocations.get(paper);
+\end{minted}
+
+Note that there is no explicit declassification here; this is handled by the lock state context in which the above is called, and the design of this is discussed below.
+
 \subsubsection{Timed Release Policy}
+
+Where timed release cannot be explicitly modeled in the Decentralised Label Model used by JIF's policy language, the logic-based policy language of Paragon, combined with the Paralock construct allows for timed release to be simply and clearly stated.
+
+The policies used in the Conference System are the following:
+
+\begin{enumerate}
+	\item The \mono{bottom} policy, allowing any actors to access the context of data labelled with it:
+	
+	\begin{minted}{Java}
+static final policy bottom = {Object x :};
+	\end{minted}
+	
+	\item The \mono{ifAllocationsVisible} policy, allowing conference organisers to access the data at any time, and other actors to access it \textit{provided} the timed release has occurred:
+	
+	\begin{minted}{Java}
+static ?bottom lock allocationsVisible;
+
+static final policy ifAllocationsVisible = {
+ 	  Object x : allocationsVisible 
+	; Organiser o :
+};
+	\end{minted}
+\end{enumerate}
 
 \subsection{Conclusion}
