@@ -106,7 +106,7 @@ The structure uses the following classes:
 
 \newpage
 
-\subsection{JIF Implementation}
+\subsection{JIF Implementation} \label{cs_conf_jif_impl}
 
 \subsubsection{`Semi-parametric' Paper Policy}
 
@@ -238,7 +238,7 @@ This snippet instead releases the session number (and hence leaks the acceptance
 
 As with the JIF implementation, consideration must be given to the need for differing policies on the fields of the \mono{Paper} class. To allow for polymorphism, the Paragon implementation uses a similar strategy as for JIF: use of the \mono{policyof(this)} policy for the title and abstract, and a policy type parameter for the restriction upon authors.
 
-Unlike JIF, Paragon uses the standard Java syntax for generics, so the class is defined as \mono{public class Paper\generic<policy authorRestriction>}. Beyond this, the Paragon implementation benefits from being able to use the standard Java signatures for \mono{equals}, \mono{hashCode} and \mono{toString}, but is broadly similar to the JIF implementation.
+Unlike JIF, Paragon uses the standard Java syntax for generics, so the class is defined as \mono{public class Paper<policy authorRestriction>}. Beyond this, the Paragon implementation benefits from being able to use the standard Java signatures for \mono{equals}, \mono{hashCode} and \mono{toString}, but is broadly similar to the JIF implementation.
 
 \subsubsection{Data Structures}
 
@@ -277,4 +277,92 @@ static final policy ifAllocationsVisible = {
 	\end{minted}
 \end{enumerate}
 
+There are two different usages of this timed release policy in the application: the paper acceptance status, and the hiding of author details. Unlike JIF, Paragon essentially provides multiple methods for the enforcement of a policy, and so each usage of the policy is discussed separately below, in relation to a specific method of handling enforcement.
+
+\subsubsection{`Default Value' Handling}
+
+In JIF, there is precisely one mechanism by which information can be downgraded in terms of confidentiality: the \mono{declassify} statement. As discussed in the \nameref{cs_conf_jif_impl} section, this declassification is an `escape hatch' from the type system, and as a result a procedure which declassifies information may be called from anywhere which has the appropriate authority.
+
+Hence, to ensure that the session number of papers did not leak (thereby also revealing \textit{whether} a paper was accepted), the JIF implementation guarded the declassification by a boolean value, and returned a sentinel value of \mono{-1} if the timed release had not occurred:
+
+\begin{minted}{Java}
+if (allocationsVisible) {
+	return declassifySessionNumber(title);
+} else {
+	return -1;
+}
+\end{minted}
+
+The Paragon form is superficially quite similar:
+
+\begin{minted}{Java}
+if (allocationsVisible) {
+	return (int)allocations.get(paper);
+} else {
+	return -1;
+}
+\end{minted}
+
+Though the runtime behaviour of both is identical, the key difference here is that in JIF, \mono{allocationsVisible} is simply a boolean value, whereas in \mono{Paragon} it is a \mono{lock}. Because it is a Paralock, within the following branch the compiler statically knows the lock is open. Hence, inside that branch the \mono{ifAllocationsVisible} policy reduces to:
+
+\begin{minted}{Java}
+static final policy ifAllocationsVisible = {
+	  Object x : 
+	; Organiser o :
+};
+\end{minted}
+
+This allows any object to access the information, and so no further declassification action is required: the value retrieved from the map may simply be returned.
+
+In addition, since the timed release is properly encoded into Paragon's policy langauge via the lock, the issue encountered in JIF regarding flipping the condition cannot occur. The following code, with the conditional flipped, will not compile in Paragon:
+
+\begin{minted}{Java}
+if (!allocationsVisible) {
+	return (int)allocations.get(paper);
+} else {
+	return -1;
+}
+\end{minted}
+
+The end result of this is a method which is functionally the same as its JIF counterpart -- the method may be called anywhere, but will only return a meaningful value after timed release -- but Paragon's policy model allows for type safety that JIF's does not.
+
+\subsubsection{Compile-time Handling}
+
+In both JIF and Paragon, methods may be annotated such that they may only called within a certain policy context (for example -- a method which may only be called at high confidentiality). JIF uses the program counter label and method begin / end labels to achieve this; Paragon instead uses write effect annotations.
+
+However, since JIF's policy language cannot express timed release, it is not possible to write a method with a begin label requiring that the method \textit{only} be called after timed release. For the Paragon implementation this is possible through lock state annotations. This method is demonstrated in the case study for the author visibility restriction.
+
+Implementing this requires very little programmer burden: the paper authors are already at the correct restriction level, since each \mono{Paper} is parametrised by the \mono{ifAllocationsVisible} policy. The only requirement is that any method which exposes these details to a lower level of confidentiality should be annotated with \mono{\textasciitilde allocationsVisible} (specifying that the method may only be called when the \mono{allocationsVisible} lock is open).
+
+In the case study's \mono{Main} class, the \mono{printOutAuthors} method, which prints out the authors of all papers in an array to standard output, has this annotation:
+
+\begin{minted}{Java}
+private static
+~allocationsVisible
+!bottom
+void printOutAuthors(
+	?bottom List<Paper<ifAllocationsVisible>, bottom> retrievedPapers) {
+\end{minted}
+
+Then, in the \mono{main} function, the effect is demonstrated as follows:
+
+\begin{minted}{Java}
+// Cannot attempt to show authors of submissions
+// printOutAuthors(retrievedPapers);
+
+// Mark allocations as visible (i.e. notification date expired)
+conferenceSystem.setAllocationsVisible();
+
+// Can now print out authors of submissions
+printOutAuthors(retrievedPapers);
+\end{minted}
+
+If the first \mono{printOutAuthors} line is uncommented, the program will not compile since the lock will not be known to be open at that point of execution. However, the same code executed after a method known to open that lock (via the \mono{+allocationsVisible} annotation) will be accepted by the type checker.
+
 \subsection{Conclusion}
+
+The timed release policy which is central to the Conference Management case study is quite easily and naturally represented under Paragon's policy model: the Paralock construct neatly maps onto this policy and the annotation tools it provides allow the compiler to explicitly reason about this policy to ensure the security type system is actually providing type safety. In addition, the programmer may choose to implement the policies in multiple ways, whether using default sentinel values to allow methods to be called but guard sensitive results, or using lock annotations to ensure at compile time that sensitive methods are only called in the proper context.
+
+The JIF policy model, however, cannot represent timed release, and so the implementation has to `escape' from the type system using declassification in order to represent it. As a result, the JIF type system provides little security benefit over a plain Java implementation: the declassification may be used essentially anywhere, and hence information can leak due to simple programmer error.
+
+The case study also demonstrated some of the practical challenges involved in working with JIF in particular: using data structures, such as a simple HashMap, requires significantly more work in JIF than in plain Java, or indeed in Paragon. JIF's lack of support for Java generics increase the burden further.
