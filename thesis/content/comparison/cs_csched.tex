@@ -2,15 +2,15 @@
 
 \textbf{Explanation}
 
-Users have calendars, which in turn have events. Events have a beginning and start time, a title and a list of attending users (users must attend events on their calendars).
+Users have calendars, which in turn have meetings. Meetings have a beginning and start time, a title and a list of attending users (users must attend meetings on their calendars).
 
 The application has multiple users, and allows users to schedule a time for a new meeting when all users are free. Hence, the times of meetings are not confidential. The titles however are restricted to be visible only to attendees of that meeting.
 
 \textbf{Security properties:}
 
-Some properties of each event are confidential but not others.
+Some properties of each meeting are confidential but not others.
 
-The confidentiality of events is bound to their list of attendees (i.e. quantified over some list)
+The confidentiality of meetings is bound to their list of attendees (i.e. quantified over some list)
 
 \textbf{Key points:}
 
@@ -34,20 +34,87 @@ Simple example where quantification is required
 
 \subsection{Overview}
 
-The final case study is an implementation of a multi-user `calendar scheduler' application. The application has multiple users, each with their own calendar. A calendar consists of a list of events; each event has a title, and is associated with a day of the week and starting and finishing time. In addition, each event has a list of users who are attending the event.
+The final case study is an implementation of a multi-user `calendar scheduler' application. The application has multiple users, each with their own calendar. A calendar consists of a list of meetings; each meeting has a title, and is associated with a day of the week and starting and finishing time. In addition, each meeting has a list of users who are attending the meeting.
 
-The application allows users to schedule new events so as to avoid conflicting with existing events. Each event's details are secret -- only the attendees may know the title of the meeting. However, the times of the meetings need to be available to all users in order to schedule new meetings.
+The application allows users to schedule new meetings so as to avoid conflicting with existing meetings. Each meeting's details are secret -- only the attendees may know the title of the meeting. However, the times of the meetings need to be available to all users in order to schedule new meetings.
 
 \subsection{Key Security Properties}
 
-On the surface the security property here may seem to lack complexity: as with the second case study we have a data structure in the form of an event which contains some high confidentiality data and some low confidentiality data. Unlike that case, the data is not time-variant but instead dependent on the involvement of particular users -- which seems like a natural fit for the principals of JIF.
+On the surface the security property here may seem to lack complexity. As with the second case study there is a data structure in the form of a meeting which contains some high confidentiality data (the title) and some low confidentiality data (the time). Unlike that case, the data is not time-variant but instead dependent on the involvement of particular users -- which seems like a natural fit for the principals of JIF.
 
-However, there are a number of key differences that make this policy complex.
+However, there are two key differences that distinguish this policy from those discussed previously:
+
+\begin{enumerate}
+	
+	\item Rather than being `owned' by a single actor or principal, a meeting is essentially confidential to a \textit{set} of principals
+	
+	\item It is required that meetings be able to be created at runtime with any possible attendees, so the policy model must be able to reason about the restrictions on such dynamically created meetings
+	
+\end{enumerate}
 
 \subsection{Implementation Structure}
 
+Both calendar scheduler implementations follow the following class structure:
+
+\begin{itemize}
+	
+	\item \mono{User}: a simple immutable user with a name
+	
+	\begin{itemize}
+		\item Polymorphic with respect to security policy
+	\end{itemize}
+
+	\item \mono{Meeting}: a single immutable meeting with a time, a title and a list of attendees
+	
+	\begin{itemize}
+		\item The time information about the meeting is low confidentiality
+		
+		\item The title is secret and is accessible only to attendees of the meeting
+	\end{itemize}
+
+	\item \mono{Calendar}: a calendar of scheduled meetings belonging to a user
+
+	\begin{itemize}
+		\item The user must attend all meetings on their calendar
+		
+		\item Since attendance of meetings on a user's calendar may vary, other users may be able to access different portions of a given user's calendar
+	\end{itemize}
+	
+	\item \mono{Scheduler}: keeps a calendar for each user in the system, and allows for checking whether a given time slot conflicts with existing meetings for some set of users
+	
+	\item \mono{Main}: contains a main method to set up dummy data and run the scheduler
+	
+	
+\end{itemize}
+
+\subsection{Simplification of Implementation}
+
+The implementation described above, with the use of confidentiality states which depend on sets of users, is not practical to implement in either JIF or Paragon: quantification over a set of principals is not possible in the policy languages of either. The specific issues encountered in each language is described in the below section, but in both cases this quantification problem effectively prevents implementation from proceeding in practice.
+
+As a result, the actual implementations instead work around a simplified security policy, where each meeting is designated a single \textit{owner} principal who controls its confidentiality. This does not quite produce the desired application (since it unnecessarily restricts access to the title beyond what is required), but even so this simplified implementation also runs up against language and compiler limitations in both Paragon and JIF.
+
 \subsection{JIF Implementation}
 
+\subsubsection{`Sets' of Users}
+
+The desired confidentiality property, where a meeting's title is visible to its attendees, is difficult to encode in a purely static-checked manner, regardless of the policy model used, since the set of attendees of a meeting is a runtime value. In JIF's case, there is no model for expressing the concept of an arbitrary set of principals through the type system: a class may be parametrised by \textit{one} principal, but not a set of them.
+
+Since this quantification over sets of principals cannot be encoded within JIF, the implementation proceeded as per the simplified policy above.
+
+\subsubsection{`Ownership' Policy Structure}
+
+Restricting the confidentiality policy to a single meeting owner rather than a list of attendees made implementation more practicable. Under this model, the \mono{Meeting} class must be associated with an `owner' principal. This may be achieved in JIF either through a principal type parameter. Hence, the \mono{Meeting} datatype has the policy \jiflabel{Owner->\_} on its low confidentiality data, and \jiflabel{Owner->*} on the high confidentiality title.
+
+\subsubsection{Dynamic Users}
+
+The initial design of the case study implementation has the \mono{User} class, each instance of which is associated with a user of the application. Unlike Paragon, JIF does not use object instances as actors, and so there is no connection in the type system between a \mono{User} instance and the principal it would represent. This presents a challenge for development: for the application to make sense, it should not be hard-coded to some predefined list of users. 
+
 \subsection{Paragon Implementation}
+
+\subsubsection{`Sets' of Users}
+
+map / singleton
+
+\subsubsection{Ownership model issues}
 
 \subsection{Conclusion}
