@@ -103,11 +103,15 @@ Since this quantification over sets of principals cannot be encoded within JIF, 
 
 \subsubsection{`Ownership' Policy Structure}
 
-Restricting the confidentiality policy to a single meeting owner rather than a list of attendees made implementation more practicable. Under this model, the \mono{Meeting} class must be associated with an `owner' principal. This may be achieved in JIF either through a principal type parameter. Hence, the \mono{Meeting} datatype has the policy \jiflabel{Owner->\_} on its low confidentiality data, and \jiflabel{Owner->*} on the high confidentiality title.
+Restricting the confidentiality policy to a single meeting owner rather than a list of attendees made implementation more practicable. Under this model, the \mono{Meeting} class must be associated with an `owner' principal. This may be achieved in JIF either through a principal type parameter. Hence, the \mono{Meeting} data type has the policy \jiflabel{Owner->\_} on its low confidentiality data, and \jiflabel{Owner->*} on the high confidentiality title.
 
 \subsubsection{Dynamic Users}
 
-The initial design of the case study implementation has the \mono{User} class, each instance of which is associated with a user of the application. Unlike Paragon, JIF does not use object instances as actors, and so there is no connection in the type system between a \mono{User} instance and the principal it would represent. This presents a challenge for development: for the application to make sense, it should not be hard-coded to some predefined list of users. 
+The initial design of the case study implementation has the \mono{User} class, each instance of which is associated with a user of the application. Unlike Paragon, JIF does not use object instances as actors, and so there is no connection in the type system between a \mono{User} instance and the principal it would represent.
+
+This presents a challenge for development: for the application to make sense, it should not be hard-coded to some predefined list of principals. In JIF, this is not possible at the top level: principals are types (i.e. classes) and so it is not possible to dynamically create them at runtime without reflection (which JIF does not support).
+
+\cite{hicks2007jifclipse}
 
 \subsection{Paragon Implementation}
 
