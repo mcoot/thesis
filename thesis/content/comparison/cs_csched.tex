@@ -111,7 +111,9 @@ The initial design of the case study implementation has the \mono{User} class, e
 
 This presents a challenge for development: for the application to make sense, it should not be hard-coded to some predefined list of principals. In JIF, this is not possible at the top level: principals are types (i.e. classes) and so it is not possible to dynamically create them at runtime without reflection (which JIF does not support).
 
-\cite{hicks2007jifclipse}
+This problem was encountered by researchers at Pennsylvania State University in developing the JPMail secure email client \cite{jpmailpage}. An email client should support multiple, arbitrary users and as a result a set of policy tools were built for JPMail, alongside the `JIFclipse' suite of tools \cite{hicks2007jifclipse}. However, this system requires extensions to the JIF language and runtime, and even with these, in practice JPMail cannot handle new users added `on the fly' -- it requires recompilation of certain components.
+
+In practice, the JIF implementation for this case study attempts to make use of JIF's runtime \mono{Principal} class to work around the issue of dynamic principals. In practice however, this was not effective: the program could be written, but the compiler would not properly enforce information flow constraints on it.
 
 \subsection{Paragon Implementation}
 
