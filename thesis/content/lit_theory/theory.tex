@@ -19,12 +19,12 @@
 
 
 
-** MOVED FROM COMPARISON... **
-
-As discussed in the Theory section, the `JFlow' language, through bot the original paper \cite{myers1999jflow} and its subsequent implementation as Java Information Flow (JIF), has become the dominant language and the dominant paradigm in the field of security-typing implementations.
-
-As articulated by \citeauthor{broberg2013paragon} in \citetitle{broberg2013paragon} \cite{broberg2013paragon}, JIF may be regarded as a `second-generation Information Flow language'. Its Decentralised Label Model allowed for more flexible and more useful policies to be expressed than the straight Mandatory Access Control lattice that had been at the centre of most prior work, and its implementation as an extension of the popular Java language made it comparatively practical to work with.
-
-Under this taxonomy, Paragon is then a `third-generation Information Flow language'. It discards lattice-based policy definition entirely in favour of policies which may defined through logical expressions. This abstraction, combined with the Paralock construct which allows for policies which model relations and which vary over the lifetime of a running program, broadens the scope of what security requirements can be expressed.
-
-The Paralock construct which Paragon introduces allow for policies which vary over the lifetime of a running program, something which cannot be represented effectively under JIF's policy model. In addition, Paralocks can model relations between actors of arity zero, one or two, and through the use of binary relations, the Decentralised Label Model can in fact be written within Paragon's policy language. That is, JIF's policy mechanism can be encoded using Paragon's.
+%** MOVED FROM COMPARISON... **
+%
+%The `JFlow' language, through both the paper \cite{myers1999jflow} that proposed it and its subsequent implementation as Java Information Flow (JIF), has become the dominant language and the dominant paradigm in security typing and static information flow control languages more generally.
+%
+%As articulated by \citeauthor{broberg2013paragon} in \citetitle{broberg2013paragon} \cite{broberg2013paragon}, JIF may be regarded as a `second-generation Information Flow language'. Its Decentralised Label Model allowed for more flexible and more useful policies to be expressed than the straight Mandatory Access Control lattice that had been at the centre of most prior work, and its implementation as an extension of the popular Java language made it comparatively practical to work with.
+%
+%Under this taxonomy, Paragon is then a `third-generation Information Flow language'. It discards lattice-based policy definition entirely in favour of policies which may defined through logical expressions. This abstraction, combined with the Paralock construct which allows for policies which model relations and which vary over the lifetime of a running program, broadens the scope of what security requirements can be expressed.
+%
+%The Paralock construct which Paragon introduces allow for policies which vary over the lifetime of a running program, something which cannot be represented effectively under JIF's policy model. In addition, Paralocks can model relations between actors of arity zero, one or two, and through the use of binary relations, the Decentralised Label Model can in fact be written within Paragon's policy language. That is, JIF's policy mechanism can be encoded using Paragon's.
