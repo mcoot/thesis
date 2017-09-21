@@ -2,15 +2,21 @@
 
 %\section{Overview \& High Level Differences}
 
-The Java Information Flow (JIF) and Paragon programming languages both fall into the category of `mostly static' information flow languages. Both extend the Java language, and both use type systems to enforce information flow constraints.
+The Java Information Flow (JIF) and Paragon programming languages both fall into the category of `mostly static' information flow (IF) languages. Both extend the Java language, and both use type systems to enforce information flow constraints.
 
-The two languages differ primarily in their policy models. JIF's policy model, the Decentralised Label Model (DLM) \cite{myers2000dlm}, represents a refinement of the `lattice model' of Mandatory Access Control. Like in the lattice model, DLM labels are partially ordered to represent the classification of information, but rather than consisting of some static compartments, DLM labels consist of relationships between interacting `principals'. In addition, unlike the lattice model the DLM explicitly considers selective declassification, which is essential for any practical development of an application.
+The two languages differ primarily in their policy models. JIF's policy model, the Decentralised Label Model (DLM) \cite{myers2000dlm}, represents a refinement of the `lattice model' of Mandatory Access Control previously used to statically check information flows \cite{denning1977certification}. Like in the lattice model, DLM labels are partially ordered to represent the classification of information, but rather than consisting of some static compartments, DLM labels consist of relationships between interacting `principals'. In addition, unlike the lattice model the DLM explicitly considers selective declassification, which is essential for any practical development of an application.
 
-JIF and its policy model may be considered to be a `second generation' information flow language in how it abstracts over mandatory access control. By this metric, the developers of Paragon consider it to be a `third generation' language \cite{broberg2013paragon}; its policy model abstracts over JIF's model and allows security policies to be expressed using a form of propositional logic.
+JIF and its policy model may be considered to be a `second generation' information flow language in how it abstracts over mandatory access control. By this metric, the developers of Paragon consider it to be a `third generation' language \cite{broberg2013paragon}; its policy model abstracts over JIF's model and allows security policies to be expressed using a form of propositional logic. Paragon also introduces the notion of Paralocks: runtime boolean values which form a `global state' that may be referenced in policies, allowing for policies which vary over a program's runtime.
+
+\newpage
 
 \section{JIF}
 
 \subsection{Relation to Plain Java}
+
+A language implementation of the Decentralised Label Model via type checking was first proposed in \citetitle{myers1999jflow}, \cite{myers1999jflow}. JFlow was a proposed extension to the Java language which would include DLM-based type labels with support for polymorphism and type inference, while integrating with Java's Object-Oriented programming model -- including language features like inheritance and exceptions which introduce potential difficulties for IF checking.
+
+JIF implements a superset of the JFlow functionality, having added a number of additional features over its development \cite{jifwebsite}. Since JIF initially released in 2003 its design is based on Java 1.4, and so it lacks support for a number of more modern Java features, including generics.
 
 \subsection{Policy Model}
 
