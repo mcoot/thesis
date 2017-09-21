@@ -1,34 +1,34 @@
 \section{Case Study 2: Conference Management System}
 
-\textbf{Explanation}
-
-Conference management system in which papers with a title and list of authors are submitted to the system. Allocations of papers to sessions are then performed, and ultimately the allocations of accepted papers are made publicly visible.
-
-\textbf{Security properties:}
-
-Before allocation release, authors (and indeed anyone bar the organiser) cannot be made aware of what session they are allocated to, or even \textit{if} their paper has been accepted and allocated to a session. (Modelled on real world leak in a system, as per LIFTy paper).
-
-Before allocation release, the titles of submitted papers are visible but the author lists are not (for e.g. blind paper review).
-
-\textbf{Key points:}
-
-The `timed release' policy cannot be modelled in JIF (there is no way to model a time-variant policy).
-
-Hence, for JIF, it has to be worked around with a declassification procedure -- meaning the compiler does not check whether it is valid for this procedure to be called (good example: switching the conditional on the session number function).
-
-Paragon's Paralock construct very easily models timed release. The lock is used like a boolean expression and allows the compiler to easily detect a mistake like switching the conditional on the session number function.
-
-Paragon can also model policy enforcement in two ways: by having a `default' value before information release (as with the session number function -- it may be called anywhere but will only produce meaningful information after release), or by statically checking the lock state (so attempting to call it from code not known to be after release will result in compile-time failure).
-
-JIF can't model these two separate options -- only the former `default value' option can be encoded.
-
-\textbf{Toy examples:}
-
-Time-release policy
-
-`Default value' versus compile-time checked
-
-\newpage
+%\textbf{Explanation}
+%
+%Conference management system in which papers with a title and list of authors are submitted to the system. Allocations of papers to sessions are then performed, and ultimately the allocations of accepted papers are made publicly visible.
+%
+%\textbf{Security properties:}
+%
+%Before allocation release, authors (and indeed anyone bar the organiser) cannot be made aware of what session they are allocated to, or even \textit{if} their paper has been accepted and allocated to a session. (Modelled on real world leak in a system, as per LIFTy paper).
+%
+%Before allocation release, the titles of submitted papers are visible but the author lists are not (for e.g. blind paper review).
+%
+%\textbf{Key points:}
+%
+%The `timed release' policy cannot be modelled in JIF (there is no way to model a time-variant policy).
+%
+%Hence, for JIF, it has to be worked around with a declassification procedure -- meaning the compiler does not check whether it is valid for this procedure to be called (good example: switching the conditional on the session number function).
+%
+%Paragon's Paralock construct very easily models timed release. The lock is used like a boolean expression and allows the compiler to easily detect a mistake like switching the conditional on the session number function.
+%
+%Paragon can also model policy enforcement in two ways: by having a `default' value before information release (as with the session number function -- it may be called anywhere but will only produce meaningful information after release), or by statically checking the lock state (so attempting to call it from code not known to be after release will result in compile-time failure).
+%
+%JIF can't model these two separate options -- only the former `default value' option can be encoded.
+%
+%\textbf{Toy examples:}
+%
+%Time-release policy
+%
+%`Default value' versus compile-time checked
+%
+%\newpage
 
 \subsection{Overview}
 
