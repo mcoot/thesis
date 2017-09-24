@@ -1,16 +1,12 @@
 \chapter{JIF and Paragon} \label{intro_to_jif_para}
 
-%\section{Overview \& High Level Differences}
+The Java Information Flow (JIF) and Paragon programming languages are both `mostly static' information flow (IF) extentions to the Java language which use type systems to enforce information flow constraints.
 
-The Java Information Flow (JIF) and Paragon programming languages both fall into the category of `mostly static' information flow (IF) languages. Both extend the Java language, and both use type systems to enforce information flow constraints.
+As articulated by \citeauthor{broberg2013paragon} in \citetitle{broberg2013paragon} \cite{broberg2013paragon}, JIF may be considered a `second-generation Information Flow language'. Its Decentralised Label Model allowed for more flexible and more useful policies to be expressed than the Mandatory Access Control lattice model that had been central to most prior work \cite{denning1977certification}, and its implementation as an extension of the popular Java language made it comparatively practical to work with.
 
-%The two languages differ primarily in their policy models. JIF's policy model, the Decentralised Label Model (DLM) \cite{myers2000dlm}, represents a refinement of the `lattice model' of Mandatory Access Control previously used to statically check information flows \cite{denning1977certification}. Like in the lattice model, DLM labels are partially ordered to represent the classification of information, but rather than consisting of some static compartments, DLM labels consist of relationships between interacting `principals'. In addition, unlike the lattice model the DLM explicitly considers selective declassification, which is essential for any practical development of an application.
+Under this taxonomy, Paragon is a `third-generation Information Flow language'. It discards lattice-based policy definition in favour of propositional logic. This abstraction combined with the Paralock construct broadens the scope of what security requirements can be expressed.
 
-As articulated by \citeauthor{broberg2013paragon} in \citetitle{broberg2013paragon} \cite{broberg2013paragon}, JIF may be regarded as a `second-generation Information Flow language'. Its Decentralised Label Model allowed for more flexible and more useful policies to be expressed than the straight Mandatory Access Control lattice that had been at the centre of most prior work \cite{denning1977certification}, and its implementation as an extension of the popular Java language made it comparatively practical to work with.
-
-Under this taxonomy, Paragon is a `third-generation Information Flow language'. It discards lattice-based policy definition entirely in favour of policies which may defined through propositional logic. This abstraction, combined with the Paralock construct which allows for policies which model relations and which vary over the lifetime of a running program, broadens the scope of what security requirements can be expressed.
-
-The Paralock construct which Paragon introduces allow for policies which vary over the lifetime of a running program, something which cannot be represented effectively under JIF's policy model. In addition, Paralocks can model relations between actors of arity zero, one or two, and through the use of binary relations, the Decentralised Label Model can in fact be written within Paragon's policy language. That is, JIF's policy mechanism can be encoded using Paragon's.
+%The Paralock construct which Paragon introduces allow for policies which vary over the lifetime of a running program, something which cannot be represented effectively under JIF's policy model. In addition, Paralocks can model relations between actors of arity zero, one or two, and through the use of binary relations, the Decentralised Label Model can in fact be written within Paragon's policy language. That is, JIF's policy mechanism can be encoded using Paragon's.
 
 \newpage
 
@@ -18,27 +14,96 @@ The Paralock construct which Paragon introduces allow for policies which vary ov
 
 \subsection{Relation to Plain Java}
 
-A language implementation of the Decentralised Label Model via type checking was first proposed in \citetitle{myers1999jflow}, \cite{myers1999jflow}. JFlow was a proposed extension to the Java language which would include DLM-based type labels with support for polymorphism and type inference, while integrating with Java's Object-Oriented programming model -- including language features like inheritance and exceptions which introduce potential difficulties for IF checking.
+JFlow, a Java language extension implementing the Decentralised Label Model via type checking was first proposed in \citetitle{myers1999jflow}, \cite{myers1999jflow}. It included DLM-based type labels with support for polymorphism and type inference, while integrating with Java's Object-Oriented programming model -- including language features like inheritance and exceptions which introduce potential difficulties for IF checking.
 
 JIF implements a superset of the JFlow functionality, having added a number of additional features over its development \cite{jifwebsite}. Since JIF's 1.0.0 version released in 2003 its design is based on Java 1.4, and so it lacks support for a number of more modern Java features, including generics.
 
 \subsection{Policy Model}
 
-The core innovation of the Decentralised Label Model over previous lattice-based security models is, somewhat unsurprisingly, that it is decentralised. Mandatory access control requires that each unit of information has a label that is universally agreed upon by all users of the system. The DLM instead models `principals' in the system (which may represent individual users, groups of users or roles), which do not need to trust each other.
+The \textit{decentralised} nature of the DLM is its primary innovation over previous models. Mandatory Access Control requires that each unit of information has a label universally agreed upon by all users of the system. The DLM instead models `principals' in the system (which may represent individual users, groups of users or roles), which do not need to trust each other.
 
 The model uses an \textit{acts-for} relation between principals -- if principal $ p $ acts for principal $ q $, then any action taken by $ p $ is assumed to be authorised by $ q $ \cite{myers2000dlm}.
 
-A confidentiality term in JIF is then a statement of the form \mono{o->r1,r2}, where \mono{o} is the principal which owns the data, and \mono{r1,r2} is the list of principals that the owner allows to read the data. A \textit{label}, the overall policy on the data, is some combination of terms written in the form \jiflabel{o1->r1,r2; o2->r2,r3}. Both \mono{o1} and \mono{o2} are considered `owners' of the data and so \textit{both} terms must be obeyed -- only \mono{r2} or a principal that can act for \mono{r2} may read data with this label.
+Confidentiality labels in JIF are of the form \jiflabel{o->r1,r2}, where \mono{o} is the principal who owns the data, and \mono{r1,r2} is the list of other principals the owner allows to read the data. These terms form a lattice, and so labels may be formed by combining other labels via the \textit{join} (least upper bound -- ``\mono{;}") and \textit{meet} (greatest lower bound -- ``\mono{meet}") operators.
 
+Most commonly, the join operator is used to allow multiple principals to provide differing policies on data, producing a label of the form \jiflabel{o1->r1,r2; o2->r2,o1,r3}. Where two labels are joined, \textit{both} policies apply -- so the effect is that only \mono{o1} and \mono{r2}, or principals acting for either, could access the data, since they appear in both clauses.
 
+\subsection{Implicit Flows}
 
-\subsection{Integrity Controls}
+Since information may leak to a lower confidentiality implicitly via flow of control, JIF has a program counter (pc) label which represents the confidentiality status of the current block of code. For instance, within a branch of an \mono{if} statement with a conditional dependent on a high confidentiality value, the pc label will have high confidentiality.
+
+JIF allows method signatures to specify the following confidentiality labels:
+
+\begin{minted}{Java}
+public int{A->*} method{B->*}(String{C->*} param) : {D->*}
+\end{minted}
+
+\begin{itemize}
+	\item \jiflabel{A->*} is the maximum label of the method's return value
+	
+	\item \jiflabel{B->*} is the `begin label' -- the required pc label for the method to run
+	
+	\item \jiflabel{C->*} is the maximum label on \mono{param}
+	
+	\item \jiflabel{D->*} is the `end label' -- the pc label once the method returns
+\end{itemize}
+
+\newpage
 
 \subsection{Declassification}
 
+It is allowable for the label of a value or variable in JIF to change \textit{if} that re-labelling results in a label which is strictly higher confidentiality. Hence, restricting readers or adding an additional policy to a label is always acceptable, as is adding a new reader \mono{r} if there already exists a reader in the policy which \mono{r} acts for.
+
+However, most useful programs must leak some information to lower confidentiality in order to perform useful action. JIF provides the declassification construct in order to enable this.
+
+The following program shows a simple declassification, annotated:
+
+\begin{minted}{Java}
+public class TestProgram authority (Alice) <1> {
+	
+	public static void main{Alice->*}(principal p, String[] args)  <2>
+						where authority(Alice), caller(p) {
+		declassifyInt();
+	}
+	
+	public static void declassifyInt{Alice->*}() 
+						where authority(Alice) <3> {
+		int{Alice->*} high;
+		int low{Alice->_} low;
+		
+		low = declassify(high, {Alice->*} to {Alice->_}); <4>
+	}
+
+}
+\end{minted}
+
+\begin{enumerate}
+	
+	\item The \mono{authority} clause indicates this class has principal Alice's authority
+	
+	\item The Main method includes an argument which indicates the principal running the program
+	
+	\item The \mono{where} clause indicates that this method runs under Alice's authority
+	
+	\item The actual declassification statement; it declassifies the information in \mono{high} down to \jiflabel{Alice->\_}.
+	
+\end{enumerate}
+
+\subsection{Integrity Controls}
+
+From version 3.0.0, JIF includes a set of integrity controls in addition to the confidentiality controls discussed here. These controls are beyond the scope of this thesis and so will not be examined in-depth. In brief, the integrity lattice is much like the confidentiality lattice, except rather than being ordered by how high the confidentiality is, integrity labels are ordered by how \textit{trusted} they are, and information cannot flow from untrusted to trusted context.
+
 \subsection{Security Type Polymorphism}
 
-\subsection{Sample ``Hello World" Application}
+Given all data must be labelled (or have a label determined implicitly via type inference), writing implementations of standard data types presents a challenge -- it is desirable to avoid having to rewrite the \mono{ArrayList} class for every possible security label the elements of the list may have. To deal with this, JIF introduces security type generics. Since JIF's syntax was designed prior to Java's adoption of generics, square brackets are used to denote type parameters (as opposed to angle brackets).
+
+JIF provides two different kinds of generics: \textit{label} generics and \textit{principal} generics.
+
+A class with a label generic, of the form \mono{TestClass[label L]} may be parametrised by any label. The label type parameter may be used anywhere within the class (e.g. as labels on fields, method return values or begin/end labels). Using this, a data type like \mono{ArrayList[Label L]} may be written such that it can be instantiated with any confidentiality label on the elements.
+
+The second kind of generic is the principal generic, of the form \mono{TestClass[principal P]}. The principal type parameter may be used in labels in the class. This allows for classes which have explicit policies, but which are generic to being `owned' by any principal.
+
+% \subsection{Sample ``Hello World" Application}
 
 \section{Paragon}
 
@@ -47,6 +112,8 @@ A confidentiality term in JIF is then a statement of the form \mono{o->r1,r2}, w
 \subsection{Policy Model}
 
 \subsection{Paralocks}
+
+\subsection{Implicit Flows}
 
 \subsection{Security Type Polymorphism}
 
