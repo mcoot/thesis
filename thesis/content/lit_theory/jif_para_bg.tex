@@ -16,7 +16,23 @@ Under this taxonomy, Paragon is a `third-generation Information Flow language'. 
 
 JFlow, a Java language extension implementing the Decentralised Label Model via type checking was first proposed in \citetitle{myers1999jflow}, \cite{myers1999jflow}. It included DLM-based type labels with support for polymorphism and type inference, while integrating with Java's Object-Oriented programming model -- including language features like inheritance and exceptions which introduce potential difficulties for IF checking.
 
-JIF implements a superset of the JFlow functionality, having added a number of additional features over its development \cite{jifwebsite}. Since JIF's 1.0.0 version released in 2003 its design is based on Java 1.4, and so it lacks support for a number of more modern Java features, including generics.
+JIF implements a superset of the JFlow functionality, having added a number of additional features over its development \cite{jifwebsite}. Since JIF's 1.0.0 version released in 2003 its design is based on Java 1.4, and so it lacks support for a number of more modern Java features.
+
+In general, working with JIF has a number of differences when compared to Java. Some notable ones include:
+
+\begin{itemize}
+	\item JIF places DLM labels on fields, method signatures and potentially local variables
+	
+	\item \textit{All} exceptions are checked in JIF (including runtime exceptions such as \mono{NullPointerException})
+	
+	\item When running a JIF program, the JIF runtime must be on the classpath
+	
+	\item Interacting with (non-JIF) Java classes requires writing a JIF interface indicating labels on the class's methods
+	
+	\item Console I/O using stdin / stdout is performed through Jif's runtime
+	
+	\item JIF lacks support for the angle bracket generics syntax introduced in more recent versions of Java
+\end{itemize}
 
 \subsection{Policy Model}
 
@@ -109,12 +125,22 @@ The second kind of generic is the principal generic, of the form \mono{TestClass
 
 \subsection{Relation to Plain Java}
 
+Like JIF, Paragon is an extension upon the Java language. Unlike JIF, Paragon includes support for a number of more recent Java features -- most notably, Java generics. Paragon's own generic features, discussed in more detail in \ref{para_generics} below, make use of the standard Java angle brackets syntax and hence can be mixed with Java type parameters.
+
+Like JIF, there are a number of differences between writing a program in Paragon and writing one in plain Java, including the following:
+
+\begin{itemize}
+	
+	\item 
+	
+\end{itemize}
+
 \subsection{Policy Model}
 
 \subsection{Paralocks}
 
 \subsection{Implicit Flows}
 
-\subsection{Security Type Polymorphism}
+\subsection{Security Type Polymorphism} \label{para_generics}
 
 \subsection{Sample ``Hello World" Application}
