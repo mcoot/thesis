@@ -4,7 +4,7 @@ The Java Information Flow (JIF) and Paragon programming languages are both `most
 
 As articulated by \citeauthor{broberg2013paragon} in \citetitle{broberg2013paragon} \cite{broberg2013paragon}, JIF may be considered a `second-generation Information Flow language'. Its Decentralised Label Model allowed for more flexible and more useful policies to be expressed than the Mandatory Access Control lattice model that had been central to most prior work \cite{denning1977certification}, and its implementation as an extension of the popular Java language made it comparatively practical to work with.
 
-Under this taxonomy, Paragon is a `third-generation Information Flow language'. It discards lattice-based policy definition in favour of propositional logic. This abstraction combined with the Paralock construct broadens the scope of what security requirements can be expressed.
+Under this taxonomy, Paragon is a `third-generation Information Flow language'. It discards lattice-based policy definition in favour of first order logic. This abstraction combined with the Paralock construct broadens the scope of what security requirements can be expressed.
 
 %The Paralock construct which Paragon introduces allow for policies which vary over the lifetime of a running program, something which cannot be represented effectively under JIF's policy model. In addition, Paralocks can model relations between actors of arity zero, one or two, and through the use of binary relations, the Decentralised Label Model can in fact be written within Paragon's policy language. That is, JIF's policy mechanism can be encoded using Paragon's.
 
@@ -22,6 +22,8 @@ In general, working with JIF has a number of differences when compared to Java. 
 
 \begin{itemize}
 	\item JIF places DLM labels on fields, method signatures and potentially local variables
+	
+	\item The special \mono{declassify} statement (and its integrity equivalent, \mono{endorse}) may be used within the code
 	
 	\item \textit{All} exceptions are checked in JIF (including runtime exceptions such as \mono{NullPointerException})
 	
@@ -131,11 +133,43 @@ Like JIF, there are a number of differences between writing a program in Paragon
 
 \begin{itemize}
 	
-	\item 
+	\item Fields, method parameters and potentially local variables are annotated with read policies
+	
+	\item Locks and policies can be defined through special syntax, and locks can be opened and closed in the code
+	
+	\item Method signatures may include read and write annotations, as well as lock state annotations
+	
+	\item As with JIF, all exceptions are checked in Paragon, though it introduces the \mono{notnull} modifier for variables which can prevent the need to catch \mono{NullPointerException}
+	
+	\item Paragon's runtime must be on the classpath when running the program
+	
+	\item Interacting with plain Java classes requires writing a Paragon interface
 	
 \end{itemize}
 
 \subsection{Policy Model}
+
+A policy in Paragon consists of some number of semicolon-separated \textit{clauses}, each of which consists of a \textit{head} and a \textit{body}. A policy \mono{p} with two clauses would be defined using the following syntax:
+
+\begin{minted}{Java}
+policy p = {head1: body1 ; head2: body2};
+\end{minted}
+
+The head of a clause specifies which \textit{actors} may view information under this policy. Unlike the equivalent `principals' in JIF, actors in Paragon are simply regular Java objects. So a simple static policy allowing \mono{User}s Alice and Bob to read a file could be encoded as follows \cite{broberg2013paragon}:
+
+\begin{minted}{Java}
+User alice = new User("Alice");
+User bob = new User("Bob");
+policy aliceAndBob = {alice: ; bob:};
+\end{minted}
+
+Actors in the head of a clause may also be universally quantified over, so in the following, information may flow to any instance of the type \mono{User}:
+
+\begin{minted}{Java}
+policy allUsers = {User u:};
+\end{minted}
+
+TOP AND BOTTOM POLICIES
 
 \subsection{Paralocks}
 
