@@ -182,6 +182,10 @@ The tools described here suffice for encoding a MAC-style static information flo
 
 \subsection{Policy Annotations}
 
+READ EFFECTS
+
+WRITE EFFECTS + IMPLICIT FLOWS
+
 \subsection{Dynamic Policies with Paralocks}
 
 The primary innovation of Paragon's policy model is the `Flow Lock' or `ParaLock' construct: a way to build time-variant flow policies using a global state. ParaLocks (or more simply, just `locks') in Paragon are boolean values which may be \textit{open} or \textit{closed} at a given point in a program's execution, but which are analysed statically in order to allow Paragon to encode policies that cannot be expressed with a static lattice.
@@ -214,7 +218,7 @@ TIMED RELEASE
 
 LOCK PROPERTIES
 
-\subsection{Implicit Flows}
+LOCK ANNOTATIONS
 
 \subsection{Security Type Polymorphism} \label{para_generics}
 
