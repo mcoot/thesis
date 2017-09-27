@@ -4,7 +4,7 @@ The Java Information Flow (JIF) and Paragon programming languages are both `most
 
 As articulated by \citeauthor{broberg2013paragon} in \citetitle{broberg2013paragon} \cite{broberg2013paragon}, JIF may be considered a `second-generation Information Flow language'. Its Decentralised Label Model allowed for more flexible and more useful policies to be expressed than the Mandatory Access Control lattice model that had been central to most prior work \cite{denning1977certification}, and its implementation as an extension of the popular Java language made it comparatively practical to work with.
 
-Under this taxonomy, Paragon is a `third-generation Information Flow language'. It discards lattice-based policy definition in favour of first order logic. This abstraction combined with the Paralock construct broadens the scope of what security requirements can be expressed.
+Under this taxonomy, Paragon is a `third-generation Information Flow language', with policy definition built upon first order logic. This abstraction combined with the Paralock construct broadens the scope of what security requirements can be expressed.
 
 %The Paralock construct which Paragon introduces allow for policies which vary over the lifetime of a running program, something which cannot be represented effectively under JIF's policy model. In addition, Paralocks can model relations between actors of arity zero, one or two, and through the use of binary relations, the Decentralised Label Model can in fact be written within Paragon's policy language. That is, JIF's policy mechanism can be encoded using Paragon's.
 
@@ -147,7 +147,7 @@ Like JIF, there are a number of differences between writing a program in Paragon
 	
 \end{itemize}
 
-\subsection{Policy Model}
+\subsection{Static Policies}
 
 A policy in Paragon consists of some number of semicolon-separated \textit{clauses}, each of which consists of a \textit{head} and a \textit{body}. A policy \mono{p} with two clauses would be defined using the following syntax:
 
@@ -169,9 +169,50 @@ Actors in the head of a clause may also be universally quantified over, so in th
 policy allUsers = {User u:};
 \end{minted}
 
-TOP AND BOTTOM POLICIES
+Using this policy definition, a top policy (which disallows all flow) and a bottom policy (which allows all flow) may be encoded:
 
-\subsection{Paralocks}
+\begin{minted}{Java}
+policy top = {:};
+policy bottom = {Object x:};
+\end{minted}
+
+These policies form a lattice, and so as with Mandatory Access Control and JIF, they can be combined with least upper bound (join -- \mono{+}) and greatest lower bound (meet -- \mono{*}) operators.
+
+The tools described here suffice for encoding a MAC-style static information flow policy.
+
+\subsection{Policy Annotations}
+
+\subsection{Dynamic Policies with Paralocks}
+
+The primary innovation of Paragon's policy model is the `Flow Lock' or `ParaLock' construct: a way to build time-variant flow policies using a global state. ParaLocks (or more simply, just `locks') in Paragon are boolean values which may be \textit{open} or \textit{closed} at a given point in a program's execution, but which are analysed statically in order to allow Paragon to encode policies that cannot be expressed with a static lattice.
+
+A lock in Paragon in Paragon may be declared only as a field, which is implicitly both \mono{final} and \mono{static}. The lock may then appear in the body of a Paragon policy:
+
+\begin{minted}{Java}
+lock myLock;
+policy p = {Object x: myLock};
+\end{minted}
+
+The \mono{open} and \mono{close} statements may be used to change its state. Dynamic policies (i.e. those with non-empty bodies) are evaluated statically by erasing the locks known to be open. The policy of a given value once open locks are erased is known as its `effective policy'.
+
+\begin{minted}{Java}
+?p int x = 5;
+// Compile error
+?{Object x:} y = x;
+open myLock;
+// Compiles fine - effective policy erases myLock,
+// giving a policy of {Object x:}
+?{Object x:} z = x;
+close myLock;
+\end{minted}
+
+Locks can be used to perform run-time flow checking simply by using them as normal conditionals
+
+DECLASSIFICATION
+
+TIMED RELEASE
+
+LOCK PROPERTIES
 
 \subsection{Implicit Flows}
 
