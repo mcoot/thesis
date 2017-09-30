@@ -182,9 +182,41 @@ The tools described here suffice for encoding a MAC-style static information flo
 
 \subsection{Policy Annotations}
 
-READ EFFECTS
+Values in Paragon are associated with a policy via policy modifiers. Variables, method return types and parameters can have a `read effect' modifier on them, denoted by the \mono{?} symbol, indicating their security policy. For example:
 
-WRITE EFFECTS + IMPLICIT FLOWS
+\begin{minted}{Java}
+?{Object x:} int x;
+?somePolicy String y;
+?(policy1 * policy2) float z;
+public ?p int method(?q int param1, ?r int param2) { ...
+\end{minted}
+
+Read effect modifiers allow the Paragon compiler to analyse the explicit flow of information throughout a program, ensuring that values may only be assigned to variables with appropriate policies. However, another form of modifier, the `write effect' modifier for methods is needed to properly analyse implicit information flows in a program with many methods.
+
+A method's write effect, annotated using the \mono{!} symbol, denotes the lowest confidentiality level at which a method's side effects (such as writing to an output or performing different actions based on a high confidentiality conditional) would be observable. For instance, consider the following:
+
+\begin{minted}{Java}
+?high int secret;
+?low int notSecret;
+
+!low void setNotSecret(?low int value) {
+	notSecret = value;
+}
+\end{minted}
+
+Then, consider the method definition:
+
+\begin{minted}{Java}
+void method() {
+	if (secret > 0) {
+		setNotSecret(1);
+	} else {
+		setNotSecret(0);
+	}
+}
+\end{minted}
+
+The (low confidentiality) \mono{notSecret} variable is assigned within a context dependent on the value of the high confidentiality \mono{secret} variable, but the compiler cannot immediately see this, as it occurs inside a method. However, the required \mono{!low} annotation on \mono{setNotSecret} allows the compiler to determine that \mono{setNotSecret} has side effects at a low confidentiality level, and hence that it may not be used within the high conditional -- so with this method the code will not compile.
 
 \subsection{Dynamic Policies with Paralocks}
 
@@ -210,16 +242,40 @@ open myLock;
 close myLock;
 \end{minted}
 
-Locks can be used to perform run-time flow checking simply by using them as normal conditionals
+Locks can be used to perform run-time flow checking simply by using them as normal conditionals.
 
-DECLASSIFICATION
+\subsubsection{Locks for Declassification}
 
-TIMED RELEASE
+Locks can quite succinctly model selective declassification, similar to that performed by JIF, by having a `declassifying' lock which is closed at all times, except during a declassification. The following presents a simple example:
+
+\begin{minted}{Java}
+lock myLock;
+
+public ?{Object x:} int declassifyValue(?{Object x: myLock} int x) {
+	?{Object x:} result;
+	open myLock;
+	result = x;
+	close myLock;
+	return x;
+}
+\end{minted}
+
+Then, values at level \paralabel{Object x}{myLock} may be declassified via this method.
+
+\subsubsection{Parametrised Locks}
+
+ARITY
 
 LOCK PROPERTIES
+
+\subsubsection{Lock Annotations}
 
 LOCK ANNOTATIONS
 
 \subsection{Security Type Polymorphism} \label{para_generics}
 
-\subsection{Sample ``Hello World" Application}
+POLICYOF
+
+TYPE PARAMS
+
+%\subsection{Sample ``Hello World" Application}
