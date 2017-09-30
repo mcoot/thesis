@@ -264,13 +264,47 @@ Then, values at level \paralabel{Object x}{myLock} may be declassified via this 
 
 \subsubsection{Parametrised Locks}
 
-ARITY
+Paragon supports a generalisation over the simple open/closed locks presented above. Locks may be parametrised by actors -- Paragon's syntax supports parametrised locks of arity one and two.
 
-LOCK PROPERTIES
+Intuitively, parametrised locks may be thought of as \textit{classes} of simple locks, so a lock \mono{myLock(User)} may be open or closed for any given instance of \mono{User}. Alternatively, parametrised locks can be considered as unary and binary relations over actors: so a 2-ary lock \mono{myLock(User, File)} is a relation such that the lock is open if the relation holds for a $ \left\langle \right. $\mono{User, File}$ \left. \right\rangle $ pair.
+
+Once declared, a parametrised lock may be used in the body of a policy.
+
+\begin{minted}{Java}
+lock unaryLock(User);
+lock binaryLock(User, User);
+policy p1 = {User u: unaryLock(u)};
+policy p2 = {(User u) User v: binaryLock(u, v)};
+\end{minted}
+
+Note that the use of \mono{(User u)} in the head of policy \mono{p2} indicates quantification, in this case existential. In natural language, \mono{p2} states that: ``Information may flow to any User \mono{v} if there exists some \mono{v} such that \mono{binaryLock(u, v)} is open."
+
+Commonly, unary locks may be used to model dynamic \textit{roles} -- where the information that may flow to an actor depends on their current role or status. Binary locks are often used to model \textit{relationships} between actors \cite{broberg2013paragon}.
+
+\subsubsection{Lock Properties}
+
+In order to allow for clearer policy definition and reduce policy-related boilerplate code, Paragon allows for locks to be defined with `lock properties', representing conditions under which a lock is implicitly open. For instance, on a binary lock, the following lock property could be defined:
+
+\begin{minted}{Java}
+lock myLock(User, User) {(User a, b) myLock(b, a): myLock(b, a)};
+\end{minted}
+
+This states that for users \mono{a} and \mono{b}, \mono{myLock(b, a)} is implicitly open if mono{myLock(b, a)} is open -- when regarded as a binary relation, \mono{myLock} is symmetric.
+
+Many possible lock properties can be defined depending on the program's overall policy, but Paragon provides shorthand modifiers for symmetry, reflexivity and transitivity, allowing for a binary lock defined as:
+
+\begin{minted}{Java}
+reflexive symmetric transitive lock myLock(User, User);
+\end{minted}
 
 \subsubsection{Lock Annotations}
 
-LOCK ANNOTATIONS
+Paragon's compiler keeps track of the global lock state statically, which requires statically analysing all possible program flows. Under certain circumstances -- especially where lock state changes across many different methods -- the compiler cannot track the state.
+
+In order to aid the compiler's analysis, the programmer can add three kinds of lock annotations as modifiers on method signatures: \mono{+myLock}, \mono{-myLock}, \mono{\textasciitilde myLock}.
+
+
+The \mono{+} lock annotation may be used on methods which \textit{guarantee} they will open a given lock. The \mono{-} annotation may be used on methods which \textit{may} close a given lock. Finally, the \mono{\textasciitilde} modifier indicates that a method may only be called from a context where the given lock is known to be open.
 
 \subsection{Security Type Polymorphism} \label{para_generics}
 
