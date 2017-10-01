@@ -1,4 +1,20 @@
-\chapter{Theory} \label{chap_theory}
+\chapter{Background \& Theory} \label{chap_theory}
+
+\section{Security Context}
+
+\section{The Java Security Model}
+
+The Java programming language was designed in the context of emerging internet technologies, with the explict use case of users downloading and running `applets' from web pages. As such, security was a core consideration of Java's design -- the original design goals document \cite{javadesignprinciples} specifies that ``applications written in the Java programming language are secure from intrusion by unauthorized code."
+
+Java is type safe and memory safe, which reduces the possibility of programmer error leading to exploitable flaws in an application. Java's application sandbox takes a three-pronged approach to security in the context of applets which may be downloaded from a remote server, with the Bytecode Verifier, the Class Loader, and the Security Manager \cite{mcgraw1999securingjava}.
+
+The Bytecode Verifier and the Class Loader concern the loading of new classes into a running Java Virtual Machine (JVM). The Bytecode Verifier analyses the class to ensure it maintains the class format, does not perform illegal casts, and that it obeys Java's typing rules more generally (e.g. that private methods may not be accessed outside of a class, final methods may not be overridden) \cite{lindholm2014java}. The Class Loader performs the actual loading of a class into the JVM; the `primordial' Class Loader \cite{mcgraw1999securingjava} loads the Java API classes, and other classes may be loaded by a user-specified \mono{ClassLoader} instance.
+
+\subsection{The Security Manager \& Stack Inspection}
+
+The final element of the sandbox model is the \mono{SecurityManager} class. When enabled, an instance of \mono{SecurityManager} runs in the JVM, and performs runtime access control: when a potentially sensitive action is undertaken, the Security Manager checks the permissions of the calling class based on the system policy (usually specified by an external policy file), and throws an exception if the permission check fails \cite{gosling2014java}.
+
+Permission checks are performed using stack inspection \cite{gong2003javasecurity}: every frame on the call stack below the sensitive operation is examined, and if \textit{any} frame does not have the required permissions, the check fails. Java provides the \mono{doPrivileged} construct to bypass full stack inspection \cite{gong2003javasecurity} where this is desired functionality.
 
 \section{Information Flow Overview}
 
@@ -16,7 +32,18 @@
 
 \section{Enforcement}
 
+\subsection{Statically Enforced Models}
 
+\subsection{Runtime Enforced Models}
+
+
+
+
+%\section{The Decentralised Label Model}
+%
+%\section{Logic-Based Policies \& The Paralock Model}
+%
+%\section{Other Models}
 
 
 %** MOVED FROM COMPARISON... **
