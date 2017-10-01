@@ -360,10 +360,28 @@ static ?(policyof(a) * policyof(b)) int add(int a, int b) {
 
 \subsubsection{Generics}
 
-Paragon also provides security type generics, for polymorphic  
+Paragon also provides security type generics, for more complex polymorphic classes. Unlike JIF, Paragon supports Java's native generics functionality, and its security type generics simply extend this. Paragon provides \textit{policy} generics and \textit{actor} generics, equivalent to JIF's label and principal generics respectively.
+
+A generic class in Paragon is declared with the following syntax:
+
+\begin{minted}{Java}
+public class MyClass<T, policy P, actor A> {
+\end{minted}
+
+Here, \mono{T} is a regular Java type parameter, \mono{P} is a policy type parameter and \mono{A} is an actor type parameter. This class could then be instantiated with:
+
+\begin{minted}{Java}
+final User alice = new User();
+MyClass<String, {Object x:}, alice> instance;
+instance = new MyClass<String, {Object x:}, alice>();
+\end{minted}
+
+Policy generics are commonly used to give some internal component of an instance a different but polymorphic policy to the instance itself -- for instance, an ArrayList allowing specification of the policy of each element. Actor generics are used to denote ownership, where a class specifies a policy, but instances may `belong' to any actor.
 
 \subsubsection{Java Interoperability}
 
-INTEROP
+Paragon provides interoperability with plain Java classes through `Paragon Interfaces'. Essentially, any Java class may be called from a Paragon class by writing its interface in a \mono{.pi} file with the desired Paragon policy annotations attached.
+
+This is similar to JIF's Java interoperability, although unlike JIF, Paragon's compiler does not compile Paragon source files directly to Java bytecode: the output of \mono{parac} is a generated Java source (\mono{.java} file) and a \mono{.pi} Paragon interface.
 
 %\subsection{Sample ``Hello World" Application}
