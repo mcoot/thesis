@@ -51,6 +51,13 @@ By contrast, \textit{Mandatory} Access Control (MAC) is most commonly associated
 
 In the simplest case, the set of classifications is just an ordered list -- for instance, `Unclassified' $ < $ `Classified' $ < $ `Secret' $ < $ `Top Secret'. A user with `Secret' clearance, then, cannot access or modify `Top Secret' documents.
 
+More flexible access control policies may be implemented under the Bell-Lapadula lattice model, which is at the heart of most modern MAC systems. Under this model, classifications form a \textit{lattice} -- a set partially ordered by a flow relation (written $ \succeq $) where, for every possible pair of elements, a `least upper bound' (or `join', written $ \sqcup $) and `greatest lower bound' (or `meet', written $ \sqcap $) may be found.
+
+In the MAC context, for policies in a lattice structure, it is always possible to determine whether a user at clearance $ A $ can access information at classification $ B $ -- they can if $ B \succeq A $. Given any two classifications $ A $ and $ B $, one can find the least restrictive classification which enforces both, $ A \sqcup B $, and the most restrictive classification which users at either clearance $ A $ or $ B $ can read, $ A \sqcap B $.
+
+MAC is applied to the an access control problem concerning users (or `subjects') and classified documents (or `objects') via two key rules:
+
+
 
 BELL LAPADULA LATTICE
 
