@@ -2,6 +2,33 @@
 
 \section{Security Context}
 
+Information security in practice revolves around three key goals colloquially known as the `CIA Triad' \cite{krutz2010cloudsec}:
+
+\begin{itemize}
+	\item Ensuring information is appropriately \textit{Confidential}
+
+	\begin{itemize}
+		\item Example: a secret password being leaked is a confidentiality violation
+	\end{itemize}
+	
+	\item Ensuring information has \textit{Integrity}
+	
+	\begin{itemize}
+		\item Example: a database being accessed and records falsified is an integrity violation
+	\end{itemize}
+	
+	\item Ensuring information is \textit{Available}
+	
+	\begin{itemize}
+		\item Example: a Denial of Service (DoS) attack causing a website to crash is an availability violation
+	\end{itemize}
+
+\end{itemize}
+
+Most language-based security features focus on the confidentiality and integrity of information; that is, ensuring that secret information remains secret, and that information which needs to be trusted is, in fact, trustworthy.
+
+The most common mechanism used in computer systems to ensure confidentiality and integrity is \textit{access control}: associating some `permissions' with users of a system and restricting the actions they are able to perform based on these permissions.
+
 \section{The Java Security Model}
 
 The Java programming language was designed in the context of emerging internet technologies, with the explict use case of users downloading and running `applets' from web pages. As such, security was a core consideration of Java's design -- the original design goals document \cite{javadesignprinciples} specifies that ``applications written in the Java programming language are secure from intrusion by unauthorized code."
@@ -16,9 +43,26 @@ The final element of the sandbox model is the \mono{SecurityManager} class. When
 
 Permission checks are performed using stack inspection \cite{gong2003javasecurity}: every frame on the call stack below the sensitive operation is examined, and if \textit{any} frame does not have the required permissions, the check fails. Java provides the \mono{doPrivileged} construct to bypass full stack inspection \cite{gong2003javasecurity} where this is desired functionality.
 
-\section{Information Flow Overview}
-
 \section{Mandatory Access Control \& The Lattice Model}
+
+Access control as implemented in many programs and operating systems (for example: the Unix permissions system) depend on Access Control Lists specifying what items individual users or groups of users may access. These models are known as \textit{Discretionary} Access Control.
+
+By contrast, \textit{Mandatory} Access Control (MAC) is most commonly associated with the military and other high-security organisations. In a MAC system, all data has a \textit{classification}, and users operate with a \textit{clearance}. 
+
+In the simplest case, the set of classifications is just an ordered list -- for instance, `Unclassified' $ < $ `Classified' $ < $ `Secret' $ < $ `Top Secret'. A user with `Secret' clearance, then, cannot access or modify `Top Secret' documents.
+
+
+BELL LAPADULA LATTICE
+
+TWO PROPERTIES
+
+HIGH WATER MARK
+
+\section{Information Flow Security}
+
+FLOW RATHER THAN ACCESS
+
+DENNING MODEL
 
 \section{Formal Non-interference}
 
@@ -33,6 +77,12 @@ Permission checks are performed using stack inspection \cite{gong2003javasecurit
 \section{Enforcement}
 
 \subsection{Statically Enforced Models}
+
+DENNING
+
+DLM
+
+PARAGON
 
 \subsection{Runtime Enforced Models}
 
