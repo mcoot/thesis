@@ -176,7 +176,7 @@ policy top = {:};
 policy bottom = {Object x:};
 \end{minted}
 
-These policies form a lattice, and so as with Mandatory Access Control and JIF, they can be combined with least upper bound (join -- \mono{+}) and greatest lower bound (meet -- \mono{*}) operators.
+These policies form a lattice, and so as with Mandatory Access Control and JIF, they can be combined with least upper bound (join -- \mono{*}) and greatest lower bound (meet -- \mono{+}) operators.
 
 The tools described here suffice for encoding a MAC-style static information flow policy.
 
@@ -266,7 +266,7 @@ Then, values at level \paralabel{Object x}{myLock} may be declassified via this 
 
 Paragon supports a generalisation over the simple open/closed locks presented above. Locks may be parametrised by actors -- Paragon's syntax supports parametrised locks of arity one and two.
 
-Intuitively, parametrised locks may be thought of as \textit{classes} of simple locks, so a lock \mono{myLock(User)} may be open or closed for any given instance of \mono{User}. Alternatively, parametrised locks can be considered as unary and binary relations over actors: so a 2-ary lock \mono{myLock(User, File)} is a relation such that the lock is open if the relation holds for a $ \left\langle \right. $\mono{User, File}$ \left. \right\rangle $ pair.
+Intuitively, parametrised locks may be thought of as \textit{classes} of simple locks, so a lock \mono{myLock(User)} may be open or closed for any given instance of \mono{User}. Alternatively, parametrised locks can be considered as unary and binary relations over actors: so a 2-ary lock \mono{myLock(User, File)} is a relation such that the lock is open if the relation holds for a \monotuple{User, File} pair.
 
 Once declared, a parametrised lock may be used in the body of a policy.
 
@@ -306,10 +306,64 @@ In order to aid the compiler's analysis, the programmer can add three kinds of l
 
 The \mono{+} lock annotation may be used on methods which \textit{guarantee} they will open a given lock. The \mono{-} annotation may be used on methods which \textit{may} close a given lock. Finally, the \mono{\textasciitilde} modifier indicates that a method may only be called from a context where the given lock is known to be open.
 
+For instance, consider the following method signature:
+
+\begin{minted}{Java}
+public +lock1 -lock2(alice, bob) ~lock3(charles) void method() {
+\end{minted}
+
+This method signature indicates the method \textit{always} opens \mono{lock1}, \textit{may} close \mono{lock2} for the actor pair \monotuple{alice, bob}, and may only be called in a context where \mono{lock3} is open for actor \mono{charles}.
+
+One noteworthy limitation in Paragon's lock annotation syntax is that it is not possible to quantify over actors in lock annotations. So, for instance, it is not possible to produce an annotation indicating that a method may close a lock for all actors matching some criteria.
+
 \subsection{Security Type Polymorphism} \label{para_generics}
 
-POLICYOF
+As with JIF, the modularity and reusability of Paragon code is a concern, since the policy definition is embedded with the implementation. Paragon and JIF take the same approach to resolve this issue, relying on security type polymorphism and type parametrisation to make code more generic, and allowing `interfaces' to be written for interoperability with plain Java code.
 
-TYPE PARAMS
+\subsubsection{The \mono{policyof} Operator}
+
+Paragon provides the special \mono{policyof} operator to allow for policy-polymorphic variables and methods.
+
+The special policy denoted by \mono{policyof(this)}, which may be used on methods and \mono{final} fields, is equivalent to JIF's special \jiflabel{this} label -- the labelled field or method return value takes on the policy of the overall instance. This allows for simple datatypes which are completely polymorphic with respect to policy, such as the following immutable pair definition:
+
+\begin{minted}{Java}
+class Pair {
+	public final ?policyof(this) int x;
+	public final ?policyof(this) int y;
+	
+	public Pair(?policyof(this) int x, ?policyof(this) int y) {
+		this.x = x;
+		this.y = y;
+	} 
+}
+\end{minted}
+
+This class can then be used, and the \mono{x} and \mono{y} fields will take on the policy of the instance:
+
+\begin{minted}{Java}
+?{Object x:} Pair lowPair = new Pair(0, 0);
+?{:} Pair highPair = new Pair(0, 0);
+
+// Allowed
+?{Object x:} int xFromLow = lowPair.x;
+// Compile error
+?{Object x:} int xFromHigh = highPair.x;
+\end{minted}
+
+The \mono{policyof} operator may also be used in method return types to allow methods to be polymorphic in the policies of their arguments: \mono{policyof(param)} is equivalent to using a \jiflabel{param} label in JIF. For example, a simple addition method can be made completely polymorphic in its arguments by joining the policies of its arguments:
+
+\begin{minted}{Java}
+static ?(policyof(a) * policyof(b)) int add(int a, int b) {
+	return a + b;
+}
+\end{minted}
+
+\subsubsection{Generics}
+
+Paragon also provides security type generics, for polymorphic  
+
+\subsubsection{Java Interoperability}
+
+INTEROP
 
 %\subsection{Sample ``Hello World" Application}
