@@ -43,33 +43,33 @@ The final element of the sandbox model is the \mono{SecurityManager} class. When
 
 Permission checks are performed using stack inspection \cite{gong2003javasecurity}: every frame on the call stack below the sensitive operation is examined, and if \textit{any} frame does not have the required permissions, the check fails. Java provides the \mono{doPrivileged} construct to bypass full stack inspection \cite{gong2003javasecurity} where this is desired functionality.
 
+\section{Information Flow Security}
+
+Access control mechanisms limit the \textit{permissions} of a subject attempting to access data. Many programs and operating systems make use of \textit{Discretionary} Access Control, which models permission via Access Control Lists specifying what items individual users or groups of users may access (for example: the Unix permissions system). What such mechanisms cannot restrict is the way in which information \textit{propagates}.
+
+Under Discretionary Access Control, only authorised users may access a piece of data. But once access is given, there are no controls on what the user may do with it. \textit{Information Flow} mechanisms seek to improve this, by enforcing some policy on the data itself, so even if a user may \textit{access} the data, there are restrictions on how they may propagate that data.
+
 \section{Mandatory Access Control \& The Lattice Model}
 
-Access control as implemented in many programs and operating systems (for example: the Unix permissions system) depend on Access Control Lists specifying what items individual users or groups of users may access. These models are known as \textit{Discretionary} Access Control.
-
-By contrast, \textit{Mandatory} Access Control (MAC) is most commonly associated with the military and other high-security organisations. In a MAC system, all data has a \textit{classification}, and users operate with a \textit{clearance}. 
+The most well-known model designed to deal with Information Flow security, Mandatory Access Control (MAC), is most commonly associated with the military and other high-security organisations. In a MAC system, all data has a \textit{classification}, and users operate with a \textit{clearance}. 
 
 In the simplest case, the set of classifications is just an ordered list -- for instance, `Unclassified' $ < $ `Classified' $ < $ `Secret' $ < $ `Top Secret'. A user with `Secret' clearance, then, cannot access or modify `Top Secret' documents.
 
-More flexible access control policies may be implemented under the Bell-Lapadula lattice model, which is at the heart of most modern MAC systems. Under this model, classifications form a \textit{lattice} -- a set partially ordered by a flow relation (written $ \succeq $) where, for every possible pair of elements, a `least upper bound' (or `join', written $ \sqcup $) and `greatest lower bound' (or `meet', written $ \sqcap $) may be found.
+More flexible access control policies may be implemented under the Bell-Lapadula lattice model \cite{bell1973lattice}, which is at the heart of most modern MAC systems. Under this model, classifications form a \textit{lattice} -- a set partially ordered by a flow relation (written $ \succeq $) where, for every possible pair of elements, a `least upper bound' (or `join', written $ \sqcup $) and `greatest lower bound' (or `meet', written $ \sqcap $) may be found.
 
-In the MAC context, for policies in a lattice structure, it is always possible to determine whether a user at clearance $ A $ can access information at classification $ B $ -- they can if $ B \succeq A $. Given any two classifications $ A $ and $ B $, one can find the least restrictive classification which enforces both, $ A \sqcup B $, and the most restrictive classification which users at either clearance $ A $ or $ B $ can read, $ A \sqcap B $.
+In the MAC context, for policies in a lattice structure it is always possible to determine whether a user at clearance $ A $ can access information at classification $ B $ -- they can if $ B \succeq A $. Given any two classifications $ A $ and $ B $, one can find the least restrictive classification which enforces both, $ A \sqcup B $, and the most restrictive classification which users at either clearance $ A $ or $ B $ can read, $ A \sqcap B $.
 
-MAC is applied to the an access control problem concerning users (or `subjects') and classified documents (or `objects') via two key rules:
+MAC is applied to the an access control problem concerning users (or `subjects') and classified documents (or `objects') via two key rules \cite{sandhu1993lattice}:
 
+\begin{description}
+	\item[Simple Security Property -- `No Read Up'] A subject with clearance $ C_s $ may access an object with classification $ C_o $ if and only if $ C_s \succeq C_o $
+	
+	\item[* Property -- `No Write Down'] A subject with clearance $ C_s $ may only modify an object with classification $ C_o $ if $ C_o \succeq C_s $
+\end{description}
 
+The Simple Security Property prevents users with insufficient clearance from accessing highly classified data. But the * Property is also important: it states that a user with high clearance cannot modify data at a low classification. This prevents a highly privileged user from declassifying data by copying it to a document with lower classification, thereby introducing a control on the \textit{propagation} of that information.
 
-BELL LAPADULA LATTICE
-
-TWO PROPERTIES
-
-HIGH WATER MARK
-
-\section{Information Flow Security}
-
-FLOW RATHER THAN ACCESS
-
-DENNING MODEL
+Lattice-based Mandatory Access Control may be applied to computer systems, just as to physical documents. Such systems generally use a `high water mark' approach \cite{jones1975highwatermark}, allowing programs to begin at low clearance and only moving to higher clearance as needed.
 
 \section{Formal Non-interference}
 
