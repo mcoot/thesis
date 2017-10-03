@@ -73,11 +73,15 @@ Lattice-based Mandatory Access Control may be applied to computer systems, just 
 
 \section{Formal Non-interference}
 
-	\subsection{Implicit Flows}
-	
-	\subsection{Undecidability in the General Case}
+The traditional MAC model may be implemented in a real system via runtime-enforced access control checks. However, the fundamental question remains: how does the program's author know whether it's implemented \textit{correctly}? Many security issues are the result of unintentional programmer error, and so it is useful to approach Information Flow security from the perspective of program verification.
 
-	\subsection{Covert Channels \& Attacker Model}
+This goal can be more clearly defined through the notion of `non-interference'. A program is said to be non-interfering if, given any two program executions which are identical in terms of their low confidentiality input, the results and behaviour of the executions are indistinguishable \cite{sabelfeld2003if}. Or, equivalently, a program is non-interfering if an external, low-privilege observer cannot infer any high confidentiality information from the program's execution.
+
+\subsection{Implicit Flows}
+
+\subsection{Undecidability in the General Case}
+
+\subsection{Covert Channels \& Attacker Model}
 
 \section{Declassification}
 
