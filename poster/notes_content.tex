@@ -1,0 +1,95 @@
+\begin{itemize}
+	
+	\item Background/Intro
+	
+	\begin{itemize}
+		
+		\item IF vs Access Control (simple example)
+		
+		\item MAC / Lattice
+		
+		\item Non-interference
+		
+	\end{itemize}
+
+	\item Project Purpose
+	
+	\begin{itemize}
+		
+		\item Is IF viable and useful?
+		
+		\item Specifically: compare the two most mature IF languages -- JIF and Paragon
+		
+		\item Are either viable in practice? If not, what would they need? Is one more useful than the other?
+		
+	\end{itemize}
+	
+	\item Case Studies \& Findings
+	
+	\begin{itemize}
+		
+		\item Overview: Battleships, Conference Management, Calendar Scheduler
+		
+		\item Battleships: declassification
+		
+		\begin{itemize}
+			
+			\item Straightforward declassification of coordinates via special query method
+			
+			\item Easily representable in both JIF/Paragon
+			
+			\item Example
+			
+		\end{itemize}
+	
+		\item Conference Management: timed release
+		
+		\begin{itemize}
+			
+			\item Stateful by necessity
+			
+			\item Easy in Paragon, needs simulation in JIF (loses type safety)
+			
+			\item Example
+			
+		\end{itemize}
+	
+		\item Calendar scheduler: quantification
+		
+		\begin{itemize}
+			
+			\item Requires meetings `owned' by a runtime list of users
+			
+			\item JIF falls over completely, Paragon gets close but the compiler cannot properly infer
+			
+			\item Example?
+			
+		\end{itemize}
+		
+	\end{itemize}
+	
+	\item Challenges
+	
+	\begin{itemize}
+		
+		\item Research languages whyyy
+		
+		\item Difficult to just get compilers running -- (ultimately developed toolchain to help)
+		
+		\item Conceptually quite difficult -- not policy agnostic so constantly have to think about the policy in code; I think I understand it \textit{now}... after 9 months
+		
+		\item Lack of compiler maturity: when have you done something wrong, and when has the compiler just broken?
+		
+	\end{itemize}
+
+	\item Conclusion
+	
+	\begin{itemize}
+		\item IF ideas are quite useful: it's often not well thought about
+		
+		\item Neither JIF nor Paragon presents a viable implementation in their current states
+		
+		\item Paragon's model seems more likely to lead to a production viable system (more flexible/powerful, easier to learn)
+	\end{itemize}
+	
+\end{itemize}
