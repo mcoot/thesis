@@ -79,6 +79,20 @@ This goal can be more clearly defined through the notion of `non-interference'. 
 
 \subsection{Implicit Flows}
 
+For a program to be non-interfering, a passive attacker must not be able to distinguish \textit{any} information about high confidentiality data. It is not sufficient to simply prevent a high confidentiality value from being assigned to a low confidentiality variable -- for instance, consider the following case:
+
+\begin{algorithmic}
+	\State $ high := 1 $
+	\State $ low := 0 $
+	\If {$ high = 0 $}
+		\State $ low := 1 $
+	\Else
+		\State $ low := 0 $
+	\EndIf
+\end{algorithmic}
+
+Here, someone with access to the $ low $ variable has learned that the value of $ high $ is $ 1 $ -- so they have learned information about the high confidentiality state.
+
 \subsection{Undecidability in the General Case}
 
 \subsection{Covert Channels \& Attacker Model}
