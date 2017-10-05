@@ -10,6 +10,8 @@
 		
 		\item Non-interference
 		
+		\item Declassification
+		
 	\end{itemize}
 
 	\item Project Purpose
@@ -93,3 +95,30 @@
 	\end{itemize}
 	
 \end{itemize}
+
+\newpage
+
+DIAGRAMS:
+
+\begin{tikzpicture}
+\node[dot, label=left:$ TS $] (TS) at (0, 3) {TS};
+\node[dot, label=left:$ S $] (S) at (0, 2) {S};
+\node[dot, label=left:$ C $] (C) at (0, 1) {C};
+\node[dot, label=left:$ U $] (U) at (0, 0) {U};
+
+\draw[edge] (S) to (TS);
+\draw[edge] (C) to (S);
+\draw[edge] (U) to (C);
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\node[dot, label=above:$ A \sqcup B $] (AuB) at (0, 2) {};
+\node[dot, label=left:$ A $] (A) at (-1, 1) {};
+\node[dot, label=right:$ B $] (B) at (1, 1) {};
+\node[dot, label=below:$ A \sqcap B $] (AnB) at (0, 0) {};
+
+\draw[edge] (AnB) to  (A);
+\draw[edge] (AnB) to  (B);
+\draw[edge] (A) to  (AuB);
+\draw[edge] (B) to  (AuB);
+\end{tikzpicture}
