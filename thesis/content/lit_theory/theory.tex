@@ -71,11 +71,11 @@ The Simple Security Property prevents users with insufficient clearance from acc
 
 Lattice-based Mandatory Access Control may be applied to computer systems, just as to physical documents. Such systems generally use a `high water mark' approach \cite{jones1975highwatermark}, allowing programs to begin at low clearance and only moving to higher clearance as needed.
 
-\section{Formal Non-interference}
+\section{Formal Non-interference} \label{theory_if_noninterference}
 
 The traditional MAC model may be implemented in a real system via runtime-enforced access control checks. However, the fundamental question remains: how does the program's author know whether it's implemented \textit{correctly}? Many security issues are the result of unintentional programmer error, and so it is useful to approach Information Flow security from the perspective of program verification.
 
-This goal can be more clearly defined through the notion of `non-interference'. A program is said to be non-interfering if, given any two program executions which are identical in terms of their low confidentiality input, the results and behaviour of the executions are indistinguishable \cite{sabelfeld2003if}. If a program is non-interfering with respect to a MAC policy, then by definition it correctly follows that policy. This notion may be formalised by the definition that a program is non-interfering if there is no \textit{dependency} of low confidentiality data on high confidentiality data \cite{cohen1977declassification}.
+This goal can be more clearly defined through the notion of `non-interference'. A program is said to be non-interfering if, given any two program executions which are identical in terms of their low confidentiality input, the results and behaviour of the executions are indistinguishable \cite{sabelfeld2003if}. This notion may be formalised by the definition that a program is non-interfering if there is no \textit{dependency} of low confidentiality data on high confidentiality data \cite{cohen1977declassification}.
 
 In \citetitle{denning1977certification}, \citeauthor{denning1977certification} \cite{denning1977certification} provide a mechanism which can verify a program as correctly respecting a MAC policy using type checking: all variables are assigned a classification, and the analyser ensures that the policy is not broken under any execution path.
 
@@ -90,19 +90,26 @@ Clearly, assigning the value of a high confidentiality variable to a variable wi
 
 \subsection{Implicit Flows}
 
-For a program to be non-interfering, a passive attacker must not be able to distinguish \textit{any} information about high confidentiality data. It is not sufficient to simply prevent a high confidentiality value from being assigned to a low confidentiality variable -- for instance, consider the following case:
+\citeauthor{denning1977certification} \cite{denning1977certification} categorise the flows of information within a program into \textit{explicit} and \textit{implicit} flows. An explicit flow $ x \rightarrow y $ is one such as an assignment $ y := x $, where the operation performed is independent of the actual value of $ x $. An implicit flow $ x \rightarrow y $ is then any arbitrary flow $ z \rightarrow y $ where the execution depends on the value of $ x $. 
+
+A simple example of an implicit flow causing an information leak is one where execution branches based on the value of a high confidentiality variable:
 
 \begin{algorithmic}
-	\State $ high := 1 $
+	\State $ high := 0 $
 	\State $ low := 0 $
-	\If {$ high = 0 $}
-		\State $ low := 1 $
+	\If {$ high = 5 $}
+	\State $ low := 1 $
 	\Else
-		\State $ low := 0 $
+	\State $ low := 0 $
 	\EndIf
 \end{algorithmic}
 
-Here, someone with access to the $ low $ variable has learned that the value of $ high $ is $ 1 $ -- so they have learned information about the high confidentiality state.
+Here, someone with access to the $ low $ variable knows that $ low $ will only have the value $ 1 $ if $ high $ has the value $ 5 $. After this code executes, they can see that $ low = 0 $, and therefore $ high \ne 5 $. They do not know the actual value of $ high $ but they have still learned some information about it.
+
+For a program to be non-interfering, a passive attacker must not be able to distinguish \textit{any} information about high confidentiality data; hence implicit flows which allow an attacker to learn high confidentiality information must be prevented \cite{sabelfeld2003if}.
+
+
+To handle implicit flow of confidentiality via the flow of control, the type checker must consider the confidentiality of the execution \textit{context}. The above snippet's if statement represents a `high context' where assignments to low confidentiality variables is impermissible.
 
 \subsection{Undecidability in the General Case}
 
