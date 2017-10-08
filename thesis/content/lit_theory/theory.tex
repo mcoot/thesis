@@ -98,9 +98,9 @@ A simple example of an implicit flow causing an information leak is one where ex
 	\State $ high := 0 $
 	\State $ low := 0 $
 	\If {$ high = 5 $}
-	\State $ low := 1 $
+		\State $ low := 1 $
 	\Else
-	\State $ low := 0 $
+		\State $ low := 0 $
 	\EndIf
 \end{algorithmic}
 
@@ -113,9 +113,55 @@ To handle implicit flow of confidentiality via the flow of control, the type che
 
 \subsection{Undecidability in the General Case}
 
+The type checking approach to proving non-interference is necessarily conservative: there will always be some programs which are non-interfering which will nonetheless be rejected by the static analysis. This goes beyond being a limitation of current models: determining a condition which is both necessary and sufficient for a program to be non-interfering is an undecidable problem \cite{denning1977certification} \cite{landi1992undecidability} -- it may be reduced to the halting problem \cite{sabelfeld2003if}.
+
+%This can be seen quite intuitively. Let $ S $ be an arbitrary procedure which affects only low confidentiality variables, and then consider the following \cite{sabelfeld2003if}:
+%
+%\begin{algorithmic}
+%	\If {$ high = 1 $}
+%	\State $ S() $
+%	\State $ low := 1 $
+%	\Else
+%	\State skip
+%	\EndIf
+%\end{algorithmic}
+
+%Determining whether this program actually produces an invalid flow from $ high \rightarrow low $ requires proving that the procedure call $ S() $ will terminate. By this reduction, proving a program's non-interference in the general case may be reduced to the halting problem \cite{denning1977certification}.
+
+In practice, systems for statically analysing information flow attempt to ensure that they reject as few \textit{useful} valid programs as is feasible.
+
 \subsection{Covert Channels \& Attacker Model}
 
+Consider the following program:
+
+\begin{algorithmic}
+	\State $ low := 0 $
+	\If {$ high = 5 $}
+		\For{$ i := 1 $ \textbf{to} $ 1000000000 $}
+			\State skip
+		\EndFor
+	\Else
+		\State skip
+	\EndIf
+\end{algorithmic}
+
+By the conventional definitions of information flow, considering both explicit and implicit flows, this program is non-interfering: the value of $ low $ does not in any way depend on the value of $ high $. Yet, someone observing this programs output would be able to learn information about the value of $ high $: the program will clearly take significantly longer to execute in the case where $ high = 5 $.
+
+A program can only be considered secure \textit{with respect to its environment} \cite{sabelfeld2003if}, and the standard construction of non-interference does not consider the timing of a program as a channel for the transmission of information; hence, this kind of information leak is considered a `covert channel' leak.
+
+\citeauthor{sabelfeld2003if} \cite{sabelfeld2003if} address a number of possible covert channels which impact on information flow analysis, including timing channels like the above, termination-sensitivity (i.e. whether a program terminates at all), system power usage, and probabilistic channels for programs with stochastic behaviour. Notions of non-interference which examine these channels may be constructed, though doing so will further restrict the potential acceptable programs which may be written.
+
+Hence, proving a program's non-interference through static checking is not a panacea: a program's environment and attacker model must still be considered. In some contexts, `timing-sensitive' non-interference may be necessary, but enforcing that a program will never differ in execution time based on high confidentiality information has quite obvious drawbacks in the performance of a valid program and in the kinds of programs which may be written.
+
 \section{Declassification}
+
+A program which is provably non-interfering provides useful guarantees around a program's behaviour: in the military context for which MAC was designed, it ensures that a program running in a high confidentiality environment cannot as a matter of course declassify information to a lower level. However, in most contexts, requiring strict non-interference prevents useful and necessary programs from being written.
+
+Consider, for example, a program which requires the user to input a password. The true value of the password is confidential, and so it should not be leaked to someone using the application who has not logged in. Yet, such a password checker must operate based on the user's guess: if the guess is correct, they are logged in, and if it is not, they are rejected. Clearly the operation of the program depends on the value of the high confidentiality password, and a user attempting to log in learns some information about it -- even if rejected, the user has learned that the true password is \textit{not} equal to their guess.
+
+A password checker is by definition interfering by design: it has to give feedback on whether the user's guess matches the true password. But this does not violate the desired security properties, since the search space for possible passwords is large, and the user may only guess one at a time.
+
+\subsection{Alternate Approaches to `Dynamic' Policy}
 
 \section{Enforcement}
 
