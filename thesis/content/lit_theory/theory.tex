@@ -77,7 +77,7 @@ The traditional MAC model may be implemented in a real system via runtime-enforc
 
 This goal can be more clearly defined through the notion of `non-interference'. A program is said to be non-interfering if, given any two program executions which are identical in terms of their low confidentiality input, the results and behaviour of the executions are indistinguishable \cite{sabelfeld2003if}. This notion may be formalised by the definition that a program is non-interfering if there is no \textit{dependency} of low confidentiality data on high confidentiality data \cite{cohen1977declassification}.
 
-In \citetitle{denning1977certification}, \citeauthor{denning1977certification} \cite{denning1977certification} provide a mechanism which can verify a program as correctly respecting a MAC policy using type checking: all variables are assigned a classification, and the analyser ensures that the policy is not broken under any execution path.
+In \citetitle{denning1977certification}, \citeauthor{denning1977certification} \cite{denning1977certification} provide a mechanism which can verify a program as correctly respecting a MAC policy using type checking: all variables are assigned a classification, and the analyser ensures that the policy is not broken under any execution path. A language which makes use of type checking-based flow verification is considered a \textit{security typed} language.
 
 The type checker's semantics prevent high confidentiality information moving to a lower classification. So, for instance, the following code would be invalid:
 
@@ -157,9 +157,15 @@ Hence, proving a program's non-interference through static checking is not a pan
 
 A program which is provably non-interfering provides useful guarantees around a program's behaviour: in the military context for which MAC was designed, it ensures that a program running in a high confidentiality environment cannot as a matter of course declassify information to a lower level. However, in most contexts, requiring strict non-interference prevents useful and necessary programs from being written.
 
-Consider, for example, a program which requires the user to input a password. The true value of the password is confidential, and so it should not be leaked to someone using the application who has not logged in. Yet, such a password checker must operate based on the user's guess: if the guess is correct, they are logged in, and if it is not, they are rejected. Clearly the operation of the program depends on the value of the high confidentiality password, and a user attempting to log in learns some information about it -- even if rejected, the user has learned that the true password is \textit{not} equal to their guess.
+One example of this is a `password checker' program. The true value of the password is confidential, and the user must provide a correct guess in order to log in. Clearly the operation of the program depends on the value of the high confidentiality password, and a user attempting to log in learns some information about it -- even if rejected, the user has learned that the true password is \textit{not} equal to their guess.
 
-A password checker is by definition interfering by design: it has to give feedback on whether the user's guess matches the true password. But this does not violate the desired security properties, since the search space for possible passwords is large, and the user may only guess one at a time.
+A password checker is interfering by design: it has to give feedback on whether the user's guess matches the true password. But this does not violate the desired security properties, since the search space for possible passwords is large, and the user may only guess one at a time.
+
+Rejecting \textit{all} interfering programs makes it very difficult to write even simple programs like a password checker. Hence, security typed languages provide `declassification' mechanisms to allow interference, but only when a programmer explicitly declares it.
+
+\subsection{Selective Declassification}
+
+Selective declassification mechanisms provide an `escape hatch' from the security typing system. 
 
 \subsection{Alternate Approaches to `Dynamic' Policy}
 
