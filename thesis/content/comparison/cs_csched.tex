@@ -89,7 +89,7 @@ Both calendar scheduler implementations follow the following class structure:
 
 \subsection{Simplification of Implementation}
 
-The implementation described above, with the use of confidentiality states which depend on sets of users, is not practical to implement in either JIF or Paragon: quantification over a set of principals is not possible in the policy languages of either. The specific issues encountered in each language is described in the below section, but in both cases this quantification problem effectively prevents implementation from proceeding in practice.
+The implementation described above, with the use of confidentiality states which depend on sets of users, is not practical to implement in either JIF or Paragon. In JIF, it is not possible to quantify over a set of principals, and though Paragon \textit{does} allow for such quantification, it does not extend to the lock annotations necessary to encode the policy of a \mono{Meeting}. The specific issues encountered in each language is described in the below section, but in both cases this quantification problem effectively prevents implementation from proceeding in practice.
 
 As a result, the actual implementations instead work around a simplified security policy, where each meeting is designated a single \textit{owner} principal who controls its confidentiality. This does not quite produce the desired application (since it unnecessarily restricts access to the title beyond what is required), but even so this simplified implementation also runs up against language and compiler limitations in both Paragon and JIF.
 

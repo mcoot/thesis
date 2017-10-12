@@ -45,9 +45,45 @@ With any non-trivial set of users and documents, the size of the Access Matrix w
 
 Mandatory Access Control (MAC) systems are most commonly associated with the military, and are generally used in situations where confidentiality is of primary importance. In a MAC system, all data has a \textit{classification}, and users operate with a \textit{clearance} \cite{sandhu1994access}. 
 
-In the simplest case, the set of classifications is just an ordered list -- for instance, `Unclassified' $ < $ `Classified' $ < $ `Secret' $ < $ `Top Secret'. A user with `Secret' clearance, then, cannot access or modify `Top Secret' documents.
+In the simplest case, the set of classifications is just an ordered list -- for instance, `Unclassified' $ < $ `Classified' $ < $ `Secret' $ < $ `Top Secret' (represented in Figure \ref{fig:theory_lattice_diagrams}(a)). A user with `Secret' clearance, then, cannot access or modify `Top Secret' documents.
 
 More flexible access control policies may be implemented under the Bell-Lapadula lattice model \cite{bell1973lattice}, which is at the heart of most modern MAC systems. Under this model, classifications form a \textit{lattice} -- a set partially ordered by a flow relation (written $ \succeq $) where, for every possible pair of elements, a `least upper bound' (or `join', written $ \sqcup $) and `greatest lower bound' (or `meet', written $ \sqcap $) may be found.
+
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}[t]{0.2\textwidth}
+		\begin{tikzpicture}
+		\node[dot, label=left:$ TS $] (TS) at (0, 3) {};
+		\node[dot, label=left:$ S $] (S) at (0, 2) {};
+		\node[dot, label=left:$ C $] (C) at (0, 1) {};
+		\node[dot, label=left:$ U $] (U) at (0, 0) {};
+		
+		\draw[edge] (S) to (TS);
+		\draw[edge] (C) to (S);
+		\draw[edge] (U) to (C);
+		\end{tikzpicture}
+		\caption{}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.1\textwidth}
+		\begin{tikzpicture}
+		\node[dot, label=above:$ A \sqcup B $] (AuB) at (0, 2) {};
+		\node[dot, label=left:$ A $] (A) at (-1, 1) {};
+		\node[dot, label=right:$ B $] (B) at (1, 1) {};
+		\node[dot, label=below:$ A \sqcap B $] (AnB) at (0, 0) {};
+		
+		\draw[edge] (AnB) to  (A);
+		\draw[edge] (AnB) to  (B);
+		\draw[edge] (A) to  (AuB);
+		\draw[edge] (B) to  (AuB);
+		\end{tikzpicture}
+		\caption{}
+	\end{subfigure}
+	\caption{Example Bell-LaPadula Model Lattices}
+	\label{fig:theory_lattice_diagrams}
+\end{figure}
+
+
 
 In the MAC context, for policies in a lattice structure it is always possible to determine whether a user at clearance $ A $ can access information at classification $ B $ -- they can if $ B \succeq A $. Given any two classifications $ A $ and $ B $, one can find the least restrictive classification which enforces both, $ A \sqcup B $, and the most restrictive classification which users at either clearance $ A $ or $ B $ can read, $ A \sqcap B $.
 
@@ -89,7 +125,7 @@ The traditional MAC model may be implemented in a real system via runtime-enforc
 
 This goal can be more clearly defined through the notion of `non-interference'. A program is said to be non-interfering if, given any two program executions which are identical in terms of their low confidentiality input, the results and behaviour of the executions are indistinguishable \cite{sabelfeld2003if}. This notion may be formalised by the definition that a program is non-interfering if there is no \textit{dependency} of low confidentiality data on high confidentiality data \cite{cohen1977declassification}.
 
-In \citetitle{denning1977certification}, \citeauthor{denning1977certification} \cite{denning1977certification} provide a mechanism which can verify a program as correctly respecting a lattice-model policy using type checking: all variables are assigned a classification, and the analyser ensures that the policy is not broken under any execution path. A language which makes use of type checking-based flow verification is considered a \textit{security typed} language. This approach is notably different from the runtime-checked approaches commonly seen in implementations of access control, as a security typed language can control information flow via static checking, producing no runtime overhead.
+In \citetitle{denning1977certification}, \citeauthor{denning1977certification} \cite{denning1977certification} provide a mechanism to verify a program as correctly respecting a lattice-model policy using type checking. All variables are assigned a classification, and the analyser ensures that the policy is not broken under any execution path. A language which makes use of type checking-based flow verification is considered a \textit{security typed} language. This approach differs from the runtime-checked approaches seen in implementations of access control, as a security typed language can control information flow via static checking, producing no runtime overhead.
 
 The type checker's semantics prevent high confidentiality information moving to a lower classification. So, for instance, the following code would be invalid:
 
@@ -177,53 +213,65 @@ Rejecting \textit{all} interfering programs makes it very difficult to write eve
 
 \subsection{Dimensions of Declassification}
 
-\cite{sabelfeld2004model}
+Mechanisms for declassification may be categorised by the controls they aim to implement. \citeauthor{sabelfeld2005dimensions} \cite{sabelfeld2005dimensions} provide four `dimensions' of declassification: \textit{what}, \textit{who}, \textit{where} and \textit{when}.
+
+A `selective' declassification mechanism controls \textit{what} information or \textit{how much} information may be released. An `ownership-based' declassification mechanism regulates \textit{who} may release information; this is generally accompanied by a policy model which encodes ownership, such as the Decentralised Label Model discussed in \ref{theory_if_dlm}. Models of `intransitive non-interference' \cite{roscoe1999intransitive} place controls on \textit{where} information may be declassified, requiring that information only be released through some form of sanitising function. Finally, mechanisms may control \textit{when} information may be released -- whether relative to other events in the program, or in absolute terms.
 
 \section{Policy Models for Security Typing}
 
 \subsection{The Denning Lattice Model}
 
-Modern implementations of security typing derive primarily from the model proposed by \citeauthor{denning1977certification} \cite{denning1977certification}, previously discussed in \ref{theory_if_noninterference}.
+Modern implementations of security typing derive primarily from the model proposed by \citeauthor{denning1977certification} \cite{denning1977certification}, previously discussed in \ref{theory_if_noninterference}. This model assumes that classifications are determined by a central authority; in a security typing implementation, this is the programmer. The lattice model makes it possible to implement both simplistic `totally ordered' policies and policies with more complex lattice structures. It also allows for the combination of existing policies within the lattice using the join and meet operators.
 
 \subsubsection{Selective Declassification Mechanisms}
 
-\subsection{The Decentralized Label Model}
-
-\subsubsection{Ownership Model}
-
-\subsubsection{Selective Declassification Mechanism}
-
-\subsection{FlowLocks \& ParaLocks}
-
-\subsubsection{Logic-based Policy Definition}
-
-\subsubsection{Dynamic Policy}
-
-\subsection{Selective Declassification}
-
-Selective declassification mechanisms provide an `escape hatch' from the security typing system. Through these mechanisms, information may flow in a way which contravenes the Information Flow policy. As such, these mechanisms must be tightly controlled.
-
-A simple approach to this is to include a `declassify' statement in syntax, wherein the classification of a variable may be changed to one of lower confidentiality. This allows for any interfering program to be written (and hence allows the programmer to break the guarantees that the type system would provide), but it requires them to explicitly make use of the construct when they wish to do so.
-
-\citeauthor{sabelfeld2004model} \cite{sabelfeld2004model} propose `delimited release' -- a selective declassification mechanism which allows for more control over the semantics of \textit{what} is supposed to be released during a declassification. If the actual statement declassifies more information than was defined, then the program is rejected by the type checker.
-
-Another such mechanism, proposed by \citeauthor{myers1997if} \cite{myers1997if}, provides a safer form of the declassify operator, relying on a more complex decentralised policy model (discussed in more depth in \ref{if_static_models}), which gives policies an \textit{owner}. Declassification can then only be performed under the authority of the owner of a policy.
+A simple approach to declassification within a standard lattice model is to include a `declassify' syntax, wherein the classification of a variable may be changed to one of lower confidentiality \cite{denning1974declassification}. This allows for any interfering program to be written (and hence allows the programmer to break the guarantees that the type system would provide), but it requires them to explicitly declare what information they  wish to declassify.
 
 \citeauthor{volpano2000declassification} \cite{volpano2000declassification} propose a declassification construct which guarantees information may only flow against the stated policy in worse-than-polynomial runtime complexity. Using this mechanism, the password checker example would be valid, since finding the actual value of the password requires an exponential time brute force checking of all possibilities. Being more restrictive, this approach is more difficult to apply to real world programs.
 
-FLOW LOCKS / PARALOCKS
+\subsection{The Decentralised Label Model} \label{theory_if_dlm}
 
-\section{Enforcement}
+The Decentralised Label Model (DLM) proposed by \citeauthor{myers1997if} \cite{myers1997if} extends the Bell-LaPadula lattice model by removing the need for a central authority which determines all classifications.
 
-\subsection{Statically Enforced Models} \label{if_static_models}
+Instead, under the DLM subjects (or `principals') within the system may define their own policies on data, specifying which other subjects \textit{they believe} the data should be able to flow to. These policies still form a lattice, and so the type checker enforces the join of all subjects' policies on the data. This can be used to model `ownership' of data, and even systems where subjects do not trust each other to respect confidentiality.
 
-DENNING
+The DLM is discussed in more depth in Chapter \ref{intro_to_jif_para} as it is the policy framework used by the JIF programming language.
 
-DLM
+\subsubsection{Selective Declassification Mechanism}
 
-PARAGON
+As with Denning model systems, `declassify' syntax may be used with the DLM to provide a control for \textit{what} information may be released. However, the DLM also allows for controls on \textit{who} may declassify information: a given subject may only declassify policies under their own authority, and so cannot reduce the confidentiality of data which does not `belong' to them.
 
-\subsection{Runtime Enforced Models}
+\subsection{Flow Lock Policy Definition}
+
+An alternative 
+
+\subsubsection{Dynamic Policy}
+
+%\subsection{Selective Declassification}
+%
+%Selective declassification mechanisms provide an `escape hatch' from the security typing system. Through these mechanisms, information may flow in a way which contravenes the Information Flow policy. As such, these mechanisms must be tightly controlled.
+%
+%
+%
+%\citeauthor{sabelfeld2004model} \cite{sabelfeld2004model} propose `delimited release' -- a selective declassification mechanism which allows for more control over the semantics of \textit{what} is supposed to be released during a declassification. If the actual statement declassifies more information than was defined, then the program is rejected by the type checker.
+%
+%Another such mechanism, proposed by \citeauthor{myers1997if} \cite{myers1997if}, provides a safer form of the declassify operator, relying on a more complex decentralised policy model (discussed in more depth in \ref{if_static_models}), which gives policies an \textit{owner}. Declassification can then only be performed under the authority of the owner of a policy.
+%
+%
+%
+%FLOW LOCKS / PARALOCKS
+
+%\section{Enforcement}
+%
+%\subsection{Statically Enforced Models} \label{if_static_models}
+%
+%DENNING
+%
+%DLM
+%
+%PARAGON
+%
+%\subsection{Runtime Enforced Models}
 
 
 
