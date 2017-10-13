@@ -243,10 +243,23 @@ As with Denning model systems, `declassify' syntax may be used with the DLM to p
 
 \subsection{Flow Lock Policy Definition}
 
-An alternative 
+The Denning model uses MAC classification labels, and the DLM extends this with a decentralised model of information ownership. Both models control declassification with the introduction of explicit constructs which declare that information downgrade is taking place. \citeauthor{broberg2006flow} \cite{broberg2006flow} propose an alternative form of policy specification using predicate logic.
+
+Under this model, policies are statements of which subjects may access the data. Policies may specify individual subjects (e.g. a policy stating ``Alice may read this information"), or may universally quantify over subjects belonging to some `class' (e.g. ``All subjects who are System Administrators may access this information").
+
+This model is discussed in more depth in Chapter \ref{intro_to_jif_para} as it forms the basis of policy definition in the Paragon programming language \cite{broberg2013paragon}.
 
 \subsubsection{Dynamic Policy}
 
+This model's eponymous `Flow Lock' system allows it to represent dynamic flow policy -- that is, policy which cannot be cannot be represented in a static lattice structure. This presents an alternate approach the declassification problem: declassification is viewed as a special case of dynamic flow.
+
+A Flow Lock is a runtime boolean value that may be in either an `open' or `closed' state. The lock may then guard a flow policy, allowing for policies of the form ``Alice may read this information \textit{if} the lock \mono{IsUnlocked} is open". Though locks are runtime values, their values throughout the program are still approximated statically through the type checker. Since locks may change state at runtime, they can be used to not only control \textit{what} information is declassified, but also \textit{when} information is declassified; such time-variant policies cannot be easily encoded in the DLM or in Denning model security type systems.
+
+The Flow Lock concept was extended further in a second paper \cite{broberg2010paralocks} to include \textit{parametrised} locks, called `Paralocks'. Parametrised locks allow for policies such as ``Alice may read this information if the lock \mono{IsUnlocked}(Alice) is open".
+
+Unary (single argument) locks can then easily represent policies with dynamic \textit{roles}, like ``Any employee may access this information if they are currently a manager", built using a quantification over employees and an \mono{IsManager(Employee)} lock. Binary locks, on the other hand, can represent relationships between subjects.
+
+The semantics of Paralocks provide a generalisation of existing policy mechanisms: it is possible to encode the DLM, and hence any policy the DLM can encode, using Paralocks \cite{broberg2010paralocks}.
 %\subsection{Selective Declassification}
 %
 %Selective declassification mechanisms provide an `escape hatch' from the security typing system. Through these mechanisms, information may flow in a way which contravenes the Information Flow policy. As such, these mechanisms must be tightly controlled.
