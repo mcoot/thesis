@@ -1,0 +1,23 @@
+public class User {
+    public final String{this} name;
+}
+
+// Type parameter-based implementation of simpler 'meeting owner' policy
+public class Meeting[principal Owner] {
+    public final String{Owner->*} title;
+    public final int{Owner->_} day;
+    public final int{Owner->_} startHour;
+    public final int{Owner->_} endHour;
+}
+
+public class Calendar[principal Owner] {
+
+}
+
+public class Scheduler {
+
+}
+
+public class Main {
+
+}

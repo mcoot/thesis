@@ -1,0 +1,21 @@
+package java.util;
+
+public native class LinkedList<E, policy p> {
+
+    public LinkedList() { }
+	
+	public ?policyof(this) boolean add(E e);
+	
+	public !policyof(this) void add(int index, E e);
+	
+	public void clear();
+	
+	public ?p E get(int index);
+	
+	public ?policyof(this) boolean isEmpty();
+	
+	public ?policyof(this) int size();
+	
+	public ?p boolean contains(E e);
+	
+}

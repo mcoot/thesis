@@ -1,0 +1,32 @@
+public class User {
+
+    public final ?policyof(this) String name;
+
+    public User(?policyof(this) String uname) {
+        name = uname;
+    }
+
+    public ?(policyof(this)*policyof(o)) boolean equals(Object o) {
+        User that;
+        try {
+            that = (User)o;
+        } catch (ClassCastException ex) {
+            return false;
+        }
+
+        try {
+            return that.name.equals(name);
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    public ?policyof(this) int hashCode() {
+        return name.hashCode();
+    }
+
+    public ?policyof(this) String toString() {
+        return name;
+    }
+
+}

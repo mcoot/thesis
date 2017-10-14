@@ -1,0 +1,7 @@
+package java.util;
+
+public native class ArrayList<E, policy p> implements List<E, p> {
+
+    public ArrayList() { }
+	
+}

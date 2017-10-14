@@ -1,0 +1,106 @@
+public class User {
+    public final ?policyof(this) String name;
+}
+
+public class Meeting {
+    public static final policy bottom = {Object x: };
+
+    // Lock which is open when a user is attending a given meeting
+    public ?{User u:} lock isAttending(User, Meeting);
+
+    public final policy attendeesOnly = {User u: isAttending(u, self)};
+
+    public final ?attendeesOnly String title;
+    public final ?policyof(this) int day;
+    public final ?policyof(this) int startHour;
+    public final ?policyof(this) int endHour;
+
+    private notnull ?bottom LinkedList<User, bottom> users;
+
+    public !bottom Meeting(?policyof(this) int day, ?policyof(this) int startHour, ?policyof(this) int endHour, 
+                           ?attendeesOnly String title, ?bottom LinkedList<User, bottom> attendees) {
+        ...
+        users = new LinkedList<User, bottom>();
+        for (int i = 0; i < attendees.size(); ++i) {
+            User u = attendees.get(i);
+            // Indicate that this user is attending the meeting
+            open isAttending(u, self);
+            this.users.add(u);
+        }
+    }
+
+    public ?(policyof(this) * attendeesOnly) String toString() {
+        String s = "<\"" + title + "\" | " + getDayName(this.day) 
+                   + " " + this.startHour + " - " + this.endHour + " | ";
+        String sep = "";
+        for (int i = 0; i < this.users.size(); ++i) {
+            s += sep;
+            s += this.users.get(i).toString();
+            sep = ", ";
+        }
+        s += ">";
+
+        return s;
+    }
+    
+}
+
+public class Calendar {
+    public static final policy bottom = {Object x: };
+
+    public final User user;
+    private LinkedList<Meeting, bottom> meetings;
+
+    public ?(policyof(day) * policyof(startHour) * policyof(endHour)) boolean freeAtTime(int day, int startHour, int endHour) {
+        ...
+    }
+
+    public ?{viewer: } String getCalendarRepresentation(notnull User viewer) {
+        ?{viewer: } String s = user.toString() + "'s Calendar:\n---";
+        for (int i = 0; i < meetings.size(); ++i) {
+            Meeting m = meetings.get(i);
+            if (Meeting.isAttending(viewer, m)) {
+                s += m.toString();
+            }
+        }
+        return s;
+    }
+}
+
+public class Scheduler {
+    public static final policy bottom = {Object x:};
+    private ?bottom HashMap<User, bottom, Calendar, bottom> calendars;
+}
+
+public class Main {
+    public static final policy bottom = {Object x:};
+
+    private static final ?bottom User alice = new User("Alice");
+    private static final ?bottom User bob = new User("Bob");
+    private static final ?bottom User charles = new User("Charles");
+
+    public static !bottom void main(String[] args) throws !bottom NullPointerException {
+        Scheduler scheduler = new Scheduler();
+        // Add calendars and dummy meetings for Alice, Bob and Charles
+        setupDummyData(scheduler);
+
+        // Mock 'private' output for Alice
+        IOChannel<bottom, alice> aliceOut = new IOChannel<bottom, alice>();
+
+        // Times of meetings are not classifies and so can be printed out freely
+        LinkedList<User, bottom> allUsers = new LinkedList<User, bottom>();
+        boolean scheduleCheck1 = theScheduler.attendeesFreeAtTime(allUsers,
+                Meeting.getDayValue("Monday"), 9, 10);
+        System.out.println("Are all users available at 9 - 10 on a Monday? " + scheduleCheck1);
+        boolean scheduleCheck2 = theScheduler.attendeesFreeAtTime(allUsers,
+                Meeting.getDayValue("Tuesday"), 9, 10);
+        System.out.println("Are all users available at 9 - 10 on a Tuesday? " + scheduleCheck2);
+
+        // A user may print out every event in their own calendar, since they attend all of them
+        aliceOut.println(scheduler.getCalendar(alice).getCalendarRepresentation(alice));
+
+        // Printing out another user's calendar will result in some meetings being omitted
+        // Only meetings this user attends on the other user's calendar will be visible
+        aliceOut.println(scheduler.getCalendar(bob).getCalendarRepresentation(bob));
+    }
+}

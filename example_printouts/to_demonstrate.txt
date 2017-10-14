@@ -1,0 +1,29 @@
+JIF
+---
+
+* Policy definition
+
+* Basic field / return labels
+* Method begin/end labels
+* Declassification / authority
+* Polymorphism
+
+PARAGON
+-------
+
+* Static policy definition
+* Dynamic policy definition
+
+* Basic field / return labels
+* Write effects
+* Declassification / timed release
+* Polymorphism
+
+CASE STUDIES
+------------
+
+Battleships: declassification
+
+Conference management: time variant policy
+
+Calendar Scheduler: total failure
