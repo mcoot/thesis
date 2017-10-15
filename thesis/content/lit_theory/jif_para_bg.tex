@@ -14,7 +14,7 @@ Under this taxonomy, Paragon is a `third-generation Information Flow language', 
 
 \subsection{Relation to Plain Java}
 
-JFlow, a Java language extension implementing the Decentralised Label Model via type checking was first proposed in \citetitle{myers1999jflow}, \cite{myers1999jflow}. It included DLM-based type labels with support for polymorphism and type inference, while integrating with Java's Object-Oriented programming model -- including language features like inheritance and exceptions which introduce potential difficulties for IF checking.
+JFlow, a Java language extension implementing the Decentralised Label Model (DLM) via type checking was first proposed in \citetitle{myers1999jflow}, \cite{myers1999jflow}. It included DLM-based type labels with support for polymorphism and type inference, while integrating with Java's Object-Oriented programming model -- including language features like inheritance and exceptions which introduce potential difficulties for IF checking.
 
 JIF implements a superset of the JFlow functionality, having added a number of additional features over its development \cite{jifwebsite}. Since JIF's 1.0.0 version released in 2003 its design is based on Java 1.4, and so it lacks support for a number of more modern Java features.
 
@@ -38,13 +38,13 @@ In general, working with JIF has a number of differences when compared to Java. 
 
 \subsection{Policy Model}
 
-The \textit{decentralised} nature of the DLM is its primary innovation over previous models. Mandatory Access Control requires that each unit of information has a label universally agreed upon by all users of the system. The DLM instead models `principals' in the system (which may represent individual users, groups of users or roles), which do not need to trust each other.
+The \textit{decentralised} nature of the DLM is its primary innovation over previous models. Mandatory Access Control requires that each unit of information -- such as a variable, or method return value in Java -- has a label universally agreed upon by all users of the system. The DLM instead models `principals' in the system (which may represent individual users, groups of users or roles), which do not need to trust each other.
 
 The model uses an \textit{acts-for} relation between principals -- if principal $ p $ acts for principal $ q $, then any action taken by $ p $ is assumed to be authorised by $ q $ \cite{myers2000dlm}.
 
-Confidentiality labels in JIF are of the form \jiflabel{o->r1,r2}, where \mono{o} is the principal who owns the data, and \mono{r1,r2} is the list of other principals the owner allows to read the data. These terms form a lattice, and so labels may be formed by combining other labels via the \textit{join} (least upper bound -- ``\mono{;}") and \textit{meet} (greatest lower bound -- ``\mono{meet}") operators.
+Confidentiality labels in JIF consist of terms of the form \jiflabel{o->r1,r2}, where \mono{o} is the principal expressing ownership over the policy. When evaluated, these labels produce a \textit{reader set} of principals that the owner believes may read the data -- in this case, \mono{r1} and \mono{r2} and itself, \mono{o}. The reader sets produced form a lattice, and so labels may be combined via the \textit{join} (least upper bound -- ``\mono{;}") and \textit{meet} (greatest lower bound -- ``\mono{meet}") operators, which produce the intersection and union of the constituent labels' reader sets, respectively.
 
-Most commonly, the join operator is used to allow multiple principals to provide differing policies on data, producing a label of the form \jiflabel{o1->r1,r2; o2->r2,o1,r3}. Where two labels are joined, \textit{both} policies apply -- so the effect is that only \mono{o1} and \mono{r2}, or principals acting for either, could access the data, since they appear in both clauses.
+Most commonly, the join operator is used to allow multiple principals to provide differing policies on data. This produces a label of the form \jiflabel{o1->r1,r2; o2->r2,o1,r3}. The join of each policy produces a reader set which is the \textit{intersection} of both -- so in this case, only \mono{r2} and \mono{o1} (or principals which act for either) may read the information. Note that neither \mono{o1} nor \mono{o2} is the `true' owner of the data: each is simply expressing what they believe the policy to be.
 
 \subsection{Implicit Flows}
 

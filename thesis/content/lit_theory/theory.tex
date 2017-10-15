@@ -85,7 +85,7 @@ More flexible access control policies may be implemented under the Bell-Lapadula
 
 
 
-In the MAC context, for policies in a lattice structure it is always possible to determine whether a user at clearance $ A $ can access information at classification $ B $ -- they can if $ B \succeq A $. Given any two classifications $ A $ and $ B $, one can find the least restrictive classification which enforces both, $ A \sqcup B $, and the most restrictive classification which users at either clearance $ A $ or $ B $ can read, $ A \sqcap B $.
+In the MAC context, for policies in a lattice structure a user at clearance $ A $ can access information at classification $ B $ if $ A \succeq B $ (which may be read as ``$ B $ is less restrictive than $ A $"). Given any two classifications $ A $ and $ B $, one can find the least restrictive classification which enforces both, $ A \sqcup B $, and the most restrictive classification which users at either clearance $ A $ or $ B $ can read, $ A \sqcap B $.
 
 MAC is applied to the an access control problem concerning users (or `subjects') and classified documents (or `objects') via two key rules \cite{sandhu1993lattice}:
 
@@ -101,9 +101,9 @@ Lattice-based Mandatory Access Control may be applied to computer systems, just 
 
 \section{The Java Security Model}
 
-The Java programming language was designed in the context of emerging internet technologies, with the explict use case of users downloading and running `applets' from web pages. As such, security was a core consideration of Java's design -- the original design goals document \cite{javadesignprinciples} specifies that ``applications written in the Java programming language are secure from intrusion by unauthorized code."
+The Java programming language was designed in the context of emerging internet technologies, with the explict use case of users downloading and running `applets' from web pages. As such, security was a core consideration in Java's design -- the original design goals document \cite{javadesignprinciples} specifies that ``applications written in the Java programming language are secure from intrusion by unauthorized code."
 
-Java is type safe and memory safe, which reduces the possibility of programmer error leading to exploitable flaws in an application. Java's application sandbox takes a three-pronged approach to security in the context of applets which may be downloaded from a remote server, with the Bytecode Verifier, the Class Loader, and the Security Manager \cite{mcgraw1999securingjava}.
+Java is type safe and memory safe, which reduces the possibility of programmer error leading to exploitable flaws in an application. Java's application sandbox takes a three-pronged approach to security in the context of applets which may be downloaded from a remote server, having a Bytecode Verifier, the Class Loader, and the Security Manager \cite{mcgraw1999securingjava}.
 
 The Bytecode Verifier and the Class Loader concern the loading of new classes into a running Java Virtual Machine (JVM). The Bytecode Verifier analyses the class to ensure it maintains the class format, does not perform illegal casts, and that it obeys Java's typing rules more generally (e.g. that private methods may not be accessed outside of a class, final methods may not be overridden) \cite{lindholm2014java}. The Class Loader performs the actual loading of a class into the JVM; the `primordial' Class Loader \cite{mcgraw1999securingjava} loads the Java API classes, and other classes may be loaded by a user-specified \mono{ClassLoader} instance.
 
@@ -111,7 +111,9 @@ The Bytecode Verifier and the Class Loader concern the loading of new classes in
 
 The final element of the sandbox model is the \mono{SecurityManager} class. When enabled, an instance of \mono{SecurityManager} runs in the JVM, and performs runtime access control: when a potentially sensitive action is undertaken, the Security Manager checks the permissions of the calling class based on the system policy (usually specified by an external policy file), and throws an exception if the permission check fails \cite{gosling2014java}.
 
-Permission checks are performed using stack inspection \cite{gong2003javasecurity}: every frame on the call stack below the sensitive operation is examined, and if \textit{any} frame does not have the required permissions, the check fails. Java provides the \mono{doPrivileged} construct to bypass full stack inspection \cite{gong2003javasecurity} where this is desired functionality.
+<EXAMPLE>
+
+Permission checks are performed using stack inspection \cite{gong2003javasecurity}: every frame on the call stack below the sensitive operation is examined, and if \textit{any} frame does not have the required permissions, the check fails. Java provides the \mono{doPrivileged} construct to bypass full stack inspection \cite{gong2003javasecurity} where this functionality is desired.
 
 \section{Information Flow Security}
 
@@ -123,7 +125,11 @@ The Bell-Lapadula Lattice Model used in MAC may, however, also be used to contro
 
 The traditional MAC model may be implemented in a real system via runtime-enforced access control checks. However, an important question remains: how does the program's author know whether it's implemented \textit{correctly}? Many security issues are the result of unintentional programmer error, and so it is useful to approach Information Flow security from the perspective of program verification.
 
-This goal can be more clearly defined through the notion of `non-interference'. A program is said to be non-interfering if, given any two program executions which are identical in terms of their low confidentiality input, the results and behaviour of the executions are indistinguishable \cite{sabelfeld2003if}. This notion may be formalised by the definition that a program is non-interfering if there is no \textit{dependency} of low confidentiality data on high confidentiality data \cite{cohen1977declassification}.
+This goal can be more clearly defined through the notion of `non-interference'. A program is said to be non-interfering if, given any two program executions which are identical in terms of their low confidentiality input, the results and behaviour of the executions are indistinguishable in terms of their low confidentiality output \cite{sabelfeld2003if}. Equivalently, a program is non-interfering if there is no \textit{dependency} of low confidentiality data on high confidentiality data \cite{cohen1977declassification}.
+
+For example, consider a function $ f: L \times H \rightarrow L \times H $, where $ L $ is the set of integers at low confidentiality and $ H $ is the set of integers at high confidentiality, such that $ f(l, h) = \langle \frac{l + h}{2}, \frac{l + h}{2} \rangle $. Then $ f $ is a function that returns the average of its low and high inputs in both its low and high outputs. This function is interfering: the value of the low output depends on the value of the high input.
+
+Consider instead $ g: L \times H \rightarrow L \times H $, where $ g(l, h) = \langle l + 5, \frac{l + h}{2} \rangle $; $ g $'s high output is the same as that of $ f $, but its low output simply adds $ 5 $ to the low input $ l $. This function is \textit{non-interfering}: the low output has no dependency upon the high input.
 
 In \citetitle{denning1977certification}, \citeauthor{denning1977certification} \cite{denning1977certification} provide a mechanism to verify a program as correctly respecting a lattice-model policy using type checking. All variables are assigned a classification, and the analyser ensures that the policy is not broken under any execution path. A language which makes use of type checking-based flow verification is considered a \textit{security typed} language. This approach differs from the runtime-checked approaches seen in implementations of access control, as a security typed language can control information flow via static checking, producing no runtime overhead.
 
