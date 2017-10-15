@@ -30,17 +30,7 @@ public class Meeting {
     }
 
     public ?(policyof(this) * attendeesOnly) String toString() {
-        String s = "<\"" + title + "\" | " + getDayName(this.day) 
-                   + " " + this.startHour + " - " + this.endHour + " | ";
-        String sep = "";
-        for (int i = 0; i < this.users.size(); ++i) {
-            s += sep;
-            s += this.users.get(i).toString();
-            sep = ", ";
-        }
-        s += ">";
-
-        return s;
+        ...
     }
     
 }
@@ -89,6 +79,7 @@ public class Main {
 
         // Times of meetings are not classifies and so can be printed out freely
         LinkedList<User, bottom> allUsers = new LinkedList<User, bottom>();
+        addAllUsers(allUsers);
         boolean scheduleCheck1 = theScheduler.attendeesFreeAtTime(allUsers,
                 Meeting.getDayValue("Monday"), 9, 10);
         System.out.println("Are all users available at 9 - 10 on a Monday? " + scheduleCheck1);
@@ -100,7 +91,10 @@ public class Main {
         aliceOut.println(scheduler.getCalendar(alice).getCalendarRepresentation(alice));
 
         // Printing out another user's calendar will result in some meetings being omitted
-        // Only meetings this user attends on the other user's calendar will be visible
+        // Only meetings this user attends on the other user's calendar should be visible
         aliceOut.println(scheduler.getCalendar(bob).getCalendarRepresentation(bob));
+
+        // Actual effect: the full calendar prints out both times
+        // The type checker mistakenly thinks alice and bob are the same 'actor'
     }
 }

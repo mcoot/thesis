@@ -8,16 +8,52 @@ public class Meeting[principal Owner] {
     public final int{Owner->_} day;
     public final int{Owner->_} startHour;
     public final int{Owner->_} endHour;
+
+    public String{Owner->*} toString() {
+        ...  
+    }
 }
 
 public class Calendar[principal Owner] {
+    private LinkedList[{Owner->_}]{Owner->_} meetings;
 
+    public boolean{Owner->_; day; startHour; endHour} freeAtTime(int day, int startHour, int endHour) {
+        ...
+    }
+
+    public String{Owner->*} getCalendarRepresentation() {
+        try {
+            String s = "Calendar:\n---";
+
+            for (int i = 0; i < meetings.size(); ++i) {
+                JifObjectWrapper[{Owner->_}] w = (JifObjectWrapper[{Owner->_}])meetings.get(i);
+                Meeting[Owner] m = (Meeting[Owner])w.getObject();
+                s += "\n";
+                s += m.toString();
+            }
+            return s;
+        } catch (IndexOutOfBoundsException ex) {
+            return "";
+        } catch (ClassCastException ex) {
+            return "";
+        } catch (NullPointerException ex) {
+            return "";
+        }
+    }
 }
 
 public class Scheduler {
-
+    private HashMap[{_->_}, {_->_}]{_->_} calendars;
 }
 
-public class Main {
+public class Main authority (Alice, Bob, Charles) {
+    Scheduler scheduler = new Scheduler;
 
+    public static void main(principal{} p, String[] args)
+    throws NullPointerException, IllegalArgumentException
+    where authority(Alice, Bob, Charles), caller(p) {
+        PrintStream[{}] out = getStandardOut();
+
+        Scheduler scheduler = new Scheduler();
+    }
 }
