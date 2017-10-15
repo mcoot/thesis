@@ -46,15 +46,25 @@ Confidentiality labels in JIF consist of terms of the form \jiflabel{o->r1,r2}, 
 
 Most commonly, the join operator is used to allow multiple principals to provide differing policies on data. This produces a label of the form \jiflabel{o1->r1,r2; o2->r2,o1,r3}. The join of each policy produces a reader set which is the \textit{intersection} of both -- so in this case, only \mono{r2} and \mono{o1} (or principals which act for either) may read the information. Note that neither \mono{o1} nor \mono{o2} is the `true' owner of the data: each is simply expressing what they believe the policy to be.
 
+In addition to producing new labels via the join and meet operators, there exist a top principal (written \mono{*}), which is a principal for which no other principals act, and a bottom principal (written \mono{\_}), for which all other principals act. A reader set consisting of the top principal allows \textit{nobody} to read the information, and a reader set consisting of the bottom principal allows \textit{anyone} to read the information.
+
+In practice, a label term of the form \jiflabel{Alice->*} indicates that Alice believes that only she should be in the reader set; a label term \jiflabel{Alice->\_} indicates that Alice believes that everyone should be in the reader set.
+
 \subsection{Implicit Flows}
 
 Since information may leak to a lower confidentiality implicitly via flow of control, JIF has a program counter (pc) label which represents the confidentiality status of the current block of code. For instance, within a branch of an \mono{if} statement with a conditional dependent on a high confidentiality value, the pc label will have high confidentiality.
 
-JIF allows method signatures to specify the following confidentiality labels:
+\subsection{Label Annotations}
 
 \begin{minted}{Java}
+public String{P->_} myField;
+
 public int{A->*} method{B->*}(String{C->*} param) : {D->*}
 \end{minted}
+
+The above shows JIF labels on a field, indicating that field's confidentiality, and a method signature. Local variables may be annotated with labels, but JIF uses type inference to attempt to determine the correct label for local variables automatically.
+
+The annotations on the method signature above have the following effects:
 
 \begin{itemize}
 	\item \jiflabel{A->*} is the maximum label of the method's return value
