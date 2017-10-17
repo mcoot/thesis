@@ -7,7 +7,8 @@ public class Author {
 
 /*
  * Immutable conference organiser (i.e. a privileged user)
- * This class is superfluous in JIF, since there is no explicit object - principal connection
+ * This class is superfluous in JIF,
+ * since there is no explicit object <-> principal connection
  */
 public class Organiser {
     private final String{this} name;
@@ -24,7 +25,8 @@ public class Paper[label AuthorLabel] implements JifObject[AuthorLabel] {
 }
 
 /*
- * The conference system which allows for paper submission and session allocation.
+ * The conference system which allows for 
+ * paper submission and session allocation.
  * O is the principal representing the organiser
  */
 public class ConferenceSystem[principal O] authority (O) {
@@ -33,8 +35,11 @@ public class ConferenceSystem[principal O] authority (O) {
     private Paper[{O->*}]{O->_}[]{O->_} submissions;
     private ArrayMap[{O->_}, {O->*}] allocations;
 
-    // Performs declassification of the session number *if* the timed release has occurred
-    private int{O->_} getSessionNumber{O->_}(Paper[O->_]{O->_} paper) : {O->_} where authority(O) {
+    // Performs declassification of the session number 
+	// *if* the timed release has occurred
+    private int{O->_} 
+	getSessionNumber{O->_}(Paper[O->_]{O->_} paper) : {O->_} 
+	where authority(O) {
         if (paper == null) return -1;
         String{O->_} title = paper.getTitle();
         if (title == null) return -1;
@@ -51,7 +56,8 @@ public class ConferenceSystem[principal O] authority (O) {
             return -2;
         }
         // Declassify the object retrieved from the map
-        JifObject[{O->*}]{O->_} sNoObjDeclass = declassify(sNoObj, {O->*} to {O->_});
+        JifObject[{O->*}]{O->_} sNoObjDeclass 
+					= declassify(sNoObj, {O->*} to {O->_});
         // Convert it to a JifInteger
         JifInteger[{O->*}]{O->_} sNo;
         try {
@@ -81,7 +87,8 @@ public class Main authority (Organiser) {
     public static void main(principal p, String[] args) {
         ConferenceSystem conference = new ConferenceSystem();
 
-        // Add some papers to the conference (submitted papers are also added to a list)
+        // Add some papers to the conference 
+		// (submitted papers are also added to a list)
         setupDummyData(conference);
 
         // Attempt to print out the allocations
@@ -91,7 +98,8 @@ public class Main authority (Organiser) {
         // Perform timed release - information is no longer secret
         conference.setAllocationsVisible();
 
-        // Print out the allocations - will now print out the real session allocations
+        // Print out the allocations:
+		// will now print out the real session allocations
         printAllocations(conference);
     }
 

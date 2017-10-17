@@ -1,5 +1,5 @@
 /*
- * Immutable (x, y) pair; overrides normal Java versions of hashCode(), equals(), toString()
+ * Immutable (x, y) pair; overrides normal Java hashCode(), equals(), toString()
  */
 public class Coordinate {
     public ?policyof(this) final int x;
@@ -7,7 +7,7 @@ public class Coordinate {
 }
 
 /*
- * Immutable ship covering a line of coordinates either vertically or horizontally
+ * Immutable ship covering a line of coordinates vertically or horizontally
  */
 public class Ship {
     final ?policyof(this) Coordinate pos;
@@ -24,13 +24,16 @@ public class Board<policy shipPolicy> {
 
 /*
  * Player, associated with principal P. Their opponent is principal O.
- * Allows their opponent to learn information about the secret board via declassification
+ * Allows the opponent to learn information about the board via declassification
  */
 public class Player {
     public final Player self = (Player)this;
 
     private lock allowBoardAccess(Player);
-    public final policy boardPolicy = {self: ; Object x: allowBoardAccess(self)};
+    public final policy boardPolicy = {
+		self: ; 
+		Object x: allowBoardAccess(self)
+	};
 
     private ?{Object x: } Board<boardPolicy> board;
 
