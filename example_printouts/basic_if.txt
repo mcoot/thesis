@@ -1,0 +1,51 @@
+// Simple information flow examples
+
+// Variables
+int high; // high confidentiality
+int low; // low confidentiality
+
+//////////////////////////////////////
+high = 1;
+low = 0;
+
+// This flow is allowed; information flowing low -> high
+high = low;
+
+
+
+
+//////////////////////////////////////
+high = 1;
+low = 0;
+
+// This flow is NOT allowed! Flowing high -> low directly
+low = high;
+
+
+
+
+//////////////////////////////////////
+high = 1;
+low = 0;
+
+// This flow is NOT allowed! Flowing high -> low *implicitly*
+if (high == 5) {
+	low = 1;
+} else {
+	low = 0;
+}
+
+
+
+
+//////////////////////////////////////
+high = 1;
+low = 0;
+
+// This is allowed by a timing-insensitive model
+// So this represents a 'covert channel'
+if (high == 5) { 
+	for (int i = 0; i < 1000000000000; ++i);
+} else {
+	
+}
