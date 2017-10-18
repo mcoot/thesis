@@ -5,7 +5,7 @@ public class Main authority (Alice, Betty, Mal) {
 		
 		boolean b = diary.isTheSecret5();
 		
-		int{Alice->Betty,Mal} x;
+		int{Alice->Betty} x;
 		if (b == true) {
 			x = 1;
 		} else {
