@@ -41,13 +41,30 @@ Central to DAC is the `Access Matrix' \cite{sandhu1994access} -- a two-dimension
 
 With any non-trivial set of users and documents, the size of the Access Matrix will be prohibitively large, and so most commonly the Access Matrix is implemented using Access Control Lists (ACLs), which are equivalent to columns of the Access Matrix. An ACL is stored alongside every object, indicating which subjects may access it \cite{sandhu1994access}.
 
+\subsection{Limitations of Discretionary Access Control}
+
+Access control mechanisms attempt to control confidentiality by inserting checks at `boundary points' where information flows between subjects.
+
+Consider, then, a scenario in which a user Alice has a diary, which she wishes to keep secret. Alice allows Betty to read her diary, but does not wish to allow a third user, Mal, to read it. Using DAC, an Access Control List for the diary would list Alice and Betty, but not Mal. Then, if Mal attempts to read the diary the access check will fail, preserving confidentiality.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.5]{content/lit_theory/access_control_example.png}
+	\caption{Circumventing an Access Control Check}
+	\label{fig:theory_access_control_failure}
+\end{figure}
+
+However, suppose Betty now attempts to read Alice's diary. The access check allows this, since it is within policy. Betty reads the diary and makes a copy of it, which she then transmits to Mal, as shown in \autoref{fig:theory_access_control_failure}. Since Betty's copy may have whatever policy she desires, the existing access policy on the diary does not prevent Mal from reading the copy.
+
+The root cause of this failure is that the access control policy merely performs `boundary checks' does not model the \textit{propagation} of information once those checks have been passed.
+
 \subsection{Mandatory Access Control} \label{accesscontrol_mac}
 
 Mandatory Access Control (MAC) systems are most commonly associated with the military, and are generally used in situations where confidentiality is of primary importance. In a MAC system, all data has a \textit{classification}, and users operate with a \textit{clearance} \cite{sandhu1994access}. 
 
-In the simplest case, the set of classifications is just an ordered list -- for instance, `Unclassified' $ < $ `Classified' $ < $ `Secret' $ < $ `Top Secret' (represented in Figure \ref{fig:theory_lattice_diagrams}(a)). A user with `Secret' clearance, then, cannot access or modify `Top Secret' documents.
+In the simplest case, the set of classifications is just an ordered list -- for instance, `Unclassified' $ < $ `Classified' $ < $ `Secret' $ < $ `Top Secret' (represented in \autoref{fig:theory_lattice_diagrams} (a)). A user with `Secret' clearance, then, cannot access or modify `Top Secret' documents.
 
-More flexible access control policies may be implemented under the Bell-Lapadula lattice model \cite{bell1973lattice}, which is at the heart of most modern MAC systems. Under this model, classifications form a \textit{lattice} -- a set partially ordered by a flow relation (written $ \succeq $) where, for every possible pair of elements, a `least upper bound' (or `join', written $ \sqcup $) and `greatest lower bound' (or `meet', written $ \sqcap $) may be found.
+More flexible access control policies may be implemented under the Bell-LaPadula lattice model \cite{bell1973lattice}, which is at the heart of most modern MAC systems. Under this model, classifications form a \textit{lattice} -- a set partially ordered by a flow relation (written $ \succeq $) where, for every possible pair of elements, a `least upper bound' (or `join', written $ \sqcup $) and `greatest lower bound' (or `meet', written $ \sqcap $) may be found.
 
 \begin{figure}[h!]
 	\centering
@@ -87,7 +104,7 @@ More flexible access control policies may be implemented under the Bell-Lapadula
 
 In the MAC context, for policies in a lattice structure a user at clearance $ A $ can access information at classification $ B $ if $ A \succeq B $ (which may be read as ``$ B $ is less restrictive than $ A $"). Given any two classifications $ A $ and $ B $, one can find the least restrictive classification which enforces both, $ A \sqcup B $, and the most restrictive classification which users at either clearance $ A $ or $ B $ can read, $ A \sqcap B $.
 
-MAC is applied to the an access control problem concerning users (or `subjects') and classified documents (or `objects') via two key rules \cite{sandhu1993lattice}:
+The Bell-LaPadula model may be applied to an access control problem concerning users (or `subjects') and classified documents (or `objects') via two rules \cite{sandhu1993lattice}:
 
 \begin{description}
 	\item[Simple Security Property -- `No Read Up'] A subject with clearance $ C_s $ may access an object with classification $ C_o $ if and only if $ C_s \succeq C_o $
@@ -109,9 +126,15 @@ The Bytecode Verifier and the Class Loader concern the loading of new classes in
 
 \subsection{The Security Manager \& Stack Inspection}
 
-The final element of the sandbox model is the \mono{SecurityManager} class. When enabled, an instance of \mono{SecurityManager} runs in the JVM, and performs runtime access control: when a potentially sensitive action is undertaken, the Security Manager checks the permissions of the calling class based on the system policy (usually specified by an external policy file), and throws an exception if the permission check fails \cite{gosling2014java}.
+The final element of the sandbox model is the \mono{SecurityManager} class. When enabled, an instance of \mono{SecurityManager} runs in the JVM, and performs runtime access control: when a potentially sensitive action is undertaken, the Security Manager checks the permissions of the calling class based on the system policy (usually specified by an external policy file), and throws an exception if the permission check fails \cite{gosling2014java}. A check is typically of the form \cite{javasecmanagerdoc}:
 
-<EXAMPLE>
+\begin{minted}{java}
+
+SecurityManager sm = System.getSecurityManager();
+Object context = sm == null ? null : sm.getSecurityContext();
+if (sm != null)
+	sm.checkPermission(new FilePermission("someFile.txt", "read"), context);
+\end{minted}
 
 Permission checks are performed using stack inspection \cite{gong2003javasecurity}: every frame on the call stack below the sensitive operation is examined, and if \textit{any} frame does not have the required permissions, the check fails. Java provides the \mono{doPrivileged} construct to bypass full stack inspection \cite{gong2003javasecurity} where this functionality is desired.
 

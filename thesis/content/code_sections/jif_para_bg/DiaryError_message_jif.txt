@@ -1,0 +1,31 @@
+/home/students/s4359044/thesis/example_printouts/diary/jif/Diary.jif:10:
+    Unsatisfiable constraint
+        general constraint:
+                rv ⊑ Lrv
+        in this context:
+                {Alice→Betty; ⊥←⊥ ⊔ this ⊔ caller_pc} ⊑ {Alice→Betty,Mal; ⊥←⊥ ⊔
+    caller_pc}
+        cannot satisfy equation:
+                {Alice→Betty} ⊑ {Alice→Betty,Mal; ⊥←⊥ ⊔ caller_pc}
+        in environment:
+                {this} ⊑ {caller_pc}
+                []
+
+    Label Descriptions
+    ------------------
+     - rv = the label of the value returned
+     - rv = {Alice→Betty; ⊥←⊥ ⊔ this ⊔ caller_pc}
+     - Lrv = return value label of the method
+     - Lrv = {Alice→Betty,Mal; ⊥←⊥ ⊔ caller_pc}
+     - this = label of the special variable "this" in Diary
+     - caller_pc = The pc at the call site of this method (bounded above by
+    {⊤→})
+
+    This method may return a value with a more restrictive label than the
+    declared return value label. The declared return type of this method is
+    int{Alice→Betty,Mal}. As such, values returned by this method can have a
+    label of at most Lrv.
+                return secretNumber;
+                ^------------------^
+
+1 error.

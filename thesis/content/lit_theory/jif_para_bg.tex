@@ -52,70 +52,70 @@ In practice, a label term of the form \jiflabel{Alice->*} indicates that Alice b
 
 \subsection{Implicit Flows}
 
-Since information may leak to a lower confidentiality implicitly via flow of control, JIF has a program counter (pc) label which represents the confidentiality status of the current block of code. For instance, within a branch of an \mono{if} statement with a conditional dependent on a high confidentiality value, the pc label will have high confidentiality.
+Since information may leak to a lower confidentiality implicitly via flow of control, JIF has a program counter or pc label which represents the confidentiality status of the current block of code. For instance, within a branch of an \mono{if} statement with a conditional dependent on a high confidentiality value, the pc label will have high confidentiality.
 
 \subsection{Label Annotations}
 
 \begin{minted}{Java}
 public String{P->_} myField;
-
 public int{A->*} method{B->*}(String{C->*} param) : {D->*}
 \end{minted}
 
-The above shows JIF labels on a field, indicating that field's confidentiality, and a method signature. Local variables may be annotated with labels, but JIF uses type inference to attempt to determine the correct label for local variables automatically.
+The above shows JIF labels on a field (as in \jiflabel{P->\_} above), indicating that field's confidentiality. Local variables may be annotated with labels, but JIF uses type inference to attempt to determine the correct label for local variables automatically.
 
-The annotations on the method signature above have the following effects:
-
-\begin{itemize}
-	\item \jiflabel{A->*} is the maximum label of the method's return value
-	
-	\item \jiflabel{B->*} is the `begin label' -- the required pc label for the method to run
-	
-	\item \jiflabel{C->*} is the maximum label on \mono{param}
-	
-	\item \jiflabel{D->*} is the `end label' -- the pc label once the method returns
-\end{itemize}
-
-\newpage
+JIF also places labels on method signatures, for their return type (as in \jiflabel{A->*} above) and parameter types (as in \jiflabel{C->*}). The begin label (as in \jiflabel{B->*}) states the \textit{required} pc label for calling code, while the end label (as in \jiflabel{D->*}) indicates what the pc label will be once the code completes
 
 \subsection{Declassification}
 
 It is allowable for the label of a value or variable in JIF to change \textit{if} that re-labelling results in a label which is strictly higher confidentiality. Hence, restricting readers or adding an additional policy to a label is always acceptable, as is adding a new reader \mono{r} if there already exists a reader in the policy which \mono{r} acts for.
 
-However, most useful programs must leak some information to lower confidentiality in order to perform useful action. JIF provides the declassification construct in order to enable this.
+However, most useful programs must leak some information to lower confidentiality in order to perform useful action. JIF provides the declassification construct in order to enable this, while still providing some controls: a user must provide \textit{authority} to a method in order to declassify data within it, and they may only declassify policy terms which they own.
 
-The following program shows a simple declassification, annotated:
-
-\begin{minted}{Java}
-public class TestProgram authority (Alice) <1> {
-	
-	public static void main{Alice->*}(principal p, String[] args)  <2>
-						where authority(Alice), caller(p) {
-		declassifyInt();
-	}
-	
-	public static void declassifyInt{Alice->*}() 
-						where authority(Alice) <3> {
+\begin{minted}{java}
+	public static void declassifyInt{Alice->*}() where authority(Alice) {
 		int{Alice->*} high;
 		int low{Alice->_} low;
 		
-		low = declassify(high, {Alice->*} to {Alice->_}); <4>
+		low = declassify(high, {Alice->*} to {Alice->_});
 	}
-
-}
 \end{minted}
 
-\begin{enumerate}
-	
-	\item The \mono{authority} clause indicates this class has principal Alice's authority
-	
-	\item The Main method includes an argument which indicates the principal running the program
-	
-	\item The \mono{where} clause indicates that this method runs under Alice's authority
-	
-	\item The actual declassification statement; it declassifies the information in \mono{high} down to \jiflabel{Alice->\_}.
-	
-\end{enumerate}
+In the above, the method operates with Alice's authority, and is therefore able to allow the information stored in \mono{high} (which only Alice can read) to move to \mono{low} (which anyone can read).
+
+
+
+%The following program shows a simple declassification, with numbered annotations denoted by \mono{<x>} in the code:
+%
+%\begin{minted}{Java}
+%public class TestProgram authority (Alice) <1> {
+%	
+%	public static void main{Alice->*}(principal p, String[] args)  <2>
+%						where authority(Alice), caller(p) {
+%		declassifyInt();
+%	}
+%	
+%	public static void declassifyInt{Alice->*}() 
+%						where authority(Alice) <3> {
+%		int{Alice->*} high;
+%		int low{Alice->_} low;
+%		
+%		low = declassify(high, {Alice->*} to {Alice->_}); <4>
+%	}
+%
+%}
+%\end{minted}
+%
+%\begin{enumerate}
+%	
+%	\item The \mono{authority} clause indicates this class has principal Alice's authority
+%	
+%	\item The Main method includes an argument which indicates the principal running the program
+%	
+%	\item The \mono{where} clause indicates that this method runs under Alice's authority
+%	
+%	\item The actual declassification statement; it declassifies the information in \mono{high} down to \jiflabel{Alice->\_}.
+%	
+%\end{enumerate}
 
 \subsection{Integrity Controls}
 
@@ -131,7 +131,13 @@ A class with a label generic, of the form \mono{TestClass[label L]} may be param
 
 The second kind of generic is the principal generic, of the form \mono{TestClass[principal P]}. The principal type parameter may be used in labels in the class. This allows for classes which have explicit policies, but which are generic to being `owned' by any principal.
 
-% \subsection{Sample ``Hello World" Application}
+\newpage
+
+\subsection{Sample Class: Diary}
+
+\inputminted{java}{content/code_sections/jif_para_bg/Diary.jif}
+
+\newpage
 
 \section{Paragon}
 
