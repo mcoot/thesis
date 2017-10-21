@@ -61,12 +61,15 @@
 
 \newcommand{\monotuple}[1]{$ \left\langle \right. $\mono{#1}$ \left. \right\rangle $}
 
+% Mint code highlighting
+\newcommand{\code}[1]{\mintinline{java}{#1}}
+
 % JIF
-\newcommand{\jiflabel}[1]{\mono{\{#1\}}}
+\newcommand{\jiflabel}[1]{\code{{#1}}}
 
 % Paragon
-\newcommand{\paralabel}[2]{\jiflabel{#1:$ \; $#2}}
-\newcommand{\generic}[1]{$ < $#1$ > $}
+\newcommand{\paralabel}[2]{\jiflabel{#1: #2}}
+%\newcommand{\generic}[1]{$ < $#1$ > $}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Document

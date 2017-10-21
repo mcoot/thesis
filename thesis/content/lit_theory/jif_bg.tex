@@ -49,13 +49,13 @@ public String{P->_} myField;
 public int{A->*} method{B->*}(String{C->*} param) : {D->*}
 \end{minted}
 
-The above shows JIF labels on a field (as in \jiflabel{P->\_} above), indicating that field's confidentiality. Local variables may be annotated with labels, but JIF uses type inference to attempt to determine the correct label for local variables automatically.
+The above shows JIF labels on a field (as in \jiflabel{P->_} above), indicating that field's confidentiality. Local variables may be annotated with labels, but JIF uses type inference to attempt to determine the correct label for local variables automatically.
 
 JIF also places labels on method signatures, for their return type (as in \jiflabel{A->*} above) and parameter types (as in \jiflabel{C->*}). The begin label (as in \jiflabel{B->*}) states the \textit{required} pc label for calling code, while the end label (as in \jiflabel{D->*}) indicates what the pc label will be once the code completes
 
 \subsection{Declassification}
 
-It is allowable for the label of a value or variable in JIF to change \textit{if} that re-labelling results in a label which is strictly higher confidentiality. Hence, restricting readers or adding an additional policy to a label is always acceptable, as is adding a new reader \mono{r} if there already exists a reader in the policy which \mono{r} acts for.
+It is allowable for the label of a value or variable in JIF to change \textit{if} that re-labelling results in a label which is strictly higher confidentiality with respect to the DLM lattice. Hence, restricting readers or adding an additional policy to a label is always acceptable, as is adding a new reader \mono{r} if there already exists a reader in the policy which \mono{r} acts for.
 
 However, most useful programs must leak some information to lower confidentiality in order to perform useful action. JIF provides the declassification construct in order to enable this, while still providing some controls: a user must provide \textit{authority} to a method in order to declassify data within it, and they may only declassify policy terms which they own.
 

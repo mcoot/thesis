@@ -22,6 +22,8 @@ Like JIF, there are a number of differences between writing a program in Paragon
 	
 \end{itemize}
 
+\newpage
+
 \subsection{Static Policies}
 
 A policy in Paragon consists of some number of semicolon-separated \textit{clauses}, each of which consists of a \textit{head} and a \textit{body}. A policy \mono{p} with two clauses would be defined using the following syntax:
@@ -30,13 +32,15 @@ A policy in Paragon consists of some number of semicolon-separated \textit{claus
 policy p = {head1: body1 ; head2: body2};
 \end{minted}
 
-The head of a clause specifies which \textit{actors} may view information under this policy. Unlike the equivalent `principals' in JIF, actors in Paragon are simply regular Java objects. So a simple static policy allowing \mono{User}s Alice and Bob to read a file could be encoded as follows \cite{broberg2013paragon}:
+The head of a clause specifies an \textit{actor} which may view information under this policy; in a static policy, the body following the colon is empty. Unlike the equivalent `principals' in JIF, actors in Paragon are simply regular Java objects. So a simple static policy allowing \mono{User}s Alice and Bob to read a file could be encoded as follows \cite{broberg2013paragon}:
 
 \begin{minted}{Java}
 User alice = new User("Alice");
 User bob = new User("Bob");
 policy aliceAndBob = {alice: ; bob:};
 \end{minted}
+
+Note that in Paragon policies, and unlike those in JIF, the semicolon separation indicates that \textit{both} Alice and Bob may access the data.
 
 Actors in the head of a clause may also be universally quantified over, so in the following, information may flow to any instance of the type \mono{User}:
 
@@ -51,7 +55,16 @@ policy top = {:};
 policy bottom = {Object x:};
 \end{minted}
 
-These policies form a lattice, and so as with Mandatory Access Control and JIF, they can be combined with least upper bound (join -- \mono{*}) and greatest lower bound (meet -- \mono{+}) operators.
+These policies form a lattice, and so as with Mandatory Access Control and JIF, they can be combined with least upper bound (join -- \mono{*}) and greatest lower bound (meet -- \mono{+}) operators:
+
+\begin{minted}{java}
+policy charlesOnly = {charles: };
+policy bobAndCharles = charlesOnly + {bob: };
+// The below allows reading for the union - Alice, Bob and Charles
+policy aliceBobAndCharles = aliceAndBob + bobAndCharles;
+// The below allows reading for the intersection - only Bob
+policy bobOnly = aliceAndBob * bobAndCharles;
+\end{minted}
 
 The tools described here suffice for encoding a MAC-style static information flow policy.
 
@@ -66,7 +79,9 @@ Values in Paragon are associated with a policy via policy modifiers. Variables, 
 public ?p int method(?q int param1, ?r int param2) { ...
 \end{minted}
 
-Read effect modifiers allow the Paragon compiler to analyse the explicit flow of information throughout a program, ensuring that values may only be assigned to variables with appropriate policies. However, another form of modifier, the `write effect' modifier for methods is needed to properly analyse implicit information flows in a program with many methods.
+Read effect modifiers allow the Paragon compiler to analyse the explicit flow of information throughout a program, ensuring that values may only be assigned to variables with appropriate policies. For example, in the above \code{x} may only be assigned values at the lowest confidentiality, since its policy allows flow to any object. 
+
+Another form of modifier, the `write effect' modifier for methods is needed to correctly analyse implicit information flows in a program with many methods.
 
 A method's write effect, annotated using the \mono{!} symbol, denotes the lowest confidentiality level at which a method's side effects (such as writing to an output or performing different actions based on a high confidentiality conditional) would be observable. For instance, consider the following:
 
@@ -97,23 +112,27 @@ The (low confidentiality) \mono{notSecret} variable is assigned within a context
 
 The primary innovation of Paragon's policy model is the `Flow Lock' or `ParaLock' construct: a way to build time-variant flow policies using a global state. ParaLocks (or more simply, just `locks') in Paragon are boolean values which may be \textit{open} or \textit{closed} at a given point in a program's execution, but which are analysed statically in order to allow Paragon to encode policies that cannot be expressed with a static lattice.
 
-A lock in Paragon in Paragon may be declared only as a field, which is implicitly both \mono{final} and \mono{static}. The lock may then appear in the body of a Paragon policy:
+A lock in Paragon in Paragon may be declared only as a field, which is implicitly \mono{static}. The lock may then appear in the body of a Paragon policy clause, denoting that flow to the actor or actors in the head of the clause is conditional upon the lock being open:
 
 \begin{minted}{Java}
 lock myLock;
-policy p = {Object x: myLock};
+policy p = {Object o: myLock};
 \end{minted}
 
 The \mono{open} and \mono{close} statements may be used to change its state. Dynamic policies (i.e. those with non-empty bodies) are evaluated statically by erasing the locks known to be open. The policy of a given value once open locks are erased is known as its `effective policy'.
 
 \begin{minted}{Java}
 ?p int x = 5;
-// Compile error
-?{Object x:} y = x;
+?{Object o:} y = x; // Compile error
+\end{minted}
+
+The above will not compile -- the policies do not match. However, the below example will compile, since the lock is open and hence \paralabel{Object o}{myLock} simply becomes \paralabel{Object o}{}.
+
+\begin{minted}{Java}
+?p int x = 5;
+?{Object o: } z;
 open myLock;
-// Compiles fine - effective policy erases myLock,
-// giving a policy of {Object x:}
-?{Object x:} z = x;
+z = x; // Compiles successfully
 close myLock;
 \end{minted}
 
@@ -125,7 +144,6 @@ Locks can quite succinctly model selective declassification, similar to that per
 
 \begin{minted}{Java}
 lock myLock;
-
 public ?{Object x:} int declassifyValue(?{Object x: myLock} int x) {
 	?{Object x:} result;
 	open myLock;
@@ -135,7 +153,20 @@ public ?{Object x:} int declassifyValue(?{Object x: myLock} int x) {
 }
 \end{minted}
 
-Then, values at level \paralabel{Object x}{myLock} may be declassified via this method.
+Values at level \paralabel{Object x}{myLock} may then be declassified via this method. In addition, Paragon provides syntactic sugar for this construct of opening a lock, performing some action and then immediately closing it. The following example is equivalent to the first:
+
+\begin{minted}{Java}
+lock myLock;
+public ?{Object x:} int declassifyValue(?{Object x: myLock} int x) {
+?{Object x:} result;
+open myLock {
+	result = x;
+}
+return x;
+}
+\end{minted}
+
+\newpage
 
 \subsubsection{Parametrised Locks}
 
@@ -191,6 +222,22 @@ This method signature indicates the method \textit{always} opens \mono{lock1}, \
 
 One noteworthy limitation in Paragon's lock annotation syntax is that it is not possible to quantify over actors in lock annotations. So, for instance, it is not possible to produce an annotation indicating that a method may close a lock for all actors matching some criteria.
 
+\newpage
+
+\subsection{Sample Class: Diary}
+
+\inputminted{java}{content/code_sections/jif_para_bg/Diary.para}
+
+This implementation of the Diary scenario is equivalent to that in \ref{jif_bg_sample_diary}; here the \mono{declassifier} lock is opened very briefly in order to allow the declassification to occur.
+
+\subsubsection{Compilation Failure in Paragon}
+
+\inputminted{java}{content/code_sections/jif_para_bg/DiaryError.para}
+
+As with the JIF version, modifying the policy on \mono{readDiary} from its intended \mono{?aliceAndBetty} to \mono{?everyOne} produced a compiler error, stating that the returned information is higher confidentiality than the method's label. Paragon's compiler message, below, is more succinct than JIF's, although Paragon is unable to identify the line on which the error occurs.
+
+\inputminted[fontsize=\footnotesize]{text}{content/code_sections/jif_para_bg/DiaryError_message_para.txt}
+
 \subsection{Security Type Polymorphism} \label{para_generics}
 
 As with JIF, the modularity and reusability of Paragon code is a concern, since the policy definition is embedded with the implementation. Paragon and JIF take the same approach to resolve this issue, relying on security type polymorphism and type parametrisation to make code more generic, and allowing `interfaces' to be written for interoperability with plain Java code.
@@ -225,7 +272,7 @@ This class can then be used, and the \mono{x} and \mono{y} fields will take on t
 ?{Object x:} int xFromHigh = highPair.x;
 \end{minted}
 
-The \mono{policyof} operator may also be used in method return types to allow methods to be polymorphic in the policies of their arguments: \mono{policyof(param)} is equivalent to using a \jiflabel{param} label in JIF. For example, a simple addition method can be made completely polymorphic in its arguments by joining the policies of its arguments:
+The \code{policyof} operator may also be used in method return types to allow methods to be polymorphic in the policies of their arguments: \code{policyof(param)} is equivalent to using a \jiflabel{param} label in JIF. For example, a simple addition method can be made completely polymorphic in its arguments by joining the policies of its arguments:
 
 \begin{minted}{Java}
 static ?(policyof(a) * policyof(b)) int add(int a, int b) {
@@ -259,18 +306,3 @@ Paragon provides interoperability with plain Java classes through `Paragon Inter
 
 This is similar to JIF's Java interoperability, although unlike JIF, Paragon's compiler does not compile Paragon source files directly to Java bytecode: the output of \mono{parac} is a generated Java source (\mono{.java} file) and a \mono{.pi} Paragon interface.
 
-\newpage
-
-\subsection{Sample Class: Diary}
-
-\inputminted{java}{content/code_sections/jif_para_bg/Diary.para}
-
-This implementation of the Diary scenario is equivalent to that in \ref{jif_bg_sample_diary}; here the \mono{declassifier} lock is opened very briefly in order to allow the declassification to occur.
-
-\subsubsection{Compilation Failure in Paragon}
-
-\inputminted{java}{content/code_sections/jif_para_bg/DiaryError.para}
-
-As with the JIF version, modifying the policy on \mono{readDiary} from its intended \mono{?aliceAndBetty} to \mono{?everyOne} produced a compiler error, stating that the returned information is higher confidentiality than the method's label. Paragon's compiler message, below, is more succinct than JIF's, although Paragon is unable to identify the line on which the error occurs.
-
-\inputminted[fontsize=\footnotesize]{text}{content/code_sections/jif_para_bg/DiaryError_message_para.txt}
