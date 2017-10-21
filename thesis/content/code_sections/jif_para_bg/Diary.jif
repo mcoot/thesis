@@ -18,17 +18,11 @@ public class Diary authority (Alice) {
 		}
 	}
 	
-	public void 
-	printOutInfo{Alice->Betty}(PrintStream[{Alice->Betty}]{} out) {
-		out.println(isTheSecret5() ? "It's 5!" : "Not 5!");
-	}
-	
 	public int{Alice->Betty,Mal}
 	declassifyDiary{Alice->Betty,Mal}()
 	where authority(Alice) {
 		int result = 
-			declassify(secretNumber, 
-					   {Alice->Betty} to {Alice->Betty,Mal});
+			declassify(secretNumber, {Alice->Betty} to {Alice->Betty,Mal});
 		return result;
 	}
 }

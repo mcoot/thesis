@@ -1,21 +1,13 @@
 public class Diary {
-	
 	public static final User alice = new User("Alice");
 	public static final User betty = new User("Betty");
 	public static final User mal = new User("Mal");
-	
 	private lock declassifier;
-	
 	public static final policy aliceAndBetty = {
-		alice: ; 
-		betty: ; 
-		mal: declassifier 
+		alice: ; betty: ; mal: declassifier 
 	};
-	
 	public static final policy everyone = {
-		alice: ;
-		betty: ;
-		mal: 
+		alice: ; betty: ; mal: 
 	};
 	
 	private ?aliceAndBetty int secretNumber;
@@ -30,15 +22,7 @@ public class Diary {
 	
 	public ?aliceAndBetty boolean isTheSecret5() {
 		boolean result;
-		if (secretNumber == 5) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public !aliceAndBetty void modifyDiary() {
-		secretNumber = 10;
+		return secretNumber == 5;
 	}
 	
 	public ?everyone int declassifyDiary() {
@@ -48,5 +32,4 @@ public class Diary {
 		};
 		return result;
 	}
-	
 }

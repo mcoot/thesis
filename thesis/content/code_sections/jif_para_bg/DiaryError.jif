@@ -1,5 +1,4 @@
 public class DiaryError authority (Alice) {
-	
 	private int{Alice->Betty} secretNumber;
 	
 	public DiaryError() {
@@ -9,7 +8,5 @@ public class DiaryError authority (Alice) {
 	public int{Alice->Betty,Mal} readDiary() {
 		return secretNumber;
 	}
-	
-	...
-	
+	...	
 }

@@ -1,5 +1,3 @@
-
-
 \section{JIF}
 
 \subsection{Relation to Plain Java}
@@ -123,12 +121,22 @@ The second kind of generic is the principal generic, of the form \mono{TestClass
 
 \newpage
 
-\subsection{Sample Class: Diary}
+\subsection{Sample Class: Diary} \label{jif_bg_sample_diary}
 
 \inputminted{java}{content/code_sections/jif_para_bg/Diary.jif}
 
 This class implements the policy from the scenario presented in \ref{theory_dac_limitations}. Alice has ownership over the diary, and allows Betty to read it. Here though, the program will not allow Betty to propagate access to that information to Mal: a program which did this would would fail to compile.
 
-JIF's type system ensures that explicit flows are valid, as in the \mono{readDiary} method, but also that implicit flows respect the policy, as in the \mono{isTheSecret5} method. The \mono{printOutInfo} method is also controlled -- this method does not move information around within the system, but it produces a side effect (printing to a stream) which causes information to flow; hence, the \mono{PrintStream[label L]} being printed to must have its label parameter matching the required policy.
+JIF's type system ensures that explicit flows are valid, as in the \mono{readDiary} method, but also that implicit flows respect the policy, as in the \mono{isTheSecret5} method. The example also includes the \mono{declassifyDiary} method, which explicitly allows the information to be declassified. Hence, Mal can learn about the information contained in the diary \textit{only} through a call to the \mono{declassifyDiary} method.
 
-Finally, the example includes the \mono{declassifyDiary} method, which explicitly allows the information to be declassified. Hence, Mal can learn about the information contained in the diary \textit{only} through a call to the \mono{declassifyDiary} method.
+\newpage
+
+\subsubsection{Compilation Failure in JIF}
+
+Consider the slightly modified (abridged) version of the previous class:
+
+\inputminted{java}{content/code_sections/jif_para_bg/DiaryError.jif}
+
+The only difference from the original \mono{Diary} class is the return label of the \mono{readDiary} method, which now allows Mal to read the result of the method call. This violates the desired information flow policy, and this will cause a type error during compilation:
+
+\inputminted[fontsize=\footnotesize]{text}{content/code_sections/jif_para_bg/DiaryError_message_jif.txt}

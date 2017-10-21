@@ -259,4 +259,18 @@ Paragon provides interoperability with plain Java classes through `Paragon Inter
 
 This is similar to JIF's Java interoperability, although unlike JIF, Paragon's compiler does not compile Paragon source files directly to Java bytecode: the output of \mono{parac} is a generated Java source (\mono{.java} file) and a \mono{.pi} Paragon interface.
 
-%\subsection{Sample ``Hello World" Application}
+\newpage
+
+\subsection{Sample Class: Diary}
+
+\inputminted{java}{content/code_sections/jif_para_bg/Diary.para}
+
+This implementation of the Diary scenario is equivalent to that in \ref{jif_bg_sample_diary}; here the \mono{declassifier} lock is opened very briefly in order to allow the declassification to occur.
+
+\subsubsection{Compilation Failure in Paragon}
+
+\inputminted{java}{content/code_sections/jif_para_bg/DiaryError.para}
+
+As with the JIF version, modifying the policy on \mono{readDiary} from its intended \mono{?aliceAndBetty} to \mono{?everyOne} produced a compiler error, stating that the returned information is higher confidentiality than the method's label. Paragon's compiler message, below, is more succinct than JIF's, although Paragon is unable to identify the line on which the error occurs.
+
+\inputminted[fontsize=\footnotesize]{text}{content/code_sections/jif_para_bg/DiaryError_message_para.txt}
