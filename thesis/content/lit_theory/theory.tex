@@ -41,7 +41,7 @@ Central to DAC is the `Access Matrix' \cite{sandhu1994access} -- a two-dimension
 
 With any non-trivial set of users and documents, the size of the Access Matrix will be prohibitively large, and so most commonly the Access Matrix is implemented using Access Control Lists (ACLs), which are equivalent to columns of the Access Matrix. An ACL is stored alongside every object, indicating which subjects may access it \cite{sandhu1994access}.
 
-\subsection{Limitations of Discretionary Access Control}
+\subsection{Limitations of Discretionary Access Control} \label{theory_dac_limitations}
 
 Access control mechanisms attempt to control confidentiality by inserting checks at `boundary points' where information flows between subjects.
 
@@ -140,13 +140,13 @@ Permission checks are performed using stack inspection \cite{gong2003javasecurit
 
 \section{Information Flow Security}
 
-Access control mechanisms limit the \textit{permissions} of a subject attempting to access data. Many programs and operating systems make use of Discretionary Access Control, and high security systems often make use of Mandatory Access Control. What such mechanisms cannot restrict is the way in which information \textit{propagates}.
+Access control mechanisms limit the \textit{permissions} of a subject attempting to access data. Many programs and operating systems make use of Discretionary Access Control. Such access-check based mechanisms do not restrict the way in which information \textit{propagates}, which leads to circumvention as described in \ref{theory_dac_limitations}.
 
-The Bell-Lapadula Lattice Model used in MAC may, however, also be used to control the \textit{flow} of information rather than merely check for access. The *-property as presented in \ref{accesscontrol_mac} provides a primitive form of this: it prevents even those with high clearance from `leaking' high classification data to a low level, thereby controlling its flow.
+The Bell-LaPadula Lattice Model used in MAC may be used to control the \textit{flow} of information rather than merely check for access. The *-property as presented in \ref{accesscontrol_mac} provides a primitive form of this: it prevents even those with high clearance from `leaking' high classification data to a low level, thereby controlling its flow rather than simply performing an access check.
 
 \section{Formal Non-interference \& Static Information Flow} \label{theory_if_noninterference}
 
-The traditional MAC model may be implemented in a real system via runtime-enforced access control checks. However, an important question remains: how does the program's author know whether it's implemented \textit{correctly}? Many security issues are the result of unintentional programmer error, and so it is useful to approach Information Flow security from the perspective of program verification.
+The traditional MAC model, including controls against information leaks (such as via the *-property), may be implemented in a real system via runtime-enforced access control checks. However, an important question remains: how does the program's author know whether it's implemented \textit{correctly}? Many security issues are the result of unintentional programmer error, and so it is useful to approach Information Flow security from the perspective of program verification.
 
 This goal can be more clearly defined through the notion of `non-interference'. A program is said to be non-interfering if, given any two program executions which are identical in terms of their low confidentiality input, the results and behaviour of the executions are indistinguishable in terms of their low confidentiality output \cite{sabelfeld2003if}. Equivalently, a program is non-interfering if there is no \textit{dependency} of low confidentiality data on high confidentiality data \cite{cohen1977declassification}.
 

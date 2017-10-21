@@ -1,0 +1,134 @@
+
+
+\section{JIF}
+
+\subsection{Relation to Plain Java}
+
+JFlow, a Java language extension implementing the Decentralised Label Model (DLM) via type checking was first proposed in \citetitle{myers1999jflow}, \cite{myers1999jflow}. It included DLM-based type labels with support for polymorphism and type inference, while integrating with Java's Object-Oriented programming model -- including language features like inheritance and exceptions which introduce potential difficulties for IF checking.
+
+JIF implements a superset of the JFlow functionality, having added a number of additional features over its development \cite{jifwebsite}. Since JIF's 1.0.0 version released in 2003 its design is based on Java 1.4, and so it lacks support for a number of more modern Java features.
+
+In general, working with JIF has a number of differences when compared to Java. Some notable ones include:
+
+\begin{itemize}
+	\item JIF places DLM labels on fields, method signatures and potentially local variables
+	
+	\item The special \mono{declassify} statement (and its integrity equivalent, \mono{endorse}) may be used within the code
+	
+	\item \textit{All} exceptions are checked in JIF (including runtime exceptions such as \mono{NullPointerException})
+	
+	\item When running a JIF program, the JIF runtime must be on the classpath
+	
+	\item Interacting with (non-JIF) Java classes requires writing a JIF interface indicating labels on the class's methods
+	
+	\item Console I/O using stdin / stdout is performed through Jif's runtime
+	
+	\item JIF lacks support for the angle bracket generics syntax introduced in more recent versions of Java
+\end{itemize}
+
+\subsection{Policy Model}
+
+The \textit{decentralised} nature of the DLM is its primary innovation over previous models. Mandatory Access Control requires that each unit of information -- such as a variable, or method return value in Java -- has a label universally agreed upon by all users of the system. The DLM instead models `principals' in the system (which may represent individual users, groups of users or roles), which do not need to trust each other.
+
+The model uses an \textit{acts-for} relation between principals -- if principal $ p $ acts for principal $ q $, then any action taken by $ p $ is assumed to be authorised by $ q $ \cite{myers2000dlm}.
+
+Confidentiality labels in JIF consist of terms of the form \jiflabel{o->r1,r2}, where \mono{o} is the principal expressing ownership over the policy. When evaluated, these labels produce a \textit{reader set} of principals that the owner believes may read the data -- in this case, \mono{r1} and \mono{r2} and itself, \mono{o}. The reader sets produced form a lattice, and so labels may be combined via the \textit{join} (least upper bound -- ``\mono{;}") and \textit{meet} (greatest lower bound -- ``\mono{meet}") operators, which produce the intersection and union of the constituent labels' reader sets, respectively.
+
+Most commonly, the join operator is used to allow multiple principals to provide differing policies on data. This produces a label of the form \jiflabel{o1->r1,r2; o2->r2,o1,r3}. The join of each policy produces a reader set which is the \textit{intersection} of both -- so in this case, only \mono{r2} and \mono{o1} (or principals which act for either) may read the information. Note that neither \mono{o1} nor \mono{o2} is the `true' owner of the data: each is simply expressing what they believe the policy to be.
+
+In addition to producing new labels via the join and meet operators, there exist a top principal (written \mono{*}), which is a principal for which no other principals act, and a bottom principal (written \mono{\_}), for which all other principals act. A reader set consisting of the top principal allows \textit{nobody} to read the information, and a reader set consisting of the bottom principal allows \textit{anyone} to read the information.
+
+In practice, a label term of the form \jiflabel{Alice->*} indicates that Alice believes that only she should be in the reader set; a label term \jiflabel{Alice->\_} indicates that Alice believes that everyone should be in the reader set.
+
+\subsection{Implicit Flows}
+
+Since information may leak to a lower confidentiality implicitly via flow of control, JIF has a program counter or pc label which represents the confidentiality status of the current block of code. For instance, within a branch of an \mono{if} statement with a conditional dependent on a high confidentiality value, the pc label will have high confidentiality.
+
+\subsection{Label Annotations}
+
+\begin{minted}{Java}
+public String{P->_} myField;
+public int{A->*} method{B->*}(String{C->*} param) : {D->*}
+\end{minted}
+
+The above shows JIF labels on a field (as in \jiflabel{P->\_} above), indicating that field's confidentiality. Local variables may be annotated with labels, but JIF uses type inference to attempt to determine the correct label for local variables automatically.
+
+JIF also places labels on method signatures, for their return type (as in \jiflabel{A->*} above) and parameter types (as in \jiflabel{C->*}). The begin label (as in \jiflabel{B->*}) states the \textit{required} pc label for calling code, while the end label (as in \jiflabel{D->*}) indicates what the pc label will be once the code completes
+
+\subsection{Declassification}
+
+It is allowable for the label of a value or variable in JIF to change \textit{if} that re-labelling results in a label which is strictly higher confidentiality. Hence, restricting readers or adding an additional policy to a label is always acceptable, as is adding a new reader \mono{r} if there already exists a reader in the policy which \mono{r} acts for.
+
+However, most useful programs must leak some information to lower confidentiality in order to perform useful action. JIF provides the declassification construct in order to enable this, while still providing some controls: a user must provide \textit{authority} to a method in order to declassify data within it, and they may only declassify policy terms which they own.
+
+\begin{minted}{java}
+	public static void declassifyInt{Alice->*}() where authority(Alice) {
+		int{Alice->*} high;
+		int low{Alice->_} low;
+		
+		low = declassify(high, {Alice->*} to {Alice->_});
+	}
+\end{minted}
+
+In the above, the method operates with Alice's authority, and is therefore able to allow the information stored in \mono{high} (which only Alice can read) to move to \mono{low} (which anyone can read).
+
+
+
+%The following program shows a simple declassification, with numbered annotations denoted by \mono{<x>} in the code:
+%
+%\begin{minted}{Java}
+%public class TestProgram authority (Alice) <1> {
+%	
+%	public static void main{Alice->*}(principal p, String[] args)  <2>
+%						where authority(Alice), caller(p) {
+%		declassifyInt();
+%	}
+%	
+%	public static void declassifyInt{Alice->*}() 
+%						where authority(Alice) <3> {
+%		int{Alice->*} high;
+%		int low{Alice->_} low;
+%		
+%		low = declassify(high, {Alice->*} to {Alice->_}); <4>
+%	}
+%
+%}
+%\end{minted}
+%
+%\begin{enumerate}
+%	
+%	\item The \mono{authority} clause indicates this class has principal Alice's authority
+%	
+%	\item The Main method includes an argument which indicates the principal running the program
+%	
+%	\item The \mono{where} clause indicates that this method runs under Alice's authority
+%	
+%	\item The actual declassification statement; it declassifies the information in \mono{high} down to \jiflabel{Alice->\_}.
+%	
+%\end{enumerate}
+
+\subsection{Integrity Controls}
+
+From version 3.0.0, JIF includes a set of integrity controls in addition to the confidentiality controls discussed here. These controls are beyond the scope of this thesis and so will not be examined in-depth. In brief, the integrity lattice is much like the confidentiality lattice, except rather than being ordered by how high the confidentiality is, integrity labels are ordered by how \textit{trusted} they are, and information cannot flow from untrusted to trusted context.
+
+\subsection{Security Type Polymorphism}
+
+Given all data must be labelled (or have a label determined implicitly via type inference), writing implementations of standard data types presents a challenge -- it is desirable to avoid having to rewrite the \mono{ArrayList} class for every possible security label the elements of the list may have. To deal with this, JIF introduces security type generics. Since JIF's syntax was designed prior to Java's adoption of generics, square brackets are used to denote type parameters (as opposed to angle brackets).
+
+JIF provides two different kinds of generics: \textit{label} generics and \textit{principal} generics.
+
+A class with a label generic, of the form \mono{TestClass[label L]} may be parametrised by any label. The label type parameter may be used anywhere within the class (e.g. as labels on fields, method return values or begin/end labels). Using this, a data type like \mono{ArrayList[Label L]} may be written such that it can be instantiated with any confidentiality label on the elements.
+
+The second kind of generic is the principal generic, of the form \mono{TestClass[principal P]}. The principal type parameter may be used in labels in the class. This allows for classes which have explicit policies, but which are generic to being `owned' by any principal.
+
+\newpage
+
+\subsection{Sample Class: Diary}
+
+\inputminted{java}{content/code_sections/jif_para_bg/Diary.jif}
+
+This class implements the policy from the scenario presented in \ref{theory_dac_limitations}. Alice has ownership over the diary, and allows Betty to read it. Here though, the program will not allow Betty to propagate access to that information to Mal: a program which did this would would fail to compile.
+
+JIF's type system ensures that explicit flows are valid, as in the \mono{readDiary} method, but also that implicit flows respect the policy, as in the \mono{isTheSecret5} method. The \mono{printOutInfo} method is also controlled -- this method does not move information around within the system, but it produces a side effect (printing to a stream) which causes information to flow; hence, the \mono{PrintStream[label L]} being printed to must have its label parameter matching the required policy.
+
+Finally, the example includes the \mono{declassifyDiary} method, which explicitly allows the information to be declassified. Hence, Mal can learn about the information contained in the diary \textit{only} through a call to the \mono{declassifyDiary} method.
