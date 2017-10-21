@@ -34,7 +34,7 @@
 
 The second case study is a simplified Conference Management system. Papers have a title and list of authors; these papers may then be submitted to the conference. Some submitted papers are then accepted and allocated to a conference session, in secret. Then at some point in time the final conference schedule is made available, and previously secret information about which papers were accepted becomes publicly available.
 
-In addition, until the reveal the submitted papers' titles are publicly viewable, but their authors lists are secret (this could represent, for instance, a policy for blind review).
+In addition, until the release of the schedule by the conference organiser, the submitted papers' titles are publicly viewable, but their authors lists are secret (this could represent, for instance, a policy for blind review).
 
 \subsection{Key Security Properties}
 
@@ -110,7 +110,7 @@ The structure uses the following classes:
 
 \subsubsection{`Semi-parametric' Paper Policy}
 
-The \mono{Paper} class requires that the title and abstract fields be low confidentiality, but that the list of authors be restricted. Since \mono{Paper} is essentially a data type class, it is desirable to make it as generic as possible. In order to avoid hard coding each policy, it is possible to simply use two label type parameters. However, this reduces readability, as it is not immediately clear what the implications of instantiating a \mono{Paper[\jiflabel{O->*}, \jiflabel{O->\_}]} are.
+The \mono{Paper} class requires that the title and abstract fields be low confidentiality, but that the list of authors be restricted. Since \mono{Paper} is essentially a data type class, it is desirable to make it as generic as possible. In order to avoid hard coding each policy, it is possible to simply use two label type parameters. However, this reduces readability, as it is not immediately clear what the implications of instantiating a \mono{Paper[\jiflabel{O->*}, \jiflabel{O->_}]} are.
 
 For this reason, the implementation instead uses a single label type parameter to represent the restriction on the author list, and makes use of the special \jiflabel{this} label so that a given \mono{Paper}'s title and abstract have their policy determined by that of the instance itself.
 
@@ -125,7 +125,7 @@ In the case of the allocations map, where the desired value is simply an integer
 This process, of retrieving the session number for an accepted paper and declassifying it, is most easily described by annotating the code for it.
 
 \subsubsection{Retrieving and Declassifying the Session Number}
-%First, the method to perform this declassification requires a quite specific signature. The ultimate goal is that all confidentiality is to be removed from the session number -- hence we have the resulting label \jiflabel{O->\_}.
+%First, the method to perform this declassification requires a quite specific signature. The ultimate goal is that all confidentiality is to be removed from the session number -- hence we have the resulting label \jiflabel{O->_}.
 %
 %The \mono{where authority(O)} clause is also required here so that the method is allowed to actually perform declassifications on the high confidentiality data belonging to principal \mono{O}.
 
@@ -172,9 +172,9 @@ declassifySessionNumber{O->_}<2>(String{O->_} title):{O->_}
 \end{minted}
 
 \begin{enumerate}
-	\item The return label is \jiflabel{O->\_} -- the information belongs to the organiser but may be read by anyone
+	\item The return label is \jiflabel{O->_} -- the information belongs to the organiser but may be read by anyone
 	
-	\item The begin and end labels of the method must also be \jiflabel{O->\_} since after timed release this declassification process must be available to any principal.
+	\item The begin and end labels of the method must also be \jiflabel{O->_} since after timed release this declassification process must be available to any principal.
 	
 	\item The authority clause is necessary since only principal \mono{O} (the organiser) may actually perform this declassification.
 	

@@ -1,0 +1,82 @@
+/*
+ * Immutable (x, y) pair; 
+  * overrides JifObject's versions of hashCode(), equals(), toString()
+ */
+public class Coordinate[label L] implements JifObject[L] {
+    public final int{L} x;
+    public final int{L} y;
+}
+
+/*
+ * Immutable ship covering a line of coordinates vertically or horizontally
+ */
+public class Ship[label L] implements JifObject[L] {
+    final Coordinate[L]{this} pos;
+    final int{L} length;
+    final boolean{L} isHorizontal;
+}
+
+/*
+ * Mutable list of ships representing a player's board
+ */
+public class Board[label L] {
+    private final List[L]{this} ships;
+}
+
+/*
+ * Player, associated with principal P. Their opponent is principal O.
+ * Allows the opponent to learn information about the board via declassification
+ */
+public class Player[principal P, principal O] authority(P) {
+    private Board[{P->*}]{P->_} board;
+    
+    private final List[{P->_}]{this} opponentQueries;
+
+    // Tell the opponent whether a ship exists at the queried coordinate
+    // This declassifies information about the board
+    boolean{P->_} processQuery(Coordinate[{P->_}]{P->_} query) {
+        boolean result = this.board.testPosition(query, new label {P->_});
+        return declassify(result, {P->*} to {P->_});
+    }
+}
+
+/*
+ * Handles the main game logic
+ */
+public class BattleShip[principal P1, principal P2] authority (P1, P2) {
+    public void play(PrintStream[{}] output) 
+    throws SecurityException, IllegalArgumentException
+    where authority(P1, P2) {
+        ...
+    }
+}
+
+/*
+ * Provides the main method
+ */
+public class Main authority (Alice, Bob) {
+    public static final void main{Alice<-* meet Bob<-* meet p<-*}
+        (principal{} p, String[] args) : {Alice<-* meet Bob<-*} 
+    throws SecurityException, IllegalArgumentException
+    where authority (Alice, Bob), caller(p) 
+    {
+        PrintStream[{}] out = null;
+        try {
+            Runtime[p] runtime = Runtime[p].getRuntime();
+            out = runtime==null?null:runtime.stdout(new label {});
+        }
+        catch (SecurityException e) {
+            // just let out be null.
+        }
+
+        // the PrintStream needs to be labeled {Alice<-* meet Bob<-*}, which
+        // requires a declassification and an endorsement.
+        PrintStream[{}] out1 
+				= endorse(out, {p->*} to {p->*;Alice<-* meet Bob<-* meet p<-*});
+        PrintStream[{}] out2 = declassify(out1, {Alice<-* meet Bob<-*});
+
+        // instantiate an instance of the BattleShip game for Alice 
+        // and Bob, and play it.
+        new BattleShip[Alice, Bob]().play(out2);
+    }
+}

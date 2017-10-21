@@ -32,7 +32,7 @@
 
 \subsection{Overview}
 
-The first case study is that of an implementation of the well known board game Battleships. The premise of this game is that two opposing players each have a separate `board', which is a grid of (x, y) coordinates. Each player places a set number of ships on the board, which cover some number of contiguous coordinates either horizontally or vertically. A player is not allowed to learn the layout of the other's board, but from here players take it in turns to guess (or `query') coordinates, and the other player must reveal whether or not the guessed coordinate contains a ship -- if so, that ship is destroyed. The game continues until one player has no remaining ships on the board.
+The first case study is that of an implementation of the well known board game Battleships. The premise of this game is that two opposing players each have a separate `board', which is a grid of (x, y) coordinates. Each player places a set number of ships on the board, each of which covers some number of contiguous coordinates either horizontally or vertically. A player is not allowed to learn the layout of the other's board, but from here players take it in turns to guess (or `query') coordinates, and the other player must reveal whether or not the guessed coordinate contains a ship -- if so, that ship is destroyed. The game continues until one player has no remaining ships on the board.
 
 Essentially, this is an incomplete information game: the rules require that each player cannot know the layout of the opponent's board, but they must trust the integrity of the information they receive through querying (i.e. it is not permissible to lie about whether a queried position contains a ship).
 
@@ -50,7 +50,7 @@ This exception represents a `declassification' of some information regarding the
 
 \subsubsection{Integrity of the Board}
 
-A corollary to the above confidentiality policy is that, in order for the game to proceed according to the rules, the information declassified by a query must be accurate to the state of the queried player's board. Thus, the player must `trust' their opponent to reveal the truth about a queried coordinate.
+A corollary to the above confidentiality policy is that, in order for the game to proceed according to the rules, the player must `trust' their opponent to reveal the truth about a queried coordinate. In addition, a player must not be allowed to manipulate or falsify the other player's board.
 
 \subsection{Implementation Structure}\label{battleships_impstructure}
 
@@ -61,13 +61,13 @@ In order to provide an effective comparison, the Paragon implementation was deve
 This structure is uses the following Java / JIF / Paragon classes:
 
 \begin{itemize}
-	\item \mono{Coordinate}: a simple immutable representation of an (x, y) pair
+	\item \code{Coordinate}: a simple immutable representation of an (x, y) pair
 	
 	\begin{itemize}
 		\item Polymorphic with respect to security policy (i.e. it has no inherent policy, but a policy may be placed upon a coordinate)
 	\end{itemize}
 	
-	\item \mono{Ship}: an immutable single ship in the game
+	\item \code{Ship}: an immutable single ship in the game
 	
 	\begin{itemize}
 		\item Has a length, a Coordinate for the bottom left point, and a flag indicating whether the ship is aligned horizontally or vertically
@@ -77,7 +77,7 @@ This structure is uses the following Java / JIF / Paragon classes:
 		\item Polymorphic with respect to security policy
 	\end{itemize}
 	
-	\item \mono{Board}: a board of coordinates containing a list of Ships
+	\item \code{Board}: a board of coordinates containing a list of Ships
 	
 	\begin{itemize}
 
@@ -86,21 +86,21 @@ This structure is uses the following Java / JIF / Paragon classes:
 		\item Polymorphic in terms of policy: all ships take on the Board's policy
 	\end{itemize}
 	
-	\item \mono{Player}: a player in the game, with their own secret Board
+	\item \code{Player}: a player in the game, with their own secret Board
 	
 	\begin{itemize}
 		\item On creation, the player initialises its board with ship positions
 		\item Provides methods to generate new queries, and to receive and answer queries from the opponent
-		\item Defines the policy on its board: no-one but the player may view its board, except through its \mono{processQuery} method (which declassifies information about the queried point)
+		\item Defines the policy on its board: no-one but the player may view its board, except through its \code{processQuery} method (which declassifies information about the queried point)
 	\end{itemize}
 	
-	\item \mono{BattleShip}: coordinates the gameplay between two players
+	\item \code{BattleShip}: coordinates the gameplay between two players
 	
 	\begin{itemize}
 		\item Provides the method which runs the game logic
 	\end{itemize}
 	
-	\item \mono{Main}: provides the program's main method
+	\item \code{Main}: provides the program's main method
 \end{itemize}
 
 \newpage
@@ -111,7 +111,7 @@ This structure is uses the following Java / JIF / Paragon classes:
 
 As per the \nameref{battleships_impstructure} section, the existing JIF implementation, developed by the creators of JIF themselves, includes an implementation of not only the game's confidentiality policy but also its integrity policy.
 
-The inclusion of this policy significantly increases the complexity of the code: it requires the addition of a number of methods to allow for the `endorsement' of information to a higher level of integrity, with method signatures such as the following from the \mono{Board} class:
+The inclusion of this policy significantly increases the complexity of the code: it requires the addition of a number of methods to allow for the `endorsement' of information to a higher level of integrity, with method signatures such as the following from the \code{Board} class:
 
 \begin{minted}{Java}
 public Board[{p->*; p<-* meet o<-*}]{p<-* meet o<-*} 
@@ -128,11 +128,11 @@ The integrity policy and its implications are not considered more generally here
 
 In contrast with the integrity policy, the implementation of the confidentiality of ship locations is relatively simple.
 
- The \mono{Player} class has two principal type parameters \mono{P} and \mono{O}, specifying the principals acting as this player and their opponent. The \mono{Board} class takes one label type parameter, specifying the policy on its ships, and hence each Player's Board is parametrised by the policy label \jiflabel{P->*; P<-* meet O<-*}. The confidentiality portion of this (\mono{P->*}) simply states that the Board belongs to \mono{P}, and \mono{P} allows this information to be viewed only by the top principal.
+ The \code{Player} class has two principal type parameters \code{P} and \code{O}, specifying the principals acting as this player and their opponent. The \code{Board} class takes one label type parameter, specifying the policy on its ships, and hence each Player's Board is parametrised by the policy label \jiflabel{P->*; P<-* meet O<-*}. The confidentiality portion of this (\code{P->*}) simply states that the Board belongs to \code{P}, and \code{P} allows this information to be viewed only by the top principal.
  
- This policy prevents the opposing player (principal \mono{O}) from accessing the information. Only through a declassification statement may information about the state of the board flow to another principal.
+ This policy prevents the opposing player (principal \code{O}) from accessing the information. Only through a declassification statement may information about the state of the board flow to another principal.
  
- The \mono{processQuery} method is the only method which allows for this, through the following two lines (which run after various input checking conditions):
+ The \code{processQuery} method is the only method which allows for this, through the following two lines (which run after various input checking conditions):
  
  \begin{minted}{Java}
  // find the result.
@@ -141,7 +141,7 @@ In contrast with the integrity policy, the implementation of the confidentiality
  return declassify(result, {P->*;P<-* meet O<-*} to {P<-* meet O<-*});
  \end{minted}
  
- The result is calculated by querying the board. The \mono{result} variable is inferred by the type system to be of confidentiality policy \jiflabel{P->*}, and so the \mono{declassify} statement is used to declassify it to the empty confidentiality policy \jiflabel{} (equivalent to \jiflabel{\_->\_}). Hence, the return value of this method may flow to any principal.
+ The result is calculated by querying the board. The \code{result} variable is inferred by the type system to be of confidentiality policy \jiflabel{P->*}, and so the \code{declassify} statement is used to declassify it to the empty confidentiality policy \jiflabel{} (equivalent to \jiflabel{\_->\_}). Hence, the return value of this method may flow to any principal.
  
  The basis of this policy is quite simple, though it does introduce annotation burden throughout the application. JIF's policy model is able to quite effectively represent it, as the `players' intuitively align with statically determined principals, and the query construct is naturally represented with a declassification.
 
@@ -169,7 +169,7 @@ PrintStream[{}] out2 = declassify(out1, {Alice<-* meet Bob<-*});
 In short, this code represents the following steps:
 
 \begin{enumerate}
-	\item Get a reference to the JIF \mono{Runtime} object belonging to the program's calling principal (\mono{p})
+	\item Get a reference to the JIF \code{Runtime} object belonging to the program's calling principal (\code{p})
 	
 	\item Attempt to get a reference to an unclassified standard out stream
 	
@@ -178,9 +178,13 @@ In short, this code represents the following steps:
 	\item Though the stream is parametrised by the empty label, the stream \textit{itself} is confidential to the calling principal, requiring a declassification
 \end{enumerate}
 
-Through this methodology, it is possible to construct an output stream belonging to the calling principal which has no confidentiality. It is not, however, possible to construct a stream belonging to any other principal or with other confidentiality restrictions: even where JIF's typing system allows this, attempting to obtain the stream from the \mono{Runtime} instance will silently fail at runtime.
+This process adds a significant burden on the programmer, since making use of standard input and output streams is required for most useful applications. Since standard streams are at the `boundary' of the system, once information flows to them the flow policy is no longer enforced; hence there is logic to the restriction of it.
 
-Hence, for practical purposes it is necessary to make full use of declassification as an `escape hatch' from the type system in order to actually allow the program to make useful output. This presents an issue as the type system can no longer track the flow of sensitive values after declassification, so earlier and more frequent use of the declassification construct presents more opportunity for accidental information leak bugs to arise.
+Nonetheless, the implementation requires significant boilerplate, and if the user attempts to construct a stream that belongs to any principal \textit{other than} the calling principal, the code will compile but will fail silently at runtime, which is problematic from a practical standpoint.
+
+%Through this methodology, it is possible to construct an output stream belonging to the calling principal which has no confidentiality. It is not, however, possible to construct a stream belonging to any other principal or with other confidentiality restrictions: attempting to obtain the stream from the \code{Runtime} instance will silently fail at runtime. While this restriction is sensible given that standard output cannot enforce flow policies
+%
+%For practical purposes it is necessary to make full use of declassification as an `escape hatch' from the type system in order to actually allow the program to make useful output. This presents an issue as the type system can no longer track the flow of sensitive values after declassification, so earlier and more frequent use of the declassification construct presents more opportunity for accidental information leak bugs to arise.
 
 \newpage
 
@@ -188,9 +192,9 @@ Hence, for practical purposes it is necessary to make full use of declassificati
 
 \subsubsection{Data Types}
 
-The Paragon version of Battleships is based on the same overall structure as the JIF implementation. The first notable difference, seen in the simple data type classes \mono{Coordinate} and \mono{Ship}, is that Paragon has the special \mono{policyof(this)} annotation, allowing these classes to be fully polymorphic in policy without being explicitly parametrised. Though use of the \mono{policyof(this)} annotation is somewhat limited in practice -- it is available only for methods and \mono{final} fields -- it greatly simplifies the implementation of simple data type classes.
+The Paragon version of Battleships is based on the same overall structure as the JIF implementation. The first notable difference, seen in the simple data type classes \code{Coordinate} and \code{Ship}, is that Paragon has the special \code{policyof(this)} annotation, allowing these classes to be fully polymorphic in policy without being explicitly parametrised. Though use of the \code{policyof(this)} annotation is somewhat limited in practice -- it is available only for methods and \code{final} fields -- it greatly simplifies the implementation of simple data type classes.
 
-In addition, defining the overridden Java methods \mono{equals}, \mono{hashCode} and \mono{toString} for data types requires substantially less effort in Paragon than in JIF. JIF uses its own wrappers (\mono{JIFObject} and descendents) as it cannot easily represent polymorphic method parameters. In Paragon, the \mono{policyof(arg)} operator may be used to define a method's return policy in terms of a completely free argument policy.
+In addition, defining the overridden Java methods \code{equals}, \code{hashCode} and \code{toString} for data types requires substantially less effort in Paragon than in JIF. JIF uses its own wrappers (\code{JIFObject} and descendents) as it cannot easily represent polymorphic method parameters. In Paragon, the \code{policyof(arg)} operator may be used to define a method's return policy in terms of a completely free argument policy.
 
 JIF does include the similar \jiflabel{this} label, but the construct cannot simply be applied to arguments and the existing Battleships implementation does not make use of it.
 
@@ -212,7 +216,7 @@ public ?(policyof(this) * policyof(o)) boolean equals(Object o) {
 
 As the focus of this comparison is on the use of information flow with respect to confidentiality, the integrity portion of the JIF program's design was not carried over into the Paragon implementation: hence, the Paragon implementation assumes the trustworthiness of the opponent's response to queries.
 
-Though the Battleships game can quite easily be thought of in terms of interacting actors as under JIF's Decentralised Label Model, for the Paragon implementation modeling this was unnecessary. Paragon's `Objects as Actors' approach allows the \mono{Player} instance itself to be used as the actor in the security policy, without the need for an external, static principal. Thus, the secrecy of a player's board is determined solely by the following policy definition:
+Though the Battleships game can quite easily be thought of in terms of interacting actors as under JIF's Decentralised Label Model, for the Paragon implementation modeling this was unnecessary. Paragon's `Objects as Actors' approach allows the \code{Player} instance itself to be used as the actor in the security policy, without the need for an external, static principal. Thus, the secrecy of a player's board is determined solely by the following policy definition:
 
 \begin{minted}{Java}
 public final Player self = (Player)this;
@@ -222,11 +226,11 @@ public final policy boardPolicy = {
 };
 \end{minted}
 
-The first clause in the policy (\mono{self : }) states that only the current instance may view this information. The \mono{self} variable as opposed to the \mono{this} keyword is necessitated by limitations of the Paragon compiler.
+The first clause in the policy (\code{self : }) states that only the current instance may view this information. The \code{self} variable as opposed to the \code{this} keyword is necessitated by limitations of the Paragon compiler.
 
-The second clause of the policy allows for the declassification via the query system. \mono{allowBoardAccess(self)} is a unary paralock, taking a player as its argument. The policy clause states that any Object \mono{o} may access the board only if the \mono{allowBoardAccess} lock is open for the current player instance.
+The second clause of the policy allows for the declassification via the query system. \code{allowBoardAccess(self)} is a unary paralock, taking a player as its argument. The policy clause states that any Object \code{o} may access the board only if the \code{allowBoardAccess} lock is open for the current player instance.
 
-The core of this approach is that the lock remains closed at all times, \textit{except} briefly during the declassification process. While the lock is open, the board policy reduces to \mono{Object o:}, and at this point the required information is copied into a low confidentiality variable. Since this pattern is common (especially for implementations ported from JIF, where this form of declassification is the \textit{only} dynamic policy mechanism available), Paragon provides a special `declassification block' construct, as seen in the code below:
+The core of this approach is that the lock remains closed at all times, \textit{except} briefly during the declassification process. While the lock is open, the board policy reduces to \code{Object o:}, and at this point the required information is copied into a low confidentiality variable. Since this pattern is common (especially for implementations ported from JIF, where this form of declassification is the \textit{only} dynamic policy mechanism available), Paragon provides a special `declassification block' construct, as seen in the code below:
 
 \begin{minted}{Java}
 ?boardPolicy boolean res = this.board.testPosition(query);
@@ -242,20 +246,20 @@ return declassified;
 
 Inside the scope of the braces, the lock is open, but it is closed everywhere else. Thus, information can \textit{only} leak inside of this block, and the compiler will prevent it from flowing down at any other point in the program.
 
-While this is functionally equivalent to making use of a \mono{declassify} expression in JIF, the Paragon version is significantly more readable and makes the scope of the intentional information leak clearer.
+While this is functionally equivalent to making use of a \code{declassify} expression in JIF, the Paragon version is significantly more readable and makes the scope of the intentional information leak clearer.
 
 \subsubsection{Boilerplate \& General Details}
 
-Paragon does not require boilerplate to make use of standard output streams: there is a provided Paragon interface file for the Java \mono{PrintStream} class, which has a policy type parameter. It suffices to simply use \mono{System.out} as a \mono{PrintStream<\{Object x:\}>} (i.e. a stream with no confidentiality). Building output streams with more complex policies requires more work, but is not necessary for this case study.
+Paragon does not require boilerplate to make use of standard output streams: there is a provided Paragon interface file for the Java \code{PrintStream} class, which has a policy type parameter. It suffices to simply use \code{System.out} as a \code{PrintStream<{Object x:}>} (i.e. a stream with no confidentiality). Building output streams with more complex policies requires more work, but is not necessary for this case study.
 
 As a result of the conciseness of the policy definition and the lack of boilerplate, the Paragon implementation of Battleships quite closely resembles a plain Java implementation, whereas the JIF implementation has large numbers of annotations on each function as well as additional steps and boilerplate code required to perform simple Java tasks. It is worth noting, however, that some of this need for extra annotation may be attributed to the inclusion of the integrity policy.
 
 \subsection{Conclusion}
 
-The Battleships examples can be represented under the policy models of both JIF and Paragon with relative ease. The interacting principals of the Decentralised Label Model can be adapted to the problem simply by mapping a principal to each player of the game. In the case of Paragon, these interacting actors may be implicitly modelled by the \mono{Player} instances themselves.
+The Battleships examples can be represented under the policy models of both JIF and Paragon with relative ease. The interacting principals of the Decentralised Label Model can be adapted to the problem simply by mapping a principal to each player of the game. In the case of Paragon, these interacting actors may be implicitly modelled by the \code{Player} instances themselves.
 
-The declassification action required to allow for querying of the board aligns well with JIF's declassification construct: the query is an `escape hatch' for the confidentiality policy, and the \mono{declassify} statement is an `escape hatch' from the security type system. Paragon's system is more general than this, but the use of a briefly opened paralock to approximate declassification is common enough that Paragon includes syntactic sugar for it. Hence, in both languages this is quite easily expressed.
+The declassification action required to allow for querying of the board aligns well with JIF's declassification construct: the query is an `escape hatch' for the confidentiality policy, and the \code{declassify} statement is an `escape hatch' from the security type system. Paragon's system is more general than this, but the use of a briefly opened paralock to approximate declassification is common enough that Paragon includes syntactic sugar for it. Hence, in both languages this is quite easily expressed.
 
-The largest difference between the two implementations lies in how Paragon's syntax reduces the need for complex boilerplate code. Using standard output, necessary for virtually all useful programs, requires non-trivial setup in JIF and none in Paragon. Similarly, Paragon provides the \mono{policyof()} operator to eliminate the need for security type parametrisation in a number of common scenarios -- and when Paragon does use security type generics, it extends the standard Java generics syntax where JIF uses entirely different syntax incompatible with Java generics.
+The largest difference between the two implementations lies in how Paragon's syntax reduces the need for complex boilerplate code. Using standard output, necessary for virtually all useful programs, requires non-trivial setup in JIF and none in Paragon. Similarly, Paragon provides the \code{policyof()} operator to eliminate the need for security type parametrisation in a number of common scenarios -- and when Paragon does use security type generics, it extends the standard Java generics syntax where JIF uses entirely different syntax incompatible with Java generics.
 
 Hence, while this example can be equivalently represented using both JIF and Paragon, Paragon's syntax produces a more concise and more readable program.

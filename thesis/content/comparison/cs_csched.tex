@@ -34,15 +34,15 @@
 
 \subsection{Overview}
 
-The final case study is an implementation of a multi-user `calendar scheduler' application. The application has multiple users, each with their own calendar. A calendar consists of a list of meetings; each meeting has a title, and is associated with a day of the week and starting and finishing time. In addition, each meeting has a list of users who are attending the meeting.
+The final case study is an implementation of a multi-user `calendar scheduler' application. The application has multiple users, each with their own calendar, which consists of a list of meetings. Each meeting has a title, and is associated with a day of the week and starting and finishing time. In addition, each meeting has a list of users who are attending the meeting.
 
 The application allows users to schedule new meetings so as to avoid conflicting with existing meetings. Each meeting's details are secret -- only the attendees may know the title of the meeting. However, the times of the meetings need to be available to all users in order to schedule new meetings.
 
 \subsection{Key Security Properties}
 
-On the surface the security property here may seem to lack complexity. As with the second case study there is a data structure in the form of a meeting which contains some high confidentiality data (the title) and some low confidentiality data (the time). Unlike that case, the data is not time-variant but instead dependent on the involvement of particular users -- which seems like a natural fit for the principals of JIF.
+Initially, the security property here may seem to lack complexity. As with the second case study there is a data structure in the form of a meeting which contains some high confidentiality data (the title) and some low confidentiality data (the time). Here however, the data is not time-variant but instead dependent on the involvement of particular users -- which seems like a natural fit for the principals of JIF.
 
-However, there are two key differences that distinguish this policy from those discussed previously:
+There are two key differences that distinguish this policy from those discussed previously:
 
 \begin{enumerate}
 	
@@ -103,25 +103,25 @@ Since this quantification over sets of principals cannot be encoded within JIF, 
 
 \subsubsection{`Ownership' Policy Structure}
 
-Restricting the confidentiality policy to a single meeting owner rather than a list of attendees made implementation more practicable. Under this model, the \mono{Meeting} class must be associated with an `owner' principal. This may be achieved in JIF either through a principal type parameter. Hence, the \mono{Meeting} data type has the policy \jiflabel{Owner->\_} on its low confidentiality data, and \jiflabel{Owner->*} on the high confidentiality title.
+Restricting the confidentiality policy to a single meeting owner rather than a list of attendees made implementation more practicable. Under this model, the \mono{Meeting} class must be associated with an `owner' principal. This may be achieved in JIF either through a principal type parameter, and so the low confidentiality data is labelled \jiflabel{Owner->_}, and the high confidentiality title is labelled \jiflabel{Owner->*}.
 
 \subsubsection{Dynamic Users}
 
 The initial design of the case study implementation has the \mono{User} class, each instance of which is associated with a user of the application. Unlike Paragon, JIF does not use object instances as actors, and so there is no connection in the type system between a \mono{User} instance and the principal it would represent.
 
-This presents a challenge for development: for the application to make sense, it should not be hard-coded to some predefined list of principals. In JIF, this is not possible at the top level: principals are types (i.e. classes) and so it is not possible to dynamically create them at runtime without reflection (which JIF does not support).
+This presents a challenge for development: for the application to make sense, it should not be hard-coded to some predefined list of principals. In JIF, this is not possible at the top level: principals are types (i.e. classes) and it is not possible to dynamically create them without reflection (which JIF does not support).
 
 This problem was encountered by researchers at Pennsylvania State University in developing the JPMail secure email client \cite{jpmailpage}. An email client should support multiple, arbitrary users and as a result a set of policy tools were built for JPMail, alongside the `JIFclipse' suite of tools \cite{hicks2007jifclipse}. However, this system requires extensions to the JIF language and runtime, and even with these, in practice JPMail cannot handle new users added `on the fly' -- it requires recompilation of certain components.
 
-In practice, the JIF implementation for this case study attempts to make use of JIF's runtime \mono{Principal} class to work around the issue of dynamic principals. In practice however, this was not effective: the program could be written, but the compiler would not properly enforce information flow constraints on it.
+In practice, the JIF implementation for this case study attempts to make use of JIF's runtime \mono{Principal} class to work around the issue of dynamic principals. In practice however, this was not effective: the program could be written, but the compiler would not properly enforce information flow constraints on it, allowing information to be printed out which should contravene the flow policy.
 
 \subsection{Paragon Implementation}
 
 \subsubsection{Dealing with Sets of Users}
 
-The quantification issue affects Paragon as it does JIF. Paragon's policy language uses objects as actors, and so it is able to get closer to modelling the concept. A binary lock \mono{isAttending(User, Meeting)} may be defined, where the lock is open for User \mono{u} and Meeting \mono{m} (i.e. \mono{isAttending(u, m)}) if \mono{u} is in the list of attendees of \mono{m}.
+The quantification issue also affects Paragon. Paragon's policy language uses objects as actors and allows quantification over them, and so it is able to get closer to modelling the concept. A binary lock \mono{isAttending(User, Meeting)} may be defined, where the lock is open for User \mono{u} and Meeting \mono{m} (i.e. \mono{isAttending(u, m)}) if \mono{u} is in the list of attendees of \mono{m}.
 
-Since the list of attendees itself is a runtime value, this status cannot automatically be `linked' to the relation via a lock property: the lock must be opened manually for each attendee when the Meeting object is created. While the policy language allows this to be expressed, the Paragon compiler is not able to perform the necessary static analysis to enforce this, and hence when secret data is accessed (e.g. by printing out the Meeting via its \mono{toString} method), the compiler cannot tell whether the lock is in fact open, causing compile-time errors.
+Since the list of attendees itself is a runtime value, this status cannot automatically be `linked' to the relation via a lock property: the lock must be opened manually for each attendee when the Meeting object is created. While the policy language allows this to be expressed, the Paragon compiler is not able to perform the necessary static analysis to enforce this, and hence when secret data is accessed (e.g. by printing out the Meeting via its \mono{toString} method), the compiler cannot tell whether the lock is in fact open. Paragon estimates the lock state conservatively, and therefore since it cannot be \textit{sure} the lock is open, it treats it as closed, causing compile errors.
 
 Paragon has two methods for getting around this, corresponding to the two mechanisms demonstrated in the Conference Management example: either method annotations can be used to restrict where the method may be called, or a run-time check can be used to provide a code context in which the lock is known to be open.
 
@@ -135,7 +135,7 @@ The latter method can be expressed by a runtime check in a for loop, and will pr
 
 The final implementation uses the simplified `owner policy', since this is more easily expressed in Paragon's model. As with JIF, a type parameter-based implementation is possible. Unlike JIF, Paragon's policy language has explicit support for dynamic actors (since actors are simply object instances), and its extension of Java's generics allow for more flexibility, as well as generic methods, which JIF lacks entirely.
 
-However, the Paragon implementation produced avoids parametrising meetings by their owner, instead opting to keep a reference to the owner instance via a final field. This concept requires the `objects as actors' model and hence has no clear mapping to JIF.
+The Paragon implementation produced avoids parametrising meetings by their owner, instead opting to keep a reference to the owner instance via a final field. This concept requires the `objects as actors' model and hence has no clear mapping to JIF.
 
 Functionally, this means that the binary lock \mono{isOwner(User, Meeting)} guards access to the confidential meeting title information. Since this will only be true for one user, the quantification issue does not arise. However, in practice, Paragon's compiler was still unable to correctly analyse this: runtime checks are still required since the compiler is unable to statically determine the correct user, and once these checks are added, the compiler incorrectly allows users other than the owner to print out information.
 
@@ -147,4 +147,4 @@ This case study could not be implemented correctly and with the desired informat
 
 JIF runs into a dead end in attempting to deal with dynamic principals. This seems to be a fatal flaw in any attempt to use JIF to model this problem. More complex policy model and policy store systems like those implemented in Jifclipse \cite{hicks2007jifclipse} may provide a solution to some of these issues, but these are not under active development, and work only with older versions of JIF.
 
-Paragon's policy model is able to represent the policy more easily, but still struggles with quantifying of the policy over a set of attendees. Ultimately, even with the simplified `owner model' policy, Paragon's compiler struggles to properly enforce the policy. A type parameter-based implementation would still face some of these issues, but may be worth investigating in a future project as a way around the Paragon compiler issues encountered.
+Paragon's policy model is able to represent the policy more easily, but still struggles with statically analysing a policy requiring quantification over a list of attendees. Ultimately, even with the simplified `owner model' policy, Paragon's compiler struggles to properly enforce the policy. A type parameter-based implementation would still face some of these issues, but may be worth investigating in a future project as a way around the Paragon compiler issues encountered.

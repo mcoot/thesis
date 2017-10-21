@@ -1,0 +1,71 @@
+/*
+ * Immutable (x, y) pair; overrides normal Java hashCode(), equals(), toString()
+ */
+public class Coordinate {
+    public ?policyof(this) final int x;
+    public ?policyof(this) final int y;
+}
+
+/*
+ * Immutable ship covering a line of coordinates vertically or horizontally
+ */
+public class Ship {
+    final ?policyof(this) Coordinate pos;
+    final ?policyof(this) int length;
+    final ?policyof(this) boolean isHorizontal;
+}
+
+/*
+ * Mutable list of ships representing a player's board
+ */
+public class Board<policy shipPolicy> {
+    private final ?policyof(this) LinkedList<Ship, shipPolicy> ships;
+}
+
+/*
+ * Player, associated with principal P. Their opponent is principal O.
+ * Allows the opponent to learn information about the board via declassification
+ */
+public class Player {
+    public final Player self = (Player)this;
+
+    private lock allowBoardAccess(Player);
+    public final policy boardPolicy = {
+		self: ; 
+		Object x: allowBoardAccess(self)
+	};
+
+    private ?{Object x: } Board<boardPolicy> board;
+
+    !{Object x: } boolean processQuery(?{Object x: } Coordinate query)
+    throws -allowBoardAccess(self) !{Object x: } IllegalArgumentException {
+        boolean result = this.board.testPosition(query);
+        ?{Object x: } boolean declassified = false;
+        open allowBoardAccess(self) {
+            declassified = result;
+        }
+        return declassified;
+    }
+}
+
+/*
+ * Handles the main game logic
+ */
+public class BattleShip {
+    public !{Object x: } void play(?{Object x:} PrintStream<{Object x:}> output)
+    throws !{Object x: } IllegalArgumentException {
+        ...
+    }
+}
+
+/*
+ * Provides the main method
+ */
+public class Main {
+    public static final !{Object x: } void main(String[] args)
+    throws !{Object x: } IllegalArgumentException {
+        ?{Object x: } PrintStream<{Object x: }> out = System.out;
+
+        new BattleShip().play(out);
+    }
+}
