@@ -22,7 +22,8 @@ public class Diary authority (Alice) {
 	declassifyDiary{Alice->Betty,Mal}()
 	where authority(Alice) {
 		int result = 
-			declassify(secretNumber, {Alice->Betty} to {Alice->Betty,Mal});
+			declassify(secretNumber, 
+					   {Alice->Betty} to {Alice->Betty,Mal});
 		return result;
 	}
 }
