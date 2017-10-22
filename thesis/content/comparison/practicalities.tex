@@ -73,10 +73,24 @@ Paragon's webpage \cite{parawebsite} does not provide a user manual, but it does
 
 \subsection{Compiler Maturity}
 
-As research languages, JIF and Paragon do not provide automatic installers or other conveniences that most commercially used languages do. In particular, installing JIF requires building the runtime (and potentially the compiler as well) yourself. On Windows this installation depends on tools from the Cygwin project \cite{cygwinpage} to compile. Once built, there are subtle differences between the platforms: in particular, the unicode symbols in JIF compiler errors do not function, being replaced with question mark characters before even being output to the terminal, making interpreting compiler errors on Windows very difficult.
+While JIF and Paragon are both research languages, and hence do not have compilers which are as well documented or as well tested as those of commercial languages, JIF has been under active development significantly longer than Paragon, and as a result the JIF compiler has fewer noticeable bugs and generally produces more detailed error messages when compilation fails.
 
-Paragon similarly has issues; though binaries are provided for both the compiler and runtime, the Windows version of the Paragon v0.2 compiler is non-functional: it compiles code using a mix of conventions from Paragon v0.1 and v0.2 in such a way that the resultant \code{.java} file can never compile with \code{javac}. The compiler's Linux binary does not have this issue.
+\subsubsection{Installation \& Compiler Bugs}
+
+As research languages, JIF and Paragon do not provide automatic installers or other conveniences that most commercially used languages do. In particular, installing JIF requires building the runtime (and potentially the compiler as well) yourself. On Windows this installation depends on tools from the Cygwin project \cite{cygwinpage} to compile.
+
+Paragon also has installation-related issues; though binaries are provided for both the compiler and runtime, the Windows version of the Paragon v0.2 compiler is non-functional: it compiles code using a mix of conventions from Paragon v0.1 and v0.2 in such a way that the resultant \code{.java} file can never compile with \code{javac}. The compiler's Linux binary does not have this issue.
 
 Regardless of the version of the Paragon compiler, it does still occasionally produce incorrect results. The most clear case of this that was encountered while developing the case studies is that it fails to correctly compile runtime checks of lock state. Indeed, in order to compile the case studies first from Paragon code to Java code, and then to Java \code{.class} files, it is necessary to manually modify the Java source files in the middle in order to correct this.
 
-\subsubsection{Paragon Crashes}
+\subsubsection{Compiler Error Messages}
+
+When JIF presents an information flow error during compilation, it presents a short description of the error, alongside the file and line number; where possible, it also includes the specific variable or statement which caused the error.
+
+The JIF compiler also includes a \code{-explain} flag, which causes error messages to include the details of the flow constraint which was violated. There are subtle differences between platforms with these errors: in particular, the unicode symbols such as those indicating the join and meet operators do not print correctly, being replaced with question mark characters before even being output to the terminal. This makes interpreting compiler errors on Windows very difficult.
+
+Paragon similarly shows a short message along with the file, method and line number, though Paragon's static checker is often unable to correctly determine the line number on which the error occurs. Paragon includes a verbose compiler flag which provides more information, and also includes verbosity `levels' which can log more of the compiler's actions.
+
+Paragon's error messages, however, are often less explicit than those produced by the JIF compiler. A common compiler error message in Paragon states that ``the system failed to infer the set of unspecified policies". This message generally occurs as a result of a failure of local variable type inference, which is usually caused by the programmer attempting to perform an action which violates a policy; however, there is no detail to the message and it provides little information as to \textit{where} the violation occurred.
+
+In addition, the Paragon compiler sometimes simply crashes during compilation; finding the element of the input file which caused the compiler to fail is often difficult -- for instance, objects used as actors should be marked \code{final}, but if the modifier is missing under certain circumstances the compiler will simply crash, giving no indication that this is the cause.
