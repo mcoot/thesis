@@ -23,9 +23,21 @@ public class Board[label L] {
     private final List[L]{this} ships;
 }
 
+
+
+
+
+
+
+
+
+
+
+
 /*
  * Player, associated with principal P. Their opponent is principal O.
- * Allows the opponent to learn information about the board via declassification
+ * Allows the opponent to learn information about the board
+ * via declassification
  */
 public class Player[principal P, principal O] authority(P) {
     private Board[{P->*}]{P->_} board;
@@ -50,6 +62,16 @@ public class BattleShip[principal P1, principal P2] authority (P1, P2) {
         ...
     }
 }
+
+
+
+
+
+
+
+
+
+
 
 /*
  * Provides the main method

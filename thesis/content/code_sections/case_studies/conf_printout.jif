@@ -1,0 +1,113 @@
+/*
+ * Immutable author of a paper
+ */
+public class Author {
+    private final String{this} name;
+}
+
+/*
+ * Immutable conference organiser (i.e. a privileged user)
+ * This class is superfluous in JIF,
+ * since there is no explicit object <-> principal connection
+ */
+public class Organiser {
+    private final String{this} name;
+}
+
+/*
+ * Immutable paper which may be submitted to a conference.
+ * The author list can have a separate policy to the overall paper.
+ */
+public class Paper[label AuthorLabel] implements JifObject[AuthorLabel] {
+    private final String{this} title;
+    private final String{this} paperAbstract;
+    private final Author{AuthorLabel}[]{AuthorLabel} authors;
+}
+
+
+
+
+
+
+
+
+
+/* The conference system which allows for 
+ * paper submission and session allocation.
+ * O is the principal representing the organiser
+ */
+public class ConferenceSystem[principal O] authority (O) {
+    private boolean{O->_} allocationsVisible;
+
+    private Paper[{O->*}]{O->_}[]{O->_} submissions;
+    private ArrayMap[{O->_}, {O->*}] allocations;
+
+    // Performs declassification of the session number 
+	// *if* the timed release has occurred
+    private int{O->_} 
+	getSessionNumber{O->_}(Paper[O->_]{O->_} paper) : {O->_} 
+	where authority(O) {
+        if (paper == null) return -1;
+        String{O->_} title = paper.getTitle();
+        if (title == null) return -1;
+
+        if (!allocationsVisible) {
+            return -1;
+        }
+
+        JifString[{O->_}] titleObj = new JifString[{O->_}](title);
+        JifObject[{O->*}]{O->*} sNoObj;
+        try {
+            sNoObj = allocations.get(new label {O->*}, titleObj);
+        } catch (NullPointerException e) {
+            return -2;
+        }	
+		// Declassify the object retrieved from the map
+        JifObject[{O->*}]{O->_} sNoObjDeclass 
+					= declassify(sNoObj, {O->*} to {O->_});
+        // Convert it to a JifInteger
+        JifInteger[{O->*}]{O->_} sNo;
+        try {
+            sNo = (JifInteger[{O->*}])sNoObjDeclass;
+        } catch (ClassCastException ex) {
+            return -3;
+        }
+        // Pull the int from the JifInteger
+        int{O->*} r;
+        try {
+            r = sNo.intValue();
+        } catch (NullPointerException ex) {
+            return -4;
+        }
+        // Declassify the int
+        int{O->_} result = declassify(r, {O->*} to {O->_});
+        return result;
+    }
+
+    public void setAllocationsVisible() {
+        allocationsVisible = true;
+    }
+}
+
+public class Main authority (Organiser) {
+
+    public static void main(principal p, String[] args) {
+        ConferenceSystem conference = new ConferenceSystem();
+
+        // Add some papers to the conference 
+		// (submitted papers are also added to a list)
+        setupDummyData(conference);
+
+        // Attempt to print out the allocations
+        // All session allocations will show as -1 due to runtime check
+        printAllocations(conference);
+
+        // Perform timed release - information is no longer secret
+        conference.setAllocationsVisible();
+
+        // Print out the allocations:
+		// will now print out the real session allocations
+        printAllocations(conference);
+    }
+
+}

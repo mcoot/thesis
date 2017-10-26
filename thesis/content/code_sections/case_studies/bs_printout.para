@@ -1,5 +1,6 @@
 /*
- * Immutable (x, y) pair; overrides normal Java hashCode(), equals(), toString()
+ * Immutable (x, y) pair; overrides normal 
+ * Java hashCode(), equals(), toString()
  */
 public class Coordinate {
     public ?policyof(this) final int x;
@@ -7,7 +8,8 @@ public class Coordinate {
 }
 
 /*
- * Immutable ship covering a line of coordinates vertically or horizontally
+ * Immutable ship covering a line of coordinates 
+ * vertically or horizontally
  */
 public class Ship {
     final ?policyof(this) Coordinate pos;
@@ -22,9 +24,22 @@ public class Board<policy shipPolicy> {
     private final ?policyof(this) LinkedList<Ship, shipPolicy> ships;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 /*
  * Player, associated with principal P. Their opponent is principal O.
- * Allows the opponent to learn information about the board via declassification
+ * Allows the opponent to learn information about the board 
+ * via declassification
  */
 public class Player {
     public final Player self = (Player)this;
@@ -57,6 +72,9 @@ public class BattleShip {
         ...
     }
 }
+
+
+
 
 /*
  * Provides the main method

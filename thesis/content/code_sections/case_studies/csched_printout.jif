@@ -1,0 +1,115 @@
+/*
+ * Immutable user in the system
+ * Complicated in JIF since dynamic principals don't work as in Paragon
+ */
+public class User {
+    public final String{this} name;
+}
+
+/*
+ * Represents a single meeting at a time, title and list of attendees
+ * Simplified policy: meeting title only visible to the owner
+ * Implemented here using a type parameter
+ */
+public class Meeting[principal Owner] {
+    public final String{Owner->*} title;
+    public final int{Owner->_} day;
+    public final int{Owner->_} startHour;
+    public final int{Owner->_} endHour;
+
+    public String{Owner->*} toString() {
+        ...  
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * A calendar of meetings belonging to a user
+ * The user is represented by the Owner principal type parameter
+ */
+public class Calendar[principal Owner] {
+    private LinkedList[{Owner->_}]{Owner->_} meetings;
+
+    public boolean{Owner->_; day; startHour; endHour} 
+	freeAtTime(int day, int startHour, int endHour) {
+        ...
+    }
+
+    public String{Owner->*} getCalendarRepresentation() {
+        try {
+            String s = "Calendar:\n---";
+
+            for (int i = 0; i < meetings.size(); ++i) {
+                JifObjectWrapper[{Owner->_}] w 
+						= (JifObjectWrapper[{Owner->_}])meetings.get(i);
+                Meeting[Owner] m = (Meeting[Owner])w.getObject();
+                s += "\n";
+                s += m.toString();
+            }
+            return s;
+        } catch (IndexOutOfBoundsException ex) {
+            return "";
+        } catch (ClassCastException ex) {
+            return "";
+        } catch (NullPointerException ex) {
+            return "";
+        }
+    }
+}
+
+/* Scheduler system which has many users with calendars */
+public class Scheduler {
+    // Implementation fails here: need to 
+    // dynamically associate a principal with a user
+    private HashMap[{_->_}, {_->_}]{_->_} calendars;
+}
+
+/*
+ * The main class which creates a scheduler and demonstrates
+ * the security policy
+ */
+public class Main authority (Alice, Bob, Charles) {
+    Scheduler scheduler = new Scheduler;
+
+    public static void main(principal{} p, String[] args)
+    throws NullPointerException, IllegalArgumentException
+    where authority(Alice, Bob, Charles), caller(p) {
+        PrintStream[{}] out = getStandardOut();
+        Scheduler scheduler = new Scheduler();
+        setupDummyData(scheduler);
+
+        LinkedList[{_->_}]{_->_} allUsers = new LinkedList[{_->_}]();
+        addAllUsers(allUsers);
+
+        // Times of meetings are not classified 
+		// and so can be printed out freely
+        boolean scheduleCheck1 = theScheduler.attendeesFreeAtTime(allUsers,
+        Meeting.getDayValue("Monday"), 9, 10);
+        out.println("Are all users available at 9 - 10 on a Monday? " 
+					+ scheduleCheck1);
+        boolean scheduleCheck2 = theScheduler.attendeesFreeAtTime(allUsers,
+                Meeting.getDayValue("Tuesday"), 9, 10);
+        out.println("Are all users available at 9 - 10 on a Tuesday? " 
+					+ scheduleCheck2);
+
+        // Cannot construct an output printstream for any principal 
+        // other than p. In JIF, attempting to do so just fails silently,
+        // setting the stream to null
+
+        // Attempting to print out Alice's calendar to standard out 
+        // should fail! But it does not - JIF can't properly analyse 
+		// the dynamic use of Alice
+        out.println(scheduler.getCalendar((Principal)Alice)
+								.getCalendarRepresentation());
+    }
+}

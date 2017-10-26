@@ -1,0 +1,113 @@
+/*
+ * Immutable author of a paper
+ */
+public class Author {
+    private final ?policyof(this) String name;
+}
+
+/*
+ * Immutable conference organiser (i.e. a privileged user)
+ */
+public class Organiser {
+    public final ?policyof(this) String name;
+}
+
+/*
+ * Immutable paper which may be submitted to a conference.
+ * The author list can have a separate policy to the overall paper.
+ */
+public class Paper<policy authorRestriction> {
+    public final ?policyof(this) String title;
+    public final ?policyof(this) String paperAbstract;
+    private final ?authorRestriction Author[]<authorRestriction> authors;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * Conference system which allows for paper submission 
+ * and session allocation. Imposes 'timed release' policy 
+ * on session allocations and author lists.
+ */
+public class ConferenceSystem {
+    public lock allocationsVisible;
+    public static final policy bottom = {Object x: }
+    public static final policy ifAllocationsVisible = {
+		Organiser o: ; 
+		Object x: allocationsVisible
+	};
+
+    private ?bottom LinkedList<Paper<ifAllocationsVisible>, bottom> 
+																submissions;
+
+    private ?bottom HashMap<Paper, bottom, Integer, ifAllocationsVisible> 
+																allocations;
+
+    public ?bottom int 
+	getSessionNumber(?bottom Paper<ifAllocationsVisible> paper) {
+        if (allocationsVisible) {
+            return (int)allocations.get(paper);
+        } else {
+            return -1;
+        }
+    }
+
+    public +allocationsVisible !bottom void setAllocationsVisible() {
+        open allocationsVisible;
+    }
+}
+
+
+
+
+
+
+
+
+/*
+ * The main class which runs a conference and demonstrates
+ * where allocations and author lists may and may not be printed out
+ */
+public class Main {
+    private static final policy bottom = {Object x :};
+
+    public static !bottom void main(String[] args) {
+        ConferenceSystem conference = new ConferenceSystem();
+        LinkedList<Paper<ConferenceSystem.ifAllocationsVisible>, bottom> 
+													conferencePapers;
+        // Add some papers to the conference 
+		// (submitted papers are also added to a list)
+        setupDummyData(conference, conferencePapers);
+
+        // Attempt to print out the allocations
+        // All session allocations will show as -1 due to 
+		// runtime check in ConferenceSystem.getSessionNumber
+        printAllocations(conference);
+
+        // Cannot print out the authors of the papers:
+		// would cause compile error due to author list restriction
+        // printOutAuthors(conferencePapers);
+
+        // Perform timed release - information is no longer secret
+        conference.setAllocationsVisible();
+
+        // Print out the allocations:
+		// will now print out the real session allocations
+        printAllocations(conference);
+
+        // Can now print out the authors of the papers
+        printOutAuthors(conferencePapers);
+    }
+}
