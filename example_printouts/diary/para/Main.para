@@ -1,0 +1,18 @@
+public class Main {
+	
+	public static void main(String[] args) {
+		Diary diary = new Diary();
+		
+		boolean b = diary.isTheSecret5();
+		
+		?Diary.aliceAndBetty int x;
+		if (b == true) {
+			x = 1;
+		} else {
+			x = 0;
+		}
+		
+		int r = diary.declassifyDiary();
+	}
+	
+}

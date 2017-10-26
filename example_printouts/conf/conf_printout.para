@@ -54,6 +54,21 @@ public class ConferenceSystem {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
  * The main class which runs a conference and demonstrates
  * where allocations and author lists may and may not be printed out

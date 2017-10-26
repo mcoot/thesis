@@ -50,7 +50,6 @@ public class Meeting {
  */
 public class Calendar {
     public static final policy bottom = {Object x: };
-
     public final User user;
     private LinkedList<Meeting, bottom> meetings;
 

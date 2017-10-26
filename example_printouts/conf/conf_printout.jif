@@ -55,7 +55,21 @@ public class ConferenceSystem[principal O] authority (O) {
         } catch (NullPointerException e) {
             return -2;
         }
-        // Declassify the object retrieved from the map
+        
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// Declassify the object retrieved from the map
         JifObject[{O->*}]{O->_} sNoObjDeclass 
 					= declassify(sNoObj, {O->*} to {O->_});
         // Convert it to a JifInteger

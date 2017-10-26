@@ -51,6 +51,24 @@ public class BattleShip[principal P1, principal P2] authority (P1, P2) {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
  * Provides the main method
  */

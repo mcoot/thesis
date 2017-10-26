@@ -1,5 +1,4 @@
 public class Diary authority (Alice) {
-	
 	private int{Alice->Betty} secretNumber;
 	
 	public Diary() {
@@ -26,6 +25,24 @@ public class Diary authority (Alice) {
 	public int{Alice->Betty,Mal} declassifyDiary{Alice->Betty,Mal}() where authority(Alice) {
 		int result = declassify(secretNumber, {Alice->Betty} to {Alice->Betty,Mal});
 		return result;
+	}
+}
+
+public class Main authority (Alice, Betty, Mal) {
+	
+	public static void main{Alice->Betty,Mal}(principal p, String[] args) {
+		Diary diary = new Diary();
+		
+		boolean b = diary.isTheSecret5();
+		
+		int{Alice->Betty} x;
+		if (b == true) {
+			x = 1;
+		} else {
+			x = 0;
+		}
+		
+		int r = diary.declassifyDiary();
 	}
 	
 }
