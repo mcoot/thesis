@@ -2,11 +2,47 @@
 
 \section{Information Flow}
 
-Language-based Information Flow security has potential application in any application which enforces a confidentiality policy, and where programmer error has the potential to lead to accidental violation of a policy.
+Language-based information flow security has potential application in any program which enforces a confidentiality policy, and where programmer error has the potential to lead to accidental violation of a policy.
 
-As this has been a topic of research for several decades, a number of security typing-based models have been developed. Each of these builds on those that came before and attempts to improve policy definition and enforcement. The model implemented by \citeauthor{denning1977certification} \cite{denning1977certification} allows for verification of programs under a standard MAC lattice. The Decentralized Label Model improves upon this by allowing policies with no central source of truth, and by framing policies in terms of interacting principals. The ParaLock model attempts to address the deficiencies of prior systems in defining dynamic policies in more sophisticated ways than as straightforward declassification.
+As this has been a topic of research for several decades, a number of security typing-based models have been developed. Each of these builds on those that came before and attempts to improve policy definition and enforcement. The model implemented by \citeauthor{denning1977certification} \cite{denning1977certification} allows for verification of programs under a standard MAC lattice. The Decentralized Label Model improves upon this by allowing policies with no central source of truth, and by framing policies in terms of interacting principals. The ParaLock model \cite{broberg2010paralocks} attempts to address the deficiencies of prior systems in defining dynamic policies in more sophisticated ways than straightforward declassification.
+
+Using the tools these models provide it is possible to construct and enforce many useful security policies, from simpler systems which enforce a MAC lattice policy to those which require a dynamic `timed release' policy, and through the application of these techniques it is possible to mitigate the real-world risks of improperly enforced confidentiality policies which programs that interact with data in any meaningful way face.
 
 \section{JIF \& Paragon}
+
+The JIF and Paragon programming languages pair relatively mature implementations of security typed information flow control with the syntax and standard library of Java, one of the most widely used languages in existence. Both can provide powerful confidentiality guarantees through information flow checking which is primarily performed at compile time, avoiding the potential overhead of a runtime mechanism.
+
+Both systems can be used to encode meaningful security policies. JIF's model allows for policies built around interacting principals and, crucially, does not require a central source of truth to determine what policy should be applied to information. Its declassification mechanism allows for a much larger class of programs, beyond those which are strictly non-interfering, to be written, with some level of control applied through the `authority' construct. 
+
+Paragon's policy model is more general, and has a lower conceptual barrier as a result of basing itself upon the familiar constructs of predicate logic. Its use of Flow Locks and ParaLocks also allows for a wider range of dynamic flow policies than can be encoded using JIF's Decentralised Label Model.
+
+\subsection{Case Studies}
+
+The case studies presented in \autoref{chap_comparison} demonstrated both the application of the two languages and their limitations.
+
+\subsubsection{Battleships}
+
+The Battleships case study presented in \ref{sect_cs_battleships} requires modelling a `game board' containing information secret to one of the game's players. This information must not leak to the other player, except through a specific querying mechanism as part of the game's rules. This policy is easily encoded in JIF by representing each player as a principal, and using a declassifying method to handle queries. Paragon similarly encodes this; it does not require an explicit principal for each players, because Paragon uses `objects as actors' -- the player instance itself \textit{is} the principal. Paragon performs declassification using a simple flow lock, cleanly emulating the same declassification strategy as the JIF implementation.
+
+\subsubsection{Conference Management}
+
+The Conference Management case study presented in \ref{sect_cs_conf} models a `timed release' policy, where the confidentiality status of session allocations for a paper submitted to a conference changes during the system's operation. Until the conference gives notification, the status is secret such that authors cannot learn whether their paper was accepted; after the notification the status is public information.
+
+JIF's Decentralised Label Model cannot naturally encode this policy; timed release cannot be expressed in terms of interacting principals. As a result, the JIF implementation of this case study relies on using declassification as an `escape hatch' from the security typing system. Hence, developing this application in JIF is feasible, but doing so requires giving up some of the confidentiality guarantees that security typing provides.
+
+Paragon, by contrast, encodes this policy with a single flow lock, which is opened when the timed release condition is met. Hence, the Paragon implementation of this application is able to provide more stringent confidentiality guarantees than the JIF version.
+
+\subsubsection{Calendar Scheduler}
+
+The Calendar Scheduler case study presented in \ref{sect_cs_csched} models a policy where the confidentiality of a meeting's details depend on the runtime list of attendees. Here, neither JIF nor Paragon could usefully encode the desired confidentiality policy.
+
+JIF's policy model fundamentally cannot express the concept of confidentiality dependent upon a dynamic \textit{set} of users. A class may be parametrised by a fixed number of principals, and runtime principals and labels may be used under some circumstances, but the type system is unable to actually encode or enforced the policy required to provide meaningful verification of the confidentiality properties of this application.
+
+Paragon comes closer to encoding the policy; its policy definition language allows for universal quantification over objects, and a parametrised lock may be used to denote attendance status. However, the compiler's type checker is then not able to properly enforce this policy and as a result, Paragon cannot provide the desired security guarantees.
+
+\section{Project Reflection}
+
+Difficulty getting started: conceptual burden, getting set up.
 
 \section{Further Work}
 
