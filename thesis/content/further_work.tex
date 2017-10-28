@@ -46,9 +46,13 @@ Difficulty getting started: conceptual burden, getting set up.
 
 \section{Further Work}
 
-POLICY AGNOSTICISM
+The analysis of the JIF programming language presented in this thesis focused on development using recent versions of JIF and the standard JIF runtime. The JPmail project \cite{jpmailpage} at Pennsylvania State University developed a set of policy tools for JIF which were not thoroughly examined for this comparison. These tools include an Eclipse plugin, JIFclipse, along with tools for supporting a policy store with dynamic look-up of principals. However, these tools were designed for a significantly outdated version of JIF and require the use of a modified JIF runtime, and the project is no longer under active development.
 
-RJIF -- https://www.cs.cornell.edu/fbs/publications/JRIF.CSF.techRpt.pdf
+In the literature, there are also other approaches to alleviating some of the limitations of JIF. One such approach is that taken by the RX language \cite{swamy06rx}, which builds upon the Decentralised Label Model but attempts to introduce support for dynamic policy through `policy updates', using both static analysis and runtime checks to reason about the information flows through a program. Though the principles of the RX language have been developed through two papers \cite{hicks05rx} \cite{swamy06rx}, it has not been implemented in practice.
+
+RJIF \cite{kozyri2016jrif}
+
+POLICY AGNOSTICISM
 
 Runtime flow checking
 
