@@ -50,7 +50,10 @@ The analysis of the JIF programming language presented in this thesis focused on
 
 In the literature, there are also other approaches to alleviating some of the limitations of JIF. One such approach is that taken by the RX language \cite{swamy06rx}, which builds upon the Decentralised Label Model but attempts to introduce support for dynamic policy through `policy updates', using both static analysis and runtime checks to reason about the information flows through a program. Though the principles of the RX language have been developed through two papers \cite{hicks05rx} \cite{swamy06rx}, it has not been implemented in practice.
 
-RJIF \cite{kozyri2016jrif}
+In a 2016 paper \citeauthor{kozyri2016jrif} \cite{kozyri2016jrif} introduce an approach to dynamic information flow policy which aims to address limitations in JIF, based on `Reactive Information Flow (RIF) automata'. Whereas a DLM label as used in JIF encodes a set of principals who may read the data, a RIF label encodes a finite state automaton, with each state associated with a set of principals who may read the data \textit{when the automaton is in that state}. Dynamic policies are represented through the use of transitions in these automata.
+
+The paper \cite{kozyri2016jrif} introduces JRIF, a language based upon JIF which implements RIF automaton-based security typing, and presents example implementations of Battleships, and a calendar application (which is conceptually similar to the Calendar Scheduler case study presented in \ref{sect_cs_csched}). The JRIF language potentially presents a way to resolve many of the issues encountered with JIF's label model through the development of the three case studies in this thesis; however, the JRIF label syntax is substantially more complex even than JIF and so it may not be a panacaea to the programmer burden issues encountered with JIF.
+
 
 POLICY AGNOSTICISM
 
