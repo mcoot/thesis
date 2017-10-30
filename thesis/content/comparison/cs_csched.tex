@@ -95,6 +95,8 @@ As a result, the actual implementations instead work around a simplified securit
 
 \subsection{JIF Implementation}
 
+A condensed code printout, containing critical sections of the JIF implementation for the Calendar Scheduler, is listed in Appendix \ref{appendix_csched_jif}.
+
 \subsubsection{`Sets' of Users}
 
 The desired confidentiality property, where a meeting's title is visible to its attendees, is difficult to encode in a purely static-checked manner, regardless of the policy model used, since the set of attendees of a meeting is a runtime value. In JIF's case, there is no model for expressing the concept of an arbitrary set of principals through the type system: a class may be parametrised by \textit{one} principal, but not a set of them.
@@ -116,6 +118,8 @@ This problem was encountered by researchers at Pennsylvania State University in 
 In practice, the JIF implementation for this case study attempts to make use of JIF's runtime \mono{Principal} class to work around the issue of dynamic principals. In practice however, this was not effective: the program could be written, but the compiler would not properly enforce information flow constraints on it, allowing information to be printed out which should contravene the flow policy.
 
 \subsection{Paragon Implementation}
+
+A condensed code printout, containing critical sections of the Paragon implementation for the Calendar Scheduler, is listed in Appendix \ref{appendix_csched_para}.
 
 \subsubsection{Dealing with Sets of Users}
 

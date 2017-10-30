@@ -108,6 +108,8 @@ The structure uses the following classes:
 
 \subsection{JIF Implementation} \label{cs_conf_jif_impl}
 
+A condensed code printout, containing critical sections of the JIF implementation for the Conference Management System, is listed in Appendix \ref{appendix_conf_jif}.
+
 \subsubsection{`Semi-parametric' Paper Policy}
 
 The \mono{Paper} class requires that the title and abstract fields be low confidentiality, but that the list of authors be restricted. Since \mono{Paper} is essentially a data type class, it is desirable to make it as generic as possible. In order to avoid hard coding each policy, it is possible to simply use two label type parameters. However, this reduces readability, as it is not immediately clear what the implications of instantiating a \mono{Paper[\jiflabel{O->*}, \jiflabel{O->_}]} are.
@@ -233,6 +235,8 @@ if (!allocationsVisible) {
 This snippet instead releases the session number (and hence leaks the acceptance status) \textit{before} timed release. This violates the security properties of the case study, but JIF's type system does not provide any means by which to control this, and hence provides no more guarantee of confidentiality than plain Java would in this scenario.
 
 \subsection{Paragon Implementation}
+
+A condensed code printout, containing critical sections of the Paragon implementation for the Conference Management System, is listed in Appendix \ref{appendix_conf_para}.
 
 \subsubsection{`Semi-parametric' Paper Policy}
 
