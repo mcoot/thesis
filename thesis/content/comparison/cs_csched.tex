@@ -69,6 +69,8 @@ Both calendar scheduler implementations follow the following class structure:
 	\begin{itemize}
 		\item The time information about the meeting is low confidentiality
 		
+		\item The list of attendees of the meeting is treated as low confidentiality for the implementations
+		
 		\item The title is secret and is accessible only to attendees of the meeting
 	\end{itemize}
 
@@ -109,7 +111,7 @@ Restricting the confidentiality policy to a single meeting owner rather than a l
 
 \subsubsection{Dynamic Users}
 
-The initial design of the case study implementation has the \mono{User} class, each instance of which is associated with a user of the application. Unlike Paragon, JIF does not use object instances as actors, and so there is no connection in the type system between a \mono{User} instance and the principal it would represent.
+The initial design of the case study implementation has the \code{User} class, each instance of which is associated with a user of the application. Unlike Paragon, JIF does not use object instances as actors, and so there is no connection in the type system between a \mono{User} instance and the principal it would represent.
 
 This presents a challenge for development: for the application to make sense, it should not be hard-coded to some predefined list of principals. In JIF, this is not possible at the top level: principals are types (i.e. classes) and it is not possible to dynamically create them without reflection (which JIF does not support).
 
@@ -123,25 +125,68 @@ A condensed code printout, containing critical sections of the Paragon implement
 
 \subsubsection{Dealing with Sets of Users}
 
-The quantification issue also affects Paragon. Paragon's policy language uses objects as actors and allows quantification over them, and so it is able to get closer to modelling the concept. A binary lock \mono{isAttending(User, Meeting)} may be defined, where the lock is open for User \mono{u} and Meeting \mono{m} (i.e. \mono{isAttending(u, m)}) if \mono{u} is in the list of attendees of \mono{m}.
+The quantification issue also affects Paragon. Paragon's policy language uses objects as actors and allows quantification over them, and so it is able to get closer to modelling the concept. A binary lock \code{isAttending(User, Meeting)} may be defined, where the lock is open for User \code{u} and Meeting \code{m} (i.e. \code{isAttending(u, m)}) if \code{u} is in the list of attendees of \code{m}.
 
-Since the list of attendees itself is a runtime value, this status cannot automatically be `linked' to the relation via a lock property: the lock must be opened manually for each attendee when the Meeting object is created. While the policy language allows this to be expressed, the Paragon compiler is not able to perform the necessary static analysis to enforce this, and hence when secret data is accessed (e.g. by printing out the Meeting via its \mono{toString} method), the compiler cannot tell whether the lock is in fact open. Paragon estimates the lock state conservatively, and therefore since it cannot be \textit{sure} the lock is open, it treats it as closed, causing compile errors.
+Since the list of attendees itself is a runtime value, this status cannot automatically be `linked' to the relation via a lock property: the lock must be opened manually for each attendee when the Meeting object is created, via the code snippet below from the constructor of \code{Meeting}:
+
+\begin{minted}{java}
+this.users = new LinkedList<User, {Object x:}>();
+for (int i = 0; i < attendees.size(); ++i) {
+	// attendees is the list of attendees passed to the constructor
+	User u = attendees.get(i);
+	open isAttending(u, self);
+	this.users.add(u);
+} 
+\end{minted}
+
+While the policy language allows this to be expressed, the Paragon compiler is not able to perform the necessary static analysis to enforce this, and hence when secret data is accessed (e.g. by printing out the Meeting via its \mono{toString} method), the compiler cannot tell whether the lock is in fact open. Paragon estimates the lock state conservatively, and therefore since it cannot be \textit{sure} the lock is open, it treats it as closed, causing compile errors.
 
 Paragon has two methods for getting around this, corresponding to the two mechanisms demonstrated in the Conference Management example: either method annotations can be used to restrict where the method may be called, or a run-time check can be used to provide a code context in which the lock is known to be open.
 
-The former option cannot be applied to this case, because while it is possible to require a lock to be open (through something of the form \mono{\textasciitilde someLock}), for a binary lock one cannot quantify over the lock's parameters. That is, to express this policy an annotation would have to encode the concept ``\mono{isAttending(u, m)} must be open for the current instance \mono{m}, \textit{for all} users \mono{u} such that \mono{u} $ \in $ \mono{attendees}."
+The former option cannot be applied to this case, because while it is possible to require a lock to be open (through something of the form \code{~someLock}), for a binary lock one cannot quantify over the lock's parameters. That is, to express this policy an annotation would have to encode the concept ``\code{isAttending(u, m)} must be open for the current instance \mono{m}, \textit{for all} users \code{u} such that \code{u} $ \in $ \code{attendees}."
 
-The latter method can be expressed by a runtime check in a for loop, and will produce compiling code. However, this approach was also abandoned in implementation because while the policy language allows for it, the Paragon compiler failed to then use this information correctly: it would actually \textit{violate} the required policy and allow a non-attendee to print out the secret information.
+The latter method can be expressed by a runtime check in a for loop, and will produce compiling code; this is presented in the following snippet from the \code{Calendar} class:
+
+\begin{minted}{java}
+public ?{viewer: } String getCalendarRepresentation(notnull User viewer) {
+	?{viewer: } String s = user.toString() + "'s Calendar:\n---";
+	for (int i = 0; i < meetings.size(); ++i) {
+		Meeting m = meetings.get(i);
+		if (Meeting.isAttending(viewer, m)) {
+			s += m.toString();
+		}
+	}
+	return s;
+}
+\end{minted}
+
+However, this approach was also unsuccessful in implementation because while the policy language allows for it, the Paragon compiler failed to then use this information correctly: it would actually \textit{violate} the required policy and allow a non-attendee to print out the secret information.
 
 % map / singleton
 
 \subsubsection{Ownership model issues}
 
-The final implementation uses the simplified `owner policy', since this is more easily expressed in Paragon's model. As with JIF, a type parameter-based implementation is possible. Unlike JIF, Paragon's policy language has explicit support for dynamic actors (since actors are simply object instances), and its extension of Java's generics allow for more flexibility, as well as generic methods, which JIF lacks entirely.
+A version of the implementation that uses the simplified `owner policy' was produced, since this is more easily expressed in Paragon's model. As with JIF, a type parameter-based implementation is possible. Unlike JIF, Paragon's policy language has explicit support for dynamic actors (since actors are simply object instances), and its extension of Java's generics allow for more flexibility, as well as generic methods, which JIF lacks entirely.
 
-The Paragon implementation produced avoids parametrising meetings by their owner, instead opting to keep a reference to the owner instance via a final field. This concept requires the `objects as actors' model and hence has no clear mapping to JIF.
+The Paragon implementation produced avoids parametrising meetings by their owner, instead opting to keep a reference to the owner instance via a final field \code{user}. This concept requires the `objects as actors' model and hence has no clear mapping to JIF.
 
-Functionally, this means that the binary lock \mono{isOwner(User, Meeting)} guards access to the confidential meeting title information. Since this will only be true for one user, the quantification issue does not arise. However, in practice, Paragon's compiler was still unable to correctly analyse this: runtime checks are still required since the compiler is unable to statically determine the correct user, and once these checks are added, the compiler incorrectly allows users other than the owner to print out information.
+Functionally, this means that the binary lock \code{isOwner(User, Meeting)} guards access to the confidential meeting title information. Since this will only be true for one user, the quantification issue does not arise. This policy's version of the \code{getCalendarRepresentation} shown above is listed below:
+
+\begin{minted}{java}
+ public ?{user:} String getCalendarRepresentation() {
+	?{user:} String s = user.toString() + "'s Calendar:\n---";
+	for (int i = 0; i < meetings.size(); ++i) {
+		?{Object x:} Meeting m = meetings.get(i);
+		s += "\n";
+		if (Meeting.isOwner(user, m.self)) {
+			s += m.toString();
+		}
+	}
+	return s;
+}
+\end{minted}
+
+ However, in practice, Paragon's compiler was still unable to correctly analyse this: runtime checks are still required since the compiler is unable to statically determine the correct user, and once these checks are added, the compiler incorrectly allows users other than the owner to print out information.
 
 This appears to be a practical issue with the immaturity of the Paragon compiler: interpreting the verbose-mode output of the compiler indicates that the actor identifier being associated with the owners of each meeting is the same, where in fact at runtime these owners will be different instances.
 

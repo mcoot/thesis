@@ -90,13 +90,13 @@ In the above, the method operates with Alice's authority, and is therefore able 
 
 \subsection{Sample Class: Diary} \label{jif_bg_sample_diary}
 
-The class in \autoref{lst_diary_jif} implements the policy scenario from \ref{theory_dac_limitations}. Alice has ownership over the diary, and allows Betty to read it. The program will not allow Betty to propagate access to Mal: a program which did this would fail to compile.
+The class in \autoref{lst_diary_jif} implements the policy scenario from \ref{theory_dac_limitations}. Alice has ownership over the diary, and allows Betty to read it. The program will not let Betty propagate access to Mal: a program which did would not compile.
 
 JIF's type system ensures that explicit and implict flows are valid, as in the \mono{readDiary} and \mono{isTheSecret5} methods respectively. It includes the \mono{declassifyDiary} method; only by an explicit call to this method can Mal gain access.
 
 \begin{listing}[!ht]
-	\caption{JIF Diary Implementation}
 	\inputminted{java}{content/code_sections/jif_para_bg/Diary.jif}
+	\caption{JIF Diary Implementation}
 	\label{lst_diary_jif}
 \end{listing}
 
@@ -107,8 +107,8 @@ JIF's type system ensures that explicit and implict flows are valid, as in the \
 Consider the modified (and abridged) version of the previous class in \autoref{lst_diary_jif_error}:
 
 \begin{listing}[!ht]
-	\caption{Erroneous JIF Diary Implementation}
 	\inputminted{java}{content/code_sections/jif_para_bg/DiaryError.jif}
+	\caption{Erroneous JIF Diary Implementation}
 	\label{lst_diary_jif_error}
 \end{listing}
 

@@ -31,8 +31,6 @@ public class Meeting[principal Owner] {
 
 
 
-
-
 /*
  * A calendar of meetings belonging to a user
  * The user is represented by the Owner principal type parameter

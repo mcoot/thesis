@@ -29,9 +29,6 @@ public class Paper[label AuthorLabel] implements JifObject[AuthorLabel] {
 
 
 
-
-
-
 /* The conference system which allows for 
  * paper submission and session allocation.
  * O is the principal representing the organiser

@@ -312,9 +312,7 @@ MyClass<String, {Object x:}, alice> instance;
 instance = new MyClass<String, {Object x:}, alice>();
 \end{minted}
 
-Policy generics are commonly used to give some internal component of an instance a different but polymorphic policy to the instance itself -- for instance, an ArrayList allowing specification of the policy of each element. Actor generics are used to denote ownership, where a class specifies a policy, but instances may `belong' to any actor.
-
-% TODO: Reword actor generics stuff
+Policy generics are commonly used to give some internal component of an instance a different but polymorphic policy to the instance itself -- for instance, an ArrayList allowing specification of the policy of each element. Actor generics allow for fixed, non-polymorphic policy where the policy may be applied to any actor -- for instance, a diary may have a fixed policy (that only its owner may view the contents), but with an actor generic diaries belonging to any person may be constructed.
 
 \subsubsection{Java Interoperability}
 

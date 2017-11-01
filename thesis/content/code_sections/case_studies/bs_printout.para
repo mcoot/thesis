@@ -34,8 +34,6 @@ public class Board<policy shipPolicy> {
 
 
 
-
-
 /*
  * Player, associated with principal P. Their opponent is principal O.
  * Allows the opponent to learn information about the board 

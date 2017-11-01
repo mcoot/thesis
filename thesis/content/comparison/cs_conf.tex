@@ -56,7 +56,7 @@ This is an inherently dynamic policy: it cannot be represented in a static latti
 
 The first aspect of the policy, that papers' acceptance status remain hidden until release, provides an illustration of how implicit information flows must be taken into consideration. It is relatively straightforward to prevent an explicit leak of this information (for example, from a method that returns whether or not the paper has been accepted), but in order to prevent \textit{all} flow, the security type system must also prevent any information whose value depends on the acceptance status from being leaked.
 
-In the example application, this requirement is demonstrated through the ability for users to retrieve the session allocation for a given paper. Since any paper which has been allocated to a session must have been accepted, leaking the session allocation implies a leak of the acceptance status. This precise issue occurred in the EDAS conference management system \cite{agrawal2016edas_conf}, and is discussed in relation to an alternative approach to information flow by \citeauthor{polikarpova2016lifty} \cite{polikarpova2016lifty}.
+In the example application, this requirement is demonstrated through the ability for users to retrieve the session allocation for a given paper. Since any paper which has been allocated to a session must have been accepted, leaking the session allocation implies a leak of the acceptance status. This precise issue occurred in the EDAS conference management system \cite{agrawal2016edas_conf}, and is discussed in relation to an alternative approach to information flow security by \citeauthor{polikarpova2016lifty} \cite{polikarpova2016lifty}.
 
 Hence, the session allocation for a given paper must also be guarded at the same level of confidentiality as its acceptance status.
 
@@ -112,9 +112,17 @@ A condensed code printout, containing critical sections of the JIF implementatio
 
 \subsubsection{`Semi-parametric' Paper Policy}
 
-The \mono{Paper} class requires that the title and abstract fields be low confidentiality, but that the list of authors be restricted. Since \mono{Paper} is essentially a data type class, it is desirable to make it as generic as possible. In order to avoid hard coding each policy, it is possible to simply use two label type parameters. However, this reduces readability, as it is not immediately clear what the implications of instantiating a \mono{Paper[\jiflabel{O->*}, \jiflabel{O->_}]} are.
+The \mono{Paper} class requires that the title and abstract fields have low confidentiality, but that the list of authors be restricted. Since \mono{Paper} is essentially a data type class, it is desirable to make it as generic as possible. In order to avoid hard coding each policy, it is possible to simply use two label type parameters. However, this reduces readability, as it is not immediately clear what the implications of instantiating a \mono{Paper[\jiflabel{O->*}, \jiflabel{O->_}]} are.
 
 For this reason, the implementation instead uses a single label type parameter to represent the restriction on the author list, and makes use of the special \jiflabel{this} label so that a given \mono{Paper}'s title and abstract have their policy determined by that of the instance itself.
+
+\begin{minted}{java}
+public class Paper[label AuthorLabel] implements JifObject[AuthorLabel] {
+	private final String{this} title;
+	private final String{this} paperAbstract;
+	private final Author{AuthorLabel}[]{AuthorLabel} authors;
+}
+\end{minted}
 
 \subsubsection{Data Structures in JIF}
 

@@ -3,8 +3,7 @@ public class User {
     public final ?policyof(this) String name;
 }
 
-/* Represents a single meeting at a time, title and list of attendees
- * The title should only be visible to attendees */
+/* Represents a meeting with a time visible only to attendees */
 public class Meeting {
     public static final policy bottom = {Object x: };
     // Lock which is open when a user is attending a given meeting
@@ -23,7 +22,6 @@ public class Meeting {
                            ?attendeesOnly String title, 
 						   ?bottom LinkedList<User, bottom> attendees) {
         ...
-        users = new LinkedList<User, bottom>();
         for (int i = 0; i < attendees.size(); ++i) {
             User u = attendees.get(i);
             // Indicate that this user is attending the meeting

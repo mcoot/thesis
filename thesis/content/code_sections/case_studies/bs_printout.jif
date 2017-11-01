@@ -31,9 +31,6 @@ public class Board[label L] {
 
 
 
-
-
-
 /*
  * Player, associated with principal P. Their opponent is principal O.
  * Allows the opponent to learn information about the board
@@ -62,6 +59,7 @@ public class BattleShip[principal P1, principal P2] authority (P1, P2) {
         ...
     }
 }
+
 
 
 

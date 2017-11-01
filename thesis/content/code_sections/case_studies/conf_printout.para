@@ -34,8 +34,6 @@ public class Paper<policy authorRestriction> {
 
 
 
-
-
 /*
  * Conference system which allows for paper submission 
  * and session allocation. Imposes 'timed release' policy 
