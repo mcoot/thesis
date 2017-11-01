@@ -1,12 +1,12 @@
 public class DiaryError authority (Alice) {
-	private int{Alice->Betty} secretNumber;
+	private int{Alice->Betty} diaryEntry;
 	
 	public DiaryError() {
-		secretNumber = 5;
+		diaryEntry = 5;
 	}
 	
 	public int{Alice->Betty,Mal} readDiary() {
-		return secretNumber;
+		return diaryEntry;
 	}
 	...	
 }

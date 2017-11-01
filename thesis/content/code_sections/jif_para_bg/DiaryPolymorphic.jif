@@ -1,17 +1,17 @@
 public class DiaryPolymorphic[label L] authority (Alice) {
-	private int{L} secretNumber;
+	private int{L} diaryEntry;
 	
 	public Diary() {
-		secretNumber = 5;
+		diaryEntry = 5;
 	}
 	
 	public int{L} readDiary() {
-		return secretNumber;
+		return diaryEntry;
 	}
 	
 	public boolean{L} isTheSecret5() {
 		boolean result;
-		if (secretNumber == 5) {
+		if (diaryEntry == 5) {
 			return true;
 		} else {
 			return false;
@@ -22,7 +22,7 @@ public class DiaryPolymorphic[label L] authority (Alice) {
 	declassifyDiary{*lbl}(label lbl)
 	where authority(Alice) {
 		int result = 
-			declassify(secretNumber, 
+			declassify(diaryEntry, 
 					   {L} to {*lbl});
 		return result;
 	}

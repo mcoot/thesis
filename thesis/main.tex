@@ -15,9 +15,24 @@
 
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
+\usepackage[titles]{tocloft}
+\usepackage{newfloat}
+\newlistof{listing}{lol}{List of Listings}
+\usepackage{caption}
 \usepackage{minted}
-\setminted{tabsize=4, linenos}
+\setminted[newfloat]{tabsize=4, linenos}
 
+\newenvironment{codelst}{\captionsetup{type=listing}}{}
+\SetupFloatingEnvironment{listing}{%
+	name={Listing},
+	fileext=lol}
+
+\renewcommand{\cftfigpresnum}{Figure~}
+\setlength{\cftfigindent}{0pt}
+\setlength{\cftfignumwidth}{2cm}
+
+\renewcommand{\cftlistingpresnum}{Listing~}
+\setlength{\cftlistingnumwidth}{2cm}
 
 \usepackage{graphics}
 

@@ -15,7 +15,6 @@
     declared return value label. The declared return type of this method is
     int{Alice→Betty,Mal}. As such, values returned by this method can have a
     label of at most Lrv.
-                return secretNumber;
-                ^------------------^
-
+                return diaryEntry;
+                ^----------------^
 1 error.

@@ -2,7 +2,7 @@
 
 \subsection{Relation to Plain Java}
 
-Like JIF, Paragon \cite{parawebsite} is an extension upon the Java language. Unlike JIF, Paragon includes support for a number of more recent Java features -- most notably, Java generics. Paragon's own generic features, discussed in more detail in \ref{para_generics} below, make use of the standard Java angle brackets syntax and hence can be mixed with Java type parameters.
+Like JIF, Paragon \cite{parawebsite} is an extension of the Java language. Unlike JIF, Paragon includes support for a number of more recent Java features -- most notably, Java generics. Paragon's own generic features, discussed in more detail in \ref{para_generics} below, make use of the standard Java angle brackets syntax and hence can be mixed with Java type parameters.
 
 Like JIF, there are a number of differences between writing a program in Paragon and writing one in plain Java, including the following:
 
@@ -183,7 +183,7 @@ policy p1 = {User u: unaryLock(u)};
 policy p2 = {(User u) User v: binaryLock(u, v)};
 \end{minted}
 
-Note that the use of \mono{(User u)} in the head of policy \mono{p2} indicates quantification, in this case existential. In natural language, \mono{p2} states that: ``Information may flow to any User \mono{v} if there exists some \mono{v} such that \mono{binaryLock(u, v)} is open."
+Note that the use of \mono{(User u)} in the head of policy \mono{p2} indicates quantification, in this case existential. In natural language, \mono{p2} states that: ``Information may flow to any User \mono{v} if there exists some \mono{u} such that \mono{binaryLock(u, v)} is open."
 
 Commonly, unary locks may be used to model dynamic \textit{roles} -- where the information that may flow to an actor depends on their current role or status. Binary locks are often used to model \textit{relationships} between actors \cite{broberg2013paragon}.
 
@@ -195,7 +195,7 @@ In order to allow for clearer policy definition and reduce policy-related boiler
 lock myLock(User, User) {(User a, b) myLock(b, a): myLock(b, a)};
 \end{minted}
 
-This states that for users \mono{a} and \mono{b}, \mono{myLock(b, a)} is implicitly open if mono{myLock(b, a)} is open -- when regarded as a binary relation, \mono{myLock} is symmetric.
+This states that for users \mono{a} and \mono{b}, \mono{myLock(b, a)} is implicitly open whenever \mono{myLock(b, a)} is open -- when regarded as a binary relation, \mono{myLock} is symmetric.
 
 Many possible lock properties can be defined depending on the program's overall policy, but Paragon provides shorthand modifiers for symmetry, reflexivity and transitivity, allowing for a binary lock defined as:
 
@@ -226,17 +226,31 @@ One noteworthy limitation in Paragon's lock annotation syntax is that it is not 
 
 \subsection{Sample Class: Diary}
 
-\inputminted{java}{content/code_sections/jif_para_bg/Diary.para}
+\begin{listing}[!ht]
+	\inputminted{java}{content/code_sections/jif_para_bg/Diary.para}
+	\caption{Paragon Diary Implementation}
+	\label{lst_diary_para}
+\end{listing}
 
-This implementation of the Diary scenario is equivalent to that in \ref{jif_bg_sample_diary}; here the \mono{declassifier} lock is opened very briefly in order to allow the declassification to occur.
+The implementation in \autoref{lst_diary_para} is equivalent to the JIF version in \autoref{lst_diary_jif}; here the \mono{declassifier} lock is opened briefly in order to allow declassification.
 
 \subsubsection{Compilation Failure in Paragon}
 
-\inputminted{java}{content/code_sections/jif_para_bg/DiaryError.para}
+\begin{listing}[!ht]
+	\inputminted{java}{content/code_sections/jif_para_bg/DiaryError.para}
+	\caption{Erroneous Paragon Diary Implementation}
+	\label{lst_diary_para_error}
+\end{listing}
 
-As with the JIF version, modifying the policy on \mono{readDiary} from its intended \mono{?aliceAndBetty} to \mono{?everyOne} produced a compiler error, stating that the returned information is higher confidentiality than the method's label. Paragon's compiler message, below, is more succinct than JIF's, although Paragon is unable to identify the line on which the error occurs.
+As with the JIF version, modifying the policy on \mono{readDiary} as in \autoref{lst_diary_para_error} from its intended \mono{?aliceAndBetty} to \mono{?everyOne} produced a compiler error, stating that the returned information is higher confidentiality than the method's label. Paragon's compiler message in \autoref{lst_diary_para_error_message}, is more succinct than JIF's, although Paragon is unable to identify the line on which the error occurs.
 
-\inputminted[fontsize=\footnotesize]{text}{content/code_sections/jif_para_bg/DiaryError_message_para.txt}
+\begin{listing}[!ht]
+	\inputminted[fontsize=\footnotesize]{text}{content/code_sections/jif_para_bg/DiaryError_message_para.txt}
+	\caption{Erroneous Paragon Diary Implementation: Compiler Message}
+	\label{lst_diary_para_error_message}
+\end{listing}
+
+
 
 \subsection{Security Type Polymorphism} \label{para_generics}
 
@@ -299,6 +313,8 @@ instance = new MyClass<String, {Object x:}, alice>();
 \end{minted}
 
 Policy generics are commonly used to give some internal component of an instance a different but polymorphic policy to the instance itself -- for instance, an ArrayList allowing specification of the policy of each element. Actor generics are used to denote ownership, where a class specifies a policy, but instances may `belong' to any actor.
+
+% TODO: Reword actor generics stuff
 
 \subsubsection{Java Interoperability}
 

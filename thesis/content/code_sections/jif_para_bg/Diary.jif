@@ -1,17 +1,17 @@
 public class Diary authority (Alice) {
-	private int{Alice->Betty} secretNumber;
+	private int{Alice->Betty} diaryEntry;
 	
 	public Diary() {
-		secretNumber = 5;
+		diaryEntry = 5;
 	}
 	
 	public int{Alice->Betty} readDiary() {
-		return secretNumber;
+		return diaryEntry;
 	}
 	
 	public boolean{Alice->Betty} isTheSecret5() {
 		boolean result;
-		if (secretNumber == 5) {
+		if (diaryEntry == 5) {
 			return true;
 		} else {
 			return false;
@@ -22,8 +22,8 @@ public class Diary authority (Alice) {
 	declassifyDiary{Alice->Betty,Mal}()
 	where authority(Alice) {
 		int result = 
-			declassify(secretNumber, 
-					   {Alice->Betty} to {Alice->Betty,Mal});
+			declassify(diaryEntry, 
+				   {Alice->Betty} to {Alice->Betty,Mal});
 		return result;
 	}
 }

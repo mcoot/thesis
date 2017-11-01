@@ -3,6 +3,6 @@ In the context of class DiaryError:
 In the context of method readDiary:
 In the context of lock state []:
 Returned value has too restrictive policy:
-Return expression: secretNumber
+Return expression: diaryEntry
   with policy: { alice#1 :; betty#2 :; mal#3 : declassifier}
 Declared policy bound: { alice#1 :; betty#2 :; mal#3 :}

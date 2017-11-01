@@ -2,7 +2,6 @@ public class DiaryError {
 	public static final User alice = new User("Alice");
 	public static final User betty = new User("Betty");
 	public static final User mal = new User("Mal");
-	
 	private lock declassifier;
 	public static final policy aliceAndBetty = {
 		alice: ; betty: ; mal: declassifier 
@@ -10,15 +9,14 @@ public class DiaryError {
 	public static final policy everyone = {
 		alice: ; betty: ; mal: 
 	};
-	
-	private ?aliceAndBetty int secretNumber;
+	private ?aliceAndBetty int diaryEntry;
 	
 	public DiaryError() {
-		secretNumber = 5;
+		diaryEntry = 5;
 	}
 	
 	public ?everyone int readDiary() {
-		return secretNumber;
+		return diaryEntry;
 	}
 	...
 }

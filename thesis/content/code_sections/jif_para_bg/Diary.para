@@ -9,26 +9,25 @@ public class Diary {
 	public static final policy everyone = {
 		alice: ; betty: ; mal: 
 	};
-	
-	private ?aliceAndBetty int secretNumber;
+	private ?aliceAndBetty int diaryEntry;
 	
 	public Diary() {
-		secretNumber = 5;
+		diaryEntry = 5;
 	}
 	
 	public ?aliceAndBetty int readDiary() {
-		return secretNumber;
+		return diaryEntry;
 	}
 	
 	public ?aliceAndBetty boolean isTheSecret5() {
 		boolean result;
-		return secretNumber == 5;
+		return diaryEntry == 5;
 	}
 	
 	public ?everyone int declassifyDiary() {
 		int result;
 		open declassifier {
-			result = secretNumber;
+			result = diaryEntry;
 		};
 		return result;
 	}

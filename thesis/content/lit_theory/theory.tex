@@ -122,7 +122,7 @@ The Simple Security Property prevents users with insufficient clearance from acc
 
 Lattice-based Mandatory Access Control may be applied to computer systems, just as Alice's diary or to physical documents. Such systems generally use a `high water mark' approach \cite{jones1975highwatermark}, allowing programs to begin at low clearance and only moving to higher clearance as needed.
 
-\section{The Java Security Model}
+\section{The Java Security Model} \label{theory_javasec}
 
 The Java programming language was designed in the context of emerging internet technologies, with the explict use case of users downloading and running `applets' from web pages \cite{gong1999javasecspec}. As such, security was a core consideration in Java's design -- the original design goals document \cite{javadesignprinciples} specifies that ``applications written in the Java programming language are secure from intrusion by unauthorized code."
  
@@ -152,7 +152,7 @@ The Bell-LaPadula Lattice Model used in MAC may be used to control the \textit{f
 
 \section{Formal Non-interference \& Static Information Flow} \label{theory_if_noninterference}
 
-The traditional MAC model, including controls against information leaks (such as via the *-property), may be implemented in a real system via runtime-enforced access control checks. However, an important question remains: how does the program's author know whether it's implemented \textit{correctly}? Many security issues are the result of unintentional programmer error, and so it is useful to approach Information Flow security from the perspective of program verification.
+The traditional MAC model, including controls against information leaks (such as via the *-property), may be implemented in a real system via runtime-enforced access control checks. However, an important question remains: how does the program's author know whether it is implemented \textit{correctly}? Many security issues are the result of unintentional programmer error, and so it is useful to approach Information Flow security from the perspective of program verification.
 
 This goal can be more clearly defined through the notion of `non-interference'. A program is said to be non-interfering if, given any two program executions which are identical in terms of their low confidentiality input, the results and behaviour of the executions are indistinguishable in terms of their low confidentiality output \cite{sabelfeld2003if}. Equivalently, a program is non-interfering if there is no \textit{dependency} of low confidentiality data on high confidentiality data \cite{cohen1977declassification}.
 
@@ -160,9 +160,7 @@ For example, consider a function $ f: L \times H \rightarrow L \times H $, where
 
 Consider instead $ g: L \times H \rightarrow L \times H $, where $ g(l, h) = \langle l + 5, \frac{l + h}{2} \rangle $; $ g $'s high output is the same as that of $ f $, but its low output simply adds $ 5 $ to the low input $ l $. This function is \textit{non-interfering}: the low output has no dependency upon the high input.
 
-In \citetitle{denning1977certification}, \citeauthor{denning1977certification} \cite{denning1977certification} provide a mechanism to verify a program as correctly respecting a lattice-model policy using type checking. All variables are assigned a classification, and the analyser ensures that the policy is not broken under any execution path. A language which makes use of type checking-based flow verification is considered a \textit{security typed} language. This approach differs from the runtime-checked approaches seen in implementations of access control, as a security typed language can control information flow via static checking, producing no runtime overhead.
-
-The type checker's semantics prevent high confidentiality information moving to a lower classification. So, for instance, the following code would be invalid:
+For programs written in languages like Java which allow mutable state, it is difficult to accurately capture a program's entire output as a function of its input. Instead, non-interference checking for these languages considers the flow of information through the system, through assignment to variables and through calls to method which incur side effects (such as printing the value of a variable to the screen, or to a file). So, for instance, the following code would be invalid:
 
 \begin{algorithmic}
 \State $ high := 1 $
@@ -173,7 +171,7 @@ Clearly, assigning the value of a high confidentiality variable to a variable wi
 
 \subsection{Implicit Flows}
 
-\citeauthor{denning1977certification} \cite{denning1977certification} categorise the flows of information within a program into \textit{explicit} and \textit{implicit} flows. An explicit flow $ x \rightarrow y $ is one such as an assignment $ y := x $, where the operation performed is independent of the actual value of $ x $. An implicit flow $ x \rightarrow y $ is then any arbitrary flow $ z \rightarrow y $ where the execution depends on the value of $ x $. 
+\citeauthor{denning1977certification} \cite{denning1977certification} categorise the flows of information within a program into \textit{explicit} and \textit{implicit} flows. An explicit flow $ x \rightarrow y $ is one such as an assignment $ y := x $, where the value assigned to a variable $ y $ is directly dependent on the value of variable $ x $. An implicit flow $ x \rightarrow y $ is then any arbitrary flow $ z \rightarrow y $ where $ z $ may not be directly related to $ x $, but whether or not the statement is executed depends on the value of $ x $.
 
 A simple example of an implicit flow causing an information leak is one where execution branches based on the value of a high confidentiality variable:
 
@@ -191,27 +189,7 @@ Here, someone with access to the $ low $ variable knows that $ low $ will only h
 
 For a program to be non-interfering, a passive attacker must not be able to distinguish \textit{any} information about high confidentiality data; hence implicit flows which allow an attacker to learn high confidentiality information must be prevented \cite{sabelfeld2003if}.
 
-
-To handle implicit flow of confidentiality via the flow of control, the type checker must consider the confidentiality of the execution \textit{context}. The above snippet's if statement represents a `high context' where assignments to low confidentiality variables is impermissible.
-
-\subsection{Undecidability in the General Case}
-
-The type checking approach to proving non-interference is necessarily conservative: there will always be some programs which are non-interfering which will nonetheless be rejected by the static analysis. This goes beyond being a limitation of current models: determining a condition which is both necessary and sufficient for a program to be non-interfering is an undecidable problem \cite{denning1977certification} \cite{landi1992undecidability} -- it may be reduced to the halting problem \cite{sabelfeld2003if}.
-
-%This can be seen quite intuitively. Let $ S $ be an arbitrary procedure which affects only low confidentiality variables, and then consider the following \cite{sabelfeld2003if}:
-%
-%\begin{algorithmic}
-%	\If {$ high = 1 $}
-%	\State $ S() $
-%	\State $ low := 1 $
-%	\Else
-%	\State skip
-%	\EndIf
-%\end{algorithmic}
-
-%Determining whether this program actually produces an invalid flow from $ high \rightarrow low $ requires proving that the procedure call $ S() $ will terminate. By this reduction, proving a program's non-interference in the general case may be reduced to the halting problem \cite{denning1977certification}.
-
-In practice, systems for statically analysing information flow attempt to ensure that they reject as few \textit{useful} valid programs as is feasible.
+To handle implicit flow of confidentiality via the flow of control, the confidentiality of the execution \textit{context} must be considered. The above snippet's conditional statement represents a `high context' where assignments to low confidentiality variables is impermissible.
 
 \subsection{Covert Channels \& Attacker Model}
 
@@ -234,11 +212,29 @@ A program can only be considered secure \textit{with respect to its environment}
 
 \citeauthor{sabelfeld2003if} \cite{sabelfeld2003if} address a number of possible covert channels which impact on information flow analysis, including timing channels like the above, termination-sensitivity (i.e. whether a program terminates at all), system power usage, and probabilistic channels for programs with stochastic behaviour. Notions of non-interference which examine these channels may be constructed, though doing so will further restrict the potential acceptable programs which may be written.
 
-Hence, proving a program's non-interference through static checking is not a panacea: a program's environment and attacker model must still be considered. In some contexts, `timing-sensitive' non-interference may be necessary, but enforcing that a program will never differ in execution time based on high confidentiality information has quite obvious drawbacks in the performance of a valid program and in the kinds of programs which may be written.
+Hence, proving a program's non-interference under the model presented thus far is not a panacea: a program's environment and attacker model must still be considered. In some contexts, `timing-sensitive' non-interference may be necessary, but enforcing that a program will never differ in execution time based on high confidentiality information has quite obvious drawbacks in the performance of a valid program and in the kinds of programs which may be written.
+
+\section{Enforcement \& Security Typing}
+
+\subsection{Enforcement Mechanisms}
+
+Enforcement of access control mechanisms is typically done at runtime, as with the Java security model (described in \ref{theory_javasec}), by performing checks whenever a potentially sensitive operation is performed. While some implementations of information flow security are also based on runtime checks \cite{austin2009runtimeflow} \cite{degroef2012flowfox} \cite{polikarpova2016lifty}, treating information flow as a problem of program verification allows for a guarantee of non-interference with no runtime overhead.
+
+\subsection{Security Typing}
+
+In \citetitle{denning1977certification}, \citeauthor{denning1977certification} \cite{denning1977certification} provide a mechanism to verify a program as correctly respecting a lattice-model policy using type checking. All variables are assigned a classification, and the analyser ensures that the policy is not broken under any execution path via a set of type semantics. A language which makes use of type checking-based flow verification is considered a \textit{security typed} language.
+
+The nature of the type semantics used, and hence the complexity of the typing ruleset, depends on the policy model being enforced. \citeauthor{denning1977certification} \cite{denning1977certification} enforce a Bell-LaPadula lattice model policy, and so variable assignments from a variable with a lower security type to a higher security type would fail to compile, as would modification of low confidentiality variables inside a high conditional.
+
+\subsection{Undecidability in the General Case}
+
+The type checking approach to proving non-interference is necessarily conservative: there will always be some programs which are non-interfering which will nonetheless be rejected by the static analysis. This goes beyond being a limitation of current models: determining a condition which is both necessary and sufficient for a program to be non-interfering is an undecidable problem \cite{denning1977certification} \cite{landi1992undecidability} -- it may be reduced to the halting problem \cite{sabelfeld2003if}.
+
+In practice, systems for statically analysing information flow attempt to ensure that they reject as few \textit{useful} valid programs as is feasible.
 
 \section{Declassification}
 
-A program which is provably non-interfering provides useful guarantees around a program's behaviour: in the military context for which MAC was designed, it ensures that a program running in a high confidentiality environment cannot as a matter of course declassify information to a lower level. However, in most contexts, requiring strict non-interference prevents useful and necessary programs from being written.
+A program which is provably non-interfering provides useful guarantees about a program's behaviour: in the military context for which MAC was designed, it ensures that a program running in a high confidentiality environment cannot declassify information to a lower level. However, in most contexts, requiring strict non-interference prevents useful and necessary programs from being written.
 
 One example of this is a `password checker' program. The true value of the password is confidential, and the user must provide a correct guess in order to log in. Clearly the operation of the program depends on the value of the high confidentiality password, and a user attempting to log in learns some information about it -- even if rejected, the user has learned that the true password is \textit{not} equal to their guess.
 
@@ -280,15 +276,15 @@ As with Denning model systems, `declassify' syntax may be used with the DLM to p
 
 The Denning model uses MAC classification labels, and the DLM extends this with a decentralised model of information ownership. Both models control declassification with the introduction of explicit constructs which declare that information downgrade is taking place. \citeauthor{broberg2006flow} \cite{broberg2006flow} propose an alternative form of policy specification using predicate logic.
 
-Under this model, policies are statements of which subjects may access the data. Policies may specify individual subjects (e.g. a policy stating ``Alice may read this information"), or may universally quantify over subjects belonging to some `class' (e.g. ``All subjects who are System Administrators may access this information").
+Under this model, policies are statements of which subjects may access the data. Policies may specify individual subjects (e.g. a policy stating ``Alice may read this information"), or may universally quantify over subjects belonging to some class (e.g. ``All subjects who are System Administrators may access this information").
 
 This model is discussed in more depth in Chapter \ref{chap_jif_para} as it forms the basis of policy definition in the Paragon programming language \cite{broberg2013paragon}.
 
 \subsubsection{Dynamic Policy}
 
-This model's eponymous `Flow Lock' system allows it to represent dynamic flow policy -- that is, policy which cannot be cannot be represented in a static lattice structure. This presents an alternate approach the declassification problem: declassification is viewed as a special case of dynamic flow.
+This model's eponymous `Flow Lock' system allows it to represent dynamic flow policy -- that is, policy which cannot be represented in a static lattice structure. This presents an alternate approach the declassification problem:  policy based on ``what" information is declassified (as modelled in the Denning model or in the DLM) is viewed as a special case of dynamic policy, as are other models based on ``when" or ``where" declassification occurs.
 
-A Flow Lock is a runtime boolean value that may be in either an `open' or `closed' state. The lock may then guard a flow policy, allowing for policies of the form ``Alice may read this information \textit{if} the lock \mono{IsUnlocked} is open". Though locks are runtime values, their values throughout the program are still approximated statically through the type checker. Since locks may change state at runtime, they can be used to not only control \textit{what} information is declassified, but also \textit{when} information is declassified; such time-variant policies cannot be easily encoded in the DLM or in Denning model security type systems.
+A Flow Lock is a runtime boolean value that may be in either an `open' or `closed' state. The lock may then guard a flow policy, allowing for policies of the form ``Alice may read this information \textit{if} the lock \mono{IsUnlocked} is open". Although locks are runtime values, their values throughout the program are still approximated statically through the type checker. Since locks may change state at runtime, they can be used to not only control \textit{what} information is declassified, but also \textit{when} information is declassified; such time-variant policies cannot be easily encoded in the DLM or in Denning model security type systems.
 
 The Flow Lock concept was extended further in a second paper \cite{broberg2010paralocks} to include \textit{parametrised} locks, called `Paralocks'. Parametrised locks allow for policies such as ``Alice may read this information if the lock \mono{IsUnlocked}(Alice) is open".
 
