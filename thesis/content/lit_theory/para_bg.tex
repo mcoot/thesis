@@ -314,7 +314,23 @@ instance = new MyClass<String, {Object x:}, alice>();
 
 Policy generics are commonly used to give some internal component of an instance a different but polymorphic policy to the instance itself -- for instance, an ArrayList allowing specification of the policy of each element. Actor generics allow for fixed, non-polymorphic policy where the policy may be applied to any actor -- for instance, a diary may have a fixed policy (that only its owner may view the contents), but with an actor generic diaries belonging to any person may be constructed.
 
-\subsubsection{Java Interoperability}
+\clearpage
+
+\subsection{Runtime Features}
+
+As with JIF, Paragon provides some runtime features on top of its static checking. For the most part, Paragon does not need explicit syntax for this, since actors are just objects and policies are values of type \code{policy}.
+
+Most importantly, Paragon allows for the runtime testing of lock states, by simply using locks as boolean values:
+
+\begin{minted}{java}
+if (myLock) {
+	...
+}
+\end{minted}
+
+In the above, the block will be executed only if the lock \code{myLock} is open. Hence, any code within the block can safely assume that the lock is open and will compile as such.
+
+\subsection{Java Interoperability}
 
 Paragon provides interoperability with plain Java classes through `Paragon Interfaces'. Essentially, any Java class may be called from a Paragon class by writing its interface in a \mono{.pi} file with the desired Paragon policy annotations attached.
 

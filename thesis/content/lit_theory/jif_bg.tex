@@ -136,3 +136,30 @@ A class with a label generic, of the form \mono{TestClass[label L]} may be param
 
 The second kind of generic is the principal generic, of the form \mono{TestClass[principal P]}. The principal type parameter may be used in labels in the class. This allows for classes which have explicit policies, but which are generic to being `owned' by any principal.
 
+\subsection{Runtime Features}
+
+Though JIF enforces its information flow policy primarily statically, it does provide runtime features. Labels and principals may be used as first class values throughout code, and so must exist at runtime. First-class (or \textit{dynamic}) labels may be used in specifying other labels and as type parameters, which are still evaluated statically through dependent types. Note that dynamic labels do not, for the most part, allow for the kinds of `dynamic policy' that the policy model of Paragon revolves around.
+
+A runtime label value may be constructed with an expression of the form:
+
+\mint{java}{final label lbl = new label {Alice->Bob};}
+
+JIF provides runtime testing of both labels and principals. Labels may be compared in an conditional statement of the following form, which will execute the block if \code{lbl} is of lower or equal confidentiality than \code{new label {Alice->*}}:
+
+\begin{minted}{java}
+if (lbl <= new label {Alice->*}) {
+	...
+}
+\end{minted}
+
+Code within the block can then safely assume that \code{lbl} is of lower or equal confidentiality than \code{new label {Alice->*}}, and will compile under that assumption.
+
+Similarly, principals may be compared using a conditional statement of the following form, executing the block if \code{Alice} acts for \code{Bob}:
+
+\begin{minted}{java}
+if (Alice actsfor Bob) {
+	...
+}
+\end{minted}
+
+Within the block, it is safe to assume that \code{Alice} does in fact act for \code{Bob}.
