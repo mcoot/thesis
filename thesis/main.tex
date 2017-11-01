@@ -5,6 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[style=ieee]{biblatex}
 
+\usepackage[english]{babel}
 \usepackage{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{nameref}
@@ -43,6 +44,10 @@
 	dot/.style={fill, draw, circle, minimum width=10pt, inner sep=0pt, scale=0.3}
 }
 
+
+\addto\extrasenglish{%
+	\renewcommand{\chapterautorefname}{Chapter}%
+}
 
 %\usepackage{showframe}
 

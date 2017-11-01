@@ -1,11 +1,17 @@
 \chapter{Background \& Theory} \label{chap_theory}
 
+\section{Overview}
+
+This chapter presents the background theory for information flow security and security typing mechanisms, with reference to the supporting literature. Specifically, it provides context for the model of Mandatory Access Control, the theory for which underpins most security typing implementations, as well as for the widely used Java security model. Information flow security, and its expression through the notion of \textit{non-interference} are explained along with key concepts around the declassification of information. Finally, security typing itself is introduced, as are the policy models for security typing from the literature.
+
+\newpage
+
 \section{Security Context}
 
 Information security in practice revolves around three key goals colloquially known as the `CIA Triad' \cite{krutz2010cloudsec}:
 
 \begin{itemize}
-	\item Ensuring information is appropriately \textit{Confidential}
+	\item Ensuring information is appropriately \textit{Confidential} (the focus of this thesis)
 
 	\begin{itemize}
 		\item Example: a secret password being leaked is a confidentiality violation
@@ -27,25 +33,25 @@ Information security in practice revolves around three key goals colloquially kn
 
 Most language-based security features focus on the confidentiality and integrity of information; that is, ensuring that secret information remains secret, and that information which needs to be trusted is in fact trustworthy.
 
-\newpage
+Here, systems which aim to ensure confidentiality are examined, though similar mechanisms may also be used to control integrity.
 
 \section{Access Control}
 
-The most common mechanism used in computer systems to ensure confidentiality and integrity is \textit{access control}: associating some `permissions' with users of a system and restricting the actions they are able to perform based on these permissions. The principles of limiting user access is most frequently applied through one of two approaches: \textit{Discretionary} Access Control, and \textit{Mandatory} Access Control
+The most common mechanism used in computer systems to ensure confidentiality is \textit{access control}: associating some `permissions' with users of a system and restricting the actions they are able to perform based on these permissions. The principles of limiting user access is most frequently applied through one of two approaches: \textit{Discretionary} Access Control, and \textit{Mandatory} Access Control
 
-\subsection{Discretionary Access Control}
+\subsection{Discretionary Access Control} \label{theory_dac_def}
 
-Discretionary Access Control (DAC) is the basis of most operating system-level `permissions' systems, including those in Unix-like operating systems \cite{sandhu1996role}, and those implemented in modern versions of Windows.
+Discretionary Access Control (DAC) is the basis of most operating system-level permissions systems, including those in Unix-like operating systems \cite{sandhu1996role}, and those implemented in modern versions of Windows.
 
-Central to DAC is the `Access Matrix' \cite{sandhu1994access} -- a two-dimensional matrix indexed by \textit{subjects} (users or groups) and by \textit{objects} (documents, files or other information to be accessed). The values in the matrix determine whether a given subject has permissions to access a particular object, and this is enforced with a run-time check: when the user attempts to access an object they lack permissions for, they will see a message indicating the check's failure.
+Central to DAC is the \textit{Access Matrix} \cite{sandhu1994access} -- a two-dimensional matrix indexed by \textit{subjects} (users or groups) and by \textit{objects} (documents, files or other information to be accessed). The values in the matrix determine whether a given subject has permissions to access a particular object, and this is enforced with a run-time check: when the user attempts to access an object they lack permissions for, they will see a message indicating the check's failure.
 
 With any non-trivial set of users and documents, the size of the Access Matrix will be prohibitively large, and so most commonly the Access Matrix is implemented using Access Control Lists (ACLs), which are equivalent to columns of the Access Matrix. An ACL is stored alongside every object, indicating which subjects may access it \cite{sandhu1994access}.
 
 \subsection{Limitations of Discretionary Access Control} \label{theory_dac_limitations}
 
-Access control mechanisms attempt to control confidentiality by inserting checks at `boundary points' where information flows between subjects.
+Access control mechanisms attempt to control confidentiality by inserting checks at boundary points where information flows between subjects.
 
-Consider, then, a scenario in which a user Alice has a diary, which she wishes to keep secret. Alice allows Betty to read her diary, but does not wish to allow a third user, Mal, to read it. Using DAC, an Access Control List for the diary would list Alice and Betty, but not Mal. Then, if Mal attempts to read the diary the access check will fail, preserving confidentiality.
+Consider, a scenario in which a user Alice has a diary, which she wishes to keep secret. Alice allows Betty to read her diary, but does not wish to allow a third user, Mal, to read it. Using DAC, an Access Control List for the diary would list Alice and Betty, but not Mal. Then, if Mal attempts to read the diary the access check will fail, preserving confidentiality.
 
 \begin{figure}[h!]
 	\centering
@@ -56,7 +62,7 @@ Consider, then, a scenario in which a user Alice has a diary, which she wishes t
 
 However, suppose Betty now attempts to read Alice's diary. The access check allows this, since it is within policy. Betty reads the diary and makes a copy of it, which she then transmits to Mal, as shown in \autoref{fig:theory_access_control_failure}. Since Betty's copy may have whatever policy she desires, the existing access policy on the diary does not prevent Mal from reading the copy.
 
-The root cause of this failure is that the access control policy merely performs `boundary checks' does not model the \textit{propagation} of information once those checks have been passed.
+The root cause of this failure is that the access control policy merely performs boundary checks, but does not model the \textit{propagation} of information once those checks have been passed.
 
 \subsection{Mandatory Access Control} \label{accesscontrol_mac}
 
@@ -75,9 +81,9 @@ More flexible access control policies may be implemented under the Bell-LaPadula
 		\node[dot, label=left:$ C $] (C) at (0, 1) {};
 		\node[dot, label=left:$ U $] (U) at (0, 0) {};
 		
-		\draw[edge] (S) to (TS);
-		\draw[edge] (C) to (S);
-		\draw[edge] (U) to (C);
+		\draw[edge] (S) to node[right, sloped, anchor=north] {$ \preceq $} (TS);
+		\draw[edge] (C) to node[right, sloped, anchor=north] {$ \preceq $} (S);
+		\draw[edge] (U) to node[right, sloped, anchor=north] {$ \preceq $} (C);
 		\end{tikzpicture}
 		\caption{}
 	\end{subfigure}
@@ -89,10 +95,10 @@ More flexible access control policies may be implemented under the Bell-LaPadula
 		\node[dot, label=right:$ B $] (B) at (1, 1) {};
 		\node[dot, label=below:$ A \sqcap B $] (AnB) at (0, 0) {};
 		
-		\draw[edge] (AnB) to  (A);
-		\draw[edge] (AnB) to  (B);
-		\draw[edge] (A) to  (AuB);
-		\draw[edge] (B) to  (AuB);
+		\draw[edge] (AnB) to node[right, sloped, anchor=north] {$ \succeq $} (A);
+		\draw[edge] (AnB) to node[right, sloped, anchor=north] {$ \preceq $}  (B);
+		\draw[edge] (A) to node[right, sloped, anchor=south] {$ \preceq $} (AuB);
+		\draw[edge] (B) to node[right, sloped, anchor=south] {$ \succeq $} (AuB);
 		\end{tikzpicture}
 		\caption{}
 	\end{subfigure}
@@ -112,21 +118,21 @@ The Bell-LaPadula model may be applied to an access control problem concerning u
 	\item[* Property -- `No Write Down'] A subject with clearance $ C_s $ may only modify an object with classification $ C_o $ if $ C_o \succeq C_s $
 \end{description}
 
-The Simple Security Property prevents users with insufficient clearance from accessing highly classified data. But the * Property is also important: it states that a user with high clearance cannot modify data at a low classification. This prevents a highly privileged user from declassifying data by copying it to a document with lower classification, thereby introducing a control on the \textit{propagation} of that information.
+The Simple Security Property prevents users with insufficient clearance from accessing highly classified data. But the * Property is also important: it states that a user with high clearance cannot modify data at a low classification. For the scenario presented in \ref{theory_dac_limitations}, this would prevent Betty from creating a copy of the document and sending it to Mal, as Betty may not copy the document to a lower classification. In effect, this introduces a control on the \textit{propagation} of that information.
 
-Lattice-based Mandatory Access Control may be applied to computer systems, just as to physical documents. Such systems generally use a `high water mark' approach \cite{jones1975highwatermark}, allowing programs to begin at low clearance and only moving to higher clearance as needed.
+Lattice-based Mandatory Access Control may be applied to computer systems, just as Alice's diary or to physical documents. Such systems generally use a `high water mark' approach \cite{jones1975highwatermark}, allowing programs to begin at low clearance and only moving to higher clearance as needed.
 
 \section{The Java Security Model}
 
-The Java programming language was designed in the context of emerging internet technologies, with the explict use case of users downloading and running `applets' from web pages. As such, security was a core consideration in Java's design -- the original design goals document \cite{javadesignprinciples} specifies that ``applications written in the Java programming language are secure from intrusion by unauthorized code."
-
+The Java programming language was designed in the context of emerging internet technologies, with the explict use case of users downloading and running `applets' from web pages \cite{gong1999javasecspec}. As such, security was a core consideration in Java's design -- the original design goals document \cite{javadesignprinciples} specifies that ``applications written in the Java programming language are secure from intrusion by unauthorized code."
+ 
 Java is type safe and memory safe, which reduces the possibility of programmer error leading to exploitable flaws in an application. Java's application sandbox takes a three-pronged approach to security in the context of applets which may be downloaded from a remote server, having a Bytecode Verifier, the Class Loader, and the Security Manager \cite{mcgraw1999securingjava}.
 
 The Bytecode Verifier and the Class Loader concern the loading of new classes into a running Java Virtual Machine (JVM). The Bytecode Verifier analyses the class to ensure it maintains the class format, does not perform illegal casts, and that it obeys Java's typing rules more generally (e.g. that private methods may not be accessed outside of a class, final methods may not be overridden) \cite{lindholm2014java}. The Class Loader performs the actual loading of a class into the JVM; the `primordial' Class Loader \cite{mcgraw1999securingjava} loads the Java API classes, and other classes may be loaded by a user-specified \mono{ClassLoader} instance.
 
 \subsection{The Security Manager \& Stack Inspection}
 
-The final element of the sandbox model is the \mono{SecurityManager} class. When enabled, an instance of \mono{SecurityManager} runs in the JVM, and performs runtime access control: when a potentially sensitive action is undertaken, the Security Manager checks the permissions of the calling class based on the system policy (usually specified by an external policy file), and throws an exception if the permission check fails \cite{gosling2014java}. A check is typically of the form \cite{javasecmanagerdoc}:
+The final element of the sandbox model is the \mono{SecurityManager} class. When enabled, an instance of \mono{SecurityManager} runs in the JVM, and performs runtime access control: when a potentially sensitive action is undertaken, the Security Manager checks the permissions of the calling class based on a system policy, usually specified by an external policy file. This represents a \textit{discretionary} access control model as per the definition in \ref{theory_dac_def}. If the permission check fails, a \mono{SecurityException} is thrown \cite{gosling2014java}. A check is typically of the form \cite{javasecmanagerdoc}:
 
 \begin{minted}{java}
 
@@ -264,7 +270,7 @@ The Decentralised Label Model (DLM) proposed by \citeauthor{myers1997if} \cite{m
 
 Instead, under the DLM subjects (or `principals') within the system may define their own policies on data, specifying which other subjects \textit{they believe} the data should be able to flow to. These policies still form a lattice, and so the type checker enforces the join of all subjects' policies on the data. This can be used to model `ownership' of data, and even systems where subjects do not trust each other to respect confidentiality.
 
-The DLM is discussed in more depth in Chapter \ref{intro_to_jif_para} as it is the policy framework used by the JIF programming language.
+The DLM is discussed in more depth in Chapter \ref{chap_jif_para} as it is the policy framework used by the JIF programming language.
 
 \subsubsection{Selective Declassification Mechanism}
 
@@ -276,7 +282,7 @@ The Denning model uses MAC classification labels, and the DLM extends this with 
 
 Under this model, policies are statements of which subjects may access the data. Policies may specify individual subjects (e.g. a policy stating ``Alice may read this information"), or may universally quantify over subjects belonging to some `class' (e.g. ``All subjects who are System Administrators may access this information").
 
-This model is discussed in more depth in Chapter \ref{intro_to_jif_para} as it forms the basis of policy definition in the Paragon programming language \cite{broberg2013paragon}.
+This model is discussed in more depth in Chapter \ref{chap_jif_para} as it forms the basis of policy definition in the Paragon programming language \cite{broberg2013paragon}.
 
 \subsubsection{Dynamic Policy}
 
