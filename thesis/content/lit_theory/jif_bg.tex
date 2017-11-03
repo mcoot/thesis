@@ -2,7 +2,7 @@
 
 \subsection{Relation to Plain Java}
 
-JFlow, a Java language extension implementing the Decentralised Label Model (DLM) via type checking was first proposed in \citetitle{myers1999jflow}, \cite{myers1999jflow}. It included DLM-based type labels with support for polymorphism and type inference, while integrating with Java's Object-Oriented programming model -- including language features like inheritance and exceptions which introduce potential difficulties for information flow checking.
+JFlow, a Java language extension implementing the Decentralised Label Model (DLM) via type checking was first proposed in \citetitle{myers1999jflow} \cite{myers1999jflow}. It included DLM-based type labels with support for polymorphism and type inference, while integrating with Java's Object-Oriented programming model -- including language features like inheritance and exceptions which introduce potential difficulties for information flow checking.
 
 JIF implements a superset of the JFlow functionality, having added a number of additional features over its development \cite{jifwebsite}. Since JIF's 1.0.0 version released in 2003 its design is based on Java 1.4, and so it lacks support for a number of more modern Java features.
 
@@ -40,11 +40,11 @@ Most commonly, the join operator is used to allow multiple principals to provide
 
 The join of each policy produces a reader set which is the \textit{intersection} of both -- so in this case, only \mono{r2} and \mono{o1} (or principals which act for either) may read the information. Note that neither \mono{o1} nor \mono{o2} is the `true' owner of the data: each is simply expressing what they believe the policy to be.
 
-In addition to producing new labels via the join and meet operators, there exist a top principal (written \code{*}), which is a principal for which no other principals act, and a bottom principal (written \code{_}), for which all other principals act. A reader set consisting of the top principal allows \textit{nobody} to read the information, and a reader set consisting of the bottom principal allows \textit{anyone} to read the information.
+In addition to producing new labels via the join and meet operators, there exists a top principal (written \code{*}), which is a principal for which no other principals act, and a bottom principal (written \code{_}), for which all other principals act. A reader set consisting of the top principal allows \textit{nobody} to read the information, and a reader set consisting of the bottom principal allows \textit{anyone} to read the information.
 
 In practice, a label term of the form \jiflabel{Alice->*} indicates that Alice believes that only she should be in the reader set; a label term \jiflabel{Alice->_} indicates that Alice believes that everyone should be in the reader set.
 
-The top label \jiflabel{*->*} represents the highest possible confidentiality (essentially allowing no principal to read it), while the bottom label \jiflabel{_->_} represents the lowest possible confidentiality; an empty label \jiflabel{} is equivalent to this bottom label.
+The top label \jiflabel{*->*} represents the highest possible confidentiality (essentially allowing no principal to read it), while the bottom label \jiflabel{_->_} represents the lowest confidentiality; an empty label \jiflabel{} is equivalent to the bottom label.
 
 \subsection{Implicit Flows}
 
@@ -59,7 +59,7 @@ public String{P->_} myField;
 public int{A->*} method{B->*}(String{C->*} param) : {D->*}
 \end{minted}
 
-JIF also places labels on method signatures, for their return type (as in \jiflabel{A->*} above) and formal parameter types (as in \jiflabel{C->*}); a formal parameter's label represents an \textit{upper bound} on the allowed label of its actual arguments. The begin label (as in \jiflabel{B->*}) states the \textit{required} pc label for calling code, while the end label (as in \jiflabel{D->*}) indicates what the pc label will be once the code completes.
+JIF also places labels on method signatures, for their return type (as in \jiflabel{A->*} above) and formal parameter types (as in \jiflabel{C->*}); a formal parameter's label represents an \textit{upper bound} on the allowed label of its actual argument. The begin label (as in \jiflabel{B->*}) states the \textit{required} pc label for calling code, while the end label (as in \jiflabel{D->*}) indicates what the pc label will be once the code completes.
 
 Local variables may be annotated with labels, but JIF uses type inference to attempt to determine the correct label for local variables automatically. If labels are omitted on fields or method signatures, a default label is applied: for fields and method end labels this is the bottom or empty label \jiflabel{}, while for formal method arguments and method begin labels it is the top label \jiflabel{*->*}. For return labels, the default label is the join of all parameter labels and the end label.
 
@@ -112,7 +112,7 @@ Consider the modified (and abridged) version of the previous class in \autoref{l
 	\label{lst_diary_jif_error}
 \end{listing}
 
-The only change from the original \mono{Diary} class is the return label of the \mono{readDiary} method, allowing Mal to read the result of the method call and violating the information flow policy. This causes a compiler error, as per \autoref{lst_diary_jif_error_message}.
+The only change from the original \mono{Diary} class is the return label of the \mono{readDiary} method, allowing Mal to read the result of the method call and violate the information flow policy. This causes a compiler error, as per \autoref{lst_diary_jif_error_message}.
 
 \begin{listing}[!ht]
 	\inputminted[fontsize=\footnotesize]{text}{content/code_sections/jif_para_bg/DiaryError_message_jif.txt}
@@ -128,13 +128,13 @@ From version 3.0.0, JIF includes a set of integrity controls in addition to the 
 
 \subsection{Security Type Polymorphism}
 
-Given all data must be labelled (or have a label determined implicitly via type inference), writing implementations of standard data types presents a challenge -- it is desirable to avoid having to rewrite the \mono{ArrayList} class for every possible security label the elements of the list may have. To deal with this, JIF introduces security type generics. Since JIF's syntax was designed prior to Java's adoption of generics, square brackets are used to denote type parameters (as opposed to angle brackets).
+Since all data must be labelled (or have a label determined implicitly via type inference), writing implementations of standard data types presents a challenge -- it is desirable to avoid having to rewrite the \mono{ArrayList} class for every possible security label the elements of the list may have. To deal with this, JIF introduces security type generics. Since JIF's syntax was designed prior to Java's adoption of generics, square brackets are used to denote type parameters (as opposed to angle brackets).
 
 JIF provides two different kinds of generics: \textit{label} generics and \textit{principal} generics.
 
 A class with a label generic, of the form \mono{TestClass[label L]} may be parametrised by any label. The label type parameter may be used anywhere within the class (e.g. as labels on fields, method return values or begin/end labels). Using this, a data type like \mono{ArrayList[Label L]} may be written such that it can be instantiated with any confidentiality label on the elements.
 
-The second kind of generic is the principal generic, of the form \mono{TestClass[principal P]}. The principal type parameter may be used in labels in the class. This allows for classes which have explicit policies, but which are generic to being `owned' by any principal.
+The second kind of generic is the principal generic, of the form \mono{TestClass[principal P]}. The principal type parameter may be used in labels in the class. This allows for classes which have explicit policies, but which are generic in being `owned' by any principal.
 
 \subsection{Runtime Features}
 
@@ -144,7 +144,7 @@ A runtime label value may be constructed with an expression of the form:
 
 \mint{java}{final label lbl = new label {Alice->Bob};}
 
-JIF provides runtime testing of both labels and principals. Labels may be compared in an conditional statement of the following form, which will execute the block if \code{lbl} is of lower or equal confidentiality than \code{new label {Alice->*}}:
+JIF provides runtime testing of both labels and principals. Labels may be compared in a conditional statement of the following form, which will execute the block if \code{lbl} is of lower or equal confidentiality than \code{new label {Alice->*}}:
 
 \begin{minted}{java}
 if (lbl <= new label {Alice->*}) {

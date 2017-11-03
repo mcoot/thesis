@@ -14,7 +14,7 @@ Like JIF, there are a number of differences between writing a program in Paragon
 	
 	\item Method signatures may include read and write annotations, as well as lock state annotations
 	
-	\item As with JIF, all exceptions are checked in Paragon, though it introduces the \mono{notnull} modifier for variables which can prevent the need to catch \mono{NullPointerException}
+	\item As with JIF, all exceptions are checked in Paragon, though it introduces the \code{notnull} modifier for variables which can prevent the need to catch \code{NullPointerException}
 	
 	\item Paragon's runtime must be on the classpath when running the program
 	
@@ -32,7 +32,7 @@ A policy in Paragon consists of some number of semicolon-separated \textit{claus
 policy p = {head1: body1 ; head2: body2};
 \end{minted}
 
-The head of a clause specifies an \textit{actor} which may view information under this policy; in a static policy, the body following the colon is empty. Unlike the equivalent `principals' in JIF, actors in Paragon are simply regular Java objects. So a simple static policy allowing \mono{User}s Alice and Bob to read a file could be encoded as follows \cite{broberg2013paragon}:
+The head of a clause specifies an \textit{actor} which may view information under this policy; in a static policy, the body following the colon is empty. Unlike the equivalent principals in JIF, actors in Paragon are simply regular Java objects. So a simple static policy allowing \code{User}s Alice and Bob to read a file could be encoded as follows \cite{broberg2013paragon}:
 
 \begin{minted}{Java}
 User alice = new User("Alice");
@@ -42,7 +42,7 @@ policy aliceAndBob = {alice: ; bob:};
 
 Note that in Paragon policies, and unlike those in JIF, the semicolon separation indicates that \textit{both} Alice and Bob may access the data.
 
-Actors in the head of a clause may also be universally quantified over, so in the following, information may flow to any instance of the type \mono{User}:
+Actors in the head of a clause may also be universally quantified over, so in the following, information may flow to any instance of the type \code{User}:
 
 \begin{minted}{Java}
 policy allUsers = {User u:};
@@ -55,7 +55,7 @@ policy top = {:};
 policy bottom = {Object x:};
 \end{minted}
 
-These policies form a lattice, and so as with Mandatory Access Control and JIF, they can be combined with least upper bound (join -- \mono{*}) and greatest lower bound (meet -- \mono{+}) operators:
+These policies form a lattice, and so as with Mandatory Access Control and JIF, they can be combined with least upper bound (join -- \code{*}) and greatest lower bound (meet -- \code{+}) operators:
 
 \begin{minted}{java}
 policy charlesOnly = {charles: };
@@ -70,7 +70,7 @@ The tools described here suffice for encoding a MAC-style static information flo
 
 \subsection{Policy Annotations}
 
-Values in Paragon are associated with a policy via policy modifiers. Variables, method return types and parameters can have a `read effect' modifier on them, denoted by the \mono{?} symbol, indicating their security policy. For example:
+Values in Paragon are associated with a policy via policy modifiers. Variables, method return types and parameters can have a \textit{read effect} modifier on them, denoted by the \code{?} symbol, indicating their security policy. For example:
 
 \begin{minted}{Java}
 ?{Object x:} int x;
@@ -79,11 +79,11 @@ Values in Paragon are associated with a policy via policy modifiers. Variables, 
 public ?p int method(?q int param1, ?r int param2) { ...
 \end{minted}
 
-Read effect modifiers allow the Paragon compiler to analyse the explicit flow of information throughout a program, ensuring that values may only be assigned to variables with appropriate policies. For example, in the above \code{x} may only be assigned values at the lowest confidentiality, since its policy allows flow to any object. 
+Read effect modifiers allow the Paragon compiler to analyse the explicit flow of information through a program, ensuring that values may only be assigned to variables with appropriate policies. For example, in the above \code{x} may only be assigned values at the lowest confidentiality, since its policy allows flow to any object. 
 
-Another form of modifier, the `write effect' modifier for methods is needed to correctly analyse implicit information flows in a program with many methods.
+The \textit{write effect} modifier for methods is needed to correctly analyse implicit information flows in a program with many methods.
 
-A method's write effect, annotated using the \mono{!} symbol, denotes the lowest confidentiality level at which a method's side effects (such as writing to an output or performing different actions based on a high confidentiality conditional) would be observable. For instance, consider the following:
+A method's write effect, annotated using the \code{!} symbol, denotes the lowest confidentiality level at which a method's side effects (such as writing to an output or performing different actions based on a high confidentiality conditional) would be observable. For instance, consider the following:
 
 \begin{minted}{Java}
 ?high int secret;
@@ -106,13 +106,13 @@ void method() {
 }
 \end{minted}
 
-The (low confidentiality) \mono{notSecret} variable is assigned within a context dependent on the value of the high confidentiality \mono{secret} variable, but the compiler cannot immediately see this, as it occurs inside a method. However, the required \mono{!low} annotation on \mono{setNotSecret} allows the compiler to determine that \mono{setNotSecret} has side effects at a low confidentiality level, and hence that it may not be used within the high conditional -- so with this method the code will not compile.
+The (low confidentiality) \code{notSecret} variable is assigned within a context dependent on the value of the high confidentiality \mono{secret} variable, but the compiler cannot immediately see this, as it occurs inside a method. However, the required \mono{!low} annotation on \code{setNotSecret} allows the compiler to determine that \code{setNotSecret} has side effects at a low confidentiality level, and hence that it may not be used within the high conditional -- so with this method the code will not compile.
 
 \subsection{Dynamic Policies with Paralocks}
 
 The primary innovation of Paragon's policy model is the `Flow Lock' or `ParaLock' construct: a way to build time-variant flow policies using a global state. ParaLocks (or more simply, just `locks') in Paragon are boolean values which may be \textit{open} or \textit{closed} at a given point in a program's execution, but which are analysed statically in order to allow Paragon to encode policies that cannot be expressed with a static lattice.
 
-A lock in Paragon in Paragon may be declared only as a field, which is implicitly \mono{static}. The lock may then appear in the body of a Paragon policy clause, denoting that flow to the actor or actors in the head of the clause is conditional upon the lock being open:
+A lock in Paragon may be declared only as a field, which is implicitly \mono{static}. The lock may then appear in the body of a Paragon policy clause, denoting that flow to the actor or actors in the head of the clause is conditional upon the lock being open:
 
 \begin{minted}{Java}
 lock myLock;
@@ -136,11 +136,9 @@ z = x; // Compiles successfully
 close myLock;
 \end{minted}
 
-Locks can be used to perform run-time flow checking simply by using them as normal conditionals.
-
 \subsubsection{Locks for Declassification}
 
-Locks can quite succinctly model selective declassification, similar to that performed by JIF, by having a `declassifying' lock which is closed at all times, except during a declassification. The following presents a simple example:
+Locks can quite succinctly model selective declassification, similar to that performed by JIF, by having a declassifying lock which is closed at all times, except during a declassification. The following presents a simple example:
 
 \begin{minted}{Java}
 lock myLock;
@@ -172,7 +170,7 @@ return x;
 
 Paragon supports a generalisation over the simple open/closed locks presented above. Locks may be parametrised by actors -- Paragon's syntax supports parametrised locks of arity one and two.
 
-Intuitively, parametrised locks may be thought of as \textit{classes} of simple locks, so a lock \mono{myLock(User)} may be open or closed for any given instance of \mono{User}. Alternatively, parametrised locks can be considered as unary and binary relations over actors: so a 2-ary lock \mono{myLock(User, File)} is a relation such that the lock is open if the relation holds for a \monotuple{User, File} pair.
+Intuitively, parametrised locks may be thought of as \textit{classes} of simple locks, so a lock \code{myLock(User)} may be open or closed for any given instance of \code{User}. Alternatively, parametrised locks can be considered as unary and binary relations over actors: so a binary lock \code{myLock(User, File)} is a relation such that the lock is open if the relation holds for a \monotuple{User, File} pair.
 
 Once declared, a parametrised lock may be used in the body of a policy.
 
@@ -183,19 +181,19 @@ policy p1 = {User u: unaryLock(u)};
 policy p2 = {(User u) User v: binaryLock(u, v)};
 \end{minted}
 
-Note that the use of \mono{(User u)} in the head of policy \mono{p2} indicates quantification, in this case existential. In natural language, \mono{p2} states that: ``Information may flow to any User \mono{v} if there exists some \mono{u} such that \mono{binaryLock(u, v)} is open."
+Note that the use of \code{(User u)} in the head of policy \code{p2} indicates quantification, in this case existential. In natural language, \code{p2} states that: ``Information may flow to any User \mono{v} if there exists some \code{u} such that \code{binaryLock(u, v)} is open."
 
-Commonly, unary locks may be used to model dynamic \textit{roles} -- where the information that may flow to an actor depends on their current role or status. Binary locks are often used to model \textit{relationships} between actors \cite{broberg2013paragon}.
+Commonly, unary locks are used to model dynamic \textit{roles} -- where the information that may flow to an actor depends on their current role or status. Binary locks are often used to model \textit{relationships} between actors \cite{broberg2013paragon}.
 
 \subsubsection{Lock Properties}
 
-In order to allow for clearer policy definition and reduce policy-related boilerplate code, Paragon allows for locks to be defined with `lock properties', representing conditions under which a lock is implicitly open. For instance, on a binary lock, the following lock property could be defined:
+In order to allow for clearer policy definition and reduce policy-related boilerplate code, Paragon allows for locks to be defined with \textit{lock properties}, representing conditions under which a lock is implicitly open. For instance, on a binary lock, the following lock property could be defined:
 
 \begin{minted}{Java}
 lock myLock(User, User) {(User a, b) myLock(b, a): myLock(b, a)};
 \end{minted}
 
-This states that for users \mono{a} and \mono{b}, \mono{myLock(b, a)} is implicitly open whenever \mono{myLock(b, a)} is open -- when regarded as a binary relation, \mono{myLock} is symmetric.
+This states that for users \code{a} and \code{b}, \code{myLock(b, a)} is implicitly open whenever \code{myLock(b, a)} is open -- as a binary relation, \code{myLock} is symmetric.
 
 Many possible lock properties can be defined depending on the program's overall policy, but Paragon provides shorthand modifiers for symmetry, reflexivity and transitivity, allowing for a binary lock defined as:
 
@@ -207,10 +205,10 @@ reflexive symmetric transitive lock myLock(User, User);
 
 Paragon's compiler keeps track of the global lock state statically, which requires statically analysing all possible program flows. Under certain circumstances -- especially where lock state changes across many different methods -- the compiler cannot track the state.
 
-In order to aid the compiler's analysis, the programmer can add three kinds of lock annotations as modifiers on method signatures: \mono{+myLock}, \mono{-myLock}, \mono{\textasciitilde myLock}.
+In order to aid the compiler's analysis, the programmer can add three kinds of lock annotations as modifiers on method signatures: \code{+myLock}, \code{-myLock}, \code{~myLock}.
 
 
-The \mono{+} lock annotation may be used on methods which \textit{guarantee} they will open a given lock. The \mono{-} annotation may be used on methods which \textit{may} close a given lock. Finally, the \mono{\textasciitilde} modifier indicates that a method may only be called from a context where the given lock is known to be open.
+The \code{+} lock annotation may be used on methods which \textit{guarantee} they will open a given lock. The \code{-} annotation may be used on methods which \textit{may} close a given lock. Finally, the \code{~} modifier indicates that a method may only be called from a context where the given lock is known to be open.
 
 For instance, consider the following method signature:
 
@@ -218,7 +216,7 @@ For instance, consider the following method signature:
 public +lock1 -lock2(alice, bob) ~lock3(charles) void method() {
 \end{minted}
 
-This method signature indicates the method \textit{always} opens \mono{lock1}, \textit{may} close \mono{lock2} for the actor pair \monotuple{alice, bob}, and may only be called in a context where \mono{lock3} is open for actor \mono{charles}.
+This method signature indicates the method \textit{always} opens \code{lock1}, \textit{may} close \code{lock2} for the actor pair \monotuple{alice, bob}, and may only be called in a context where \code{lock3} is open for actor \code{charles}.
 
 One noteworthy limitation in Paragon's lock annotation syntax is that it is not possible to quantify over actors in lock annotations. So, for instance, it is not possible to produce an annotation indicating that a method may close a lock for all actors matching some criteria.
 
@@ -242,7 +240,7 @@ The implementation in \autoref{lst_diary_para} is equivalent to the JIF version 
 	\label{lst_diary_para_error}
 \end{listing}
 
-As with the JIF version, modifying the policy on \mono{readDiary} as in \autoref{lst_diary_para_error} from its intended \mono{?aliceAndBetty} to \mono{?everyOne} produced a compiler error, stating that the returned information is higher confidentiality than the method's label. Paragon's compiler message in \autoref{lst_diary_para_error_message}, is more succinct than JIF's, although Paragon is unable to identify the line on which the error occurs.
+As with the JIF version, modifying the policy on \code{readDiary} as in \autoref{lst_diary_para_error} from its intended \code{?aliceAndBetty} to \code{?everyOne} produces a compiler error, stating that the returned information is higher confidentiality than the method's label. Paragon's compiler message in \autoref{lst_diary_para_error_message}, is more succinct than JIF's, although Paragon is unable to identify the line on which the error occurs.
 
 \begin{listing}[!ht]
 	\inputminted[fontsize=\footnotesize]{text}{content/code_sections/jif_para_bg/DiaryError_message_para.txt}
@@ -258,9 +256,9 @@ As with JIF, the modularity and reusability of Paragon code is a concern, since 
 
 \subsubsection{The \mono{policyof} Operator}
 
-Paragon provides the special \mono{policyof} operator to allow for policy-polymorphic variables and methods.
+Paragon provides the special \code{policyof} operator to allow for policy-polymorphic variables and methods.
 
-The special policy denoted by \mono{policyof(this)}, which may be used on methods and \mono{final} fields, is equivalent to JIF's special \jiflabel{this} label -- the labelled field or method return value takes on the policy of the overall instance. This allows for simple datatypes which are completely polymorphic with respect to policy, such as the following immutable pair definition:
+The special policy denoted by \code{policyof(this)}, which may be used on methods and \code{final} fields, is equivalent to JIF's special \jiflabel{this} label -- the labelled field or method return value takes on the policy of the overall instance. This allows for simple datatypes which are completely polymorphic with respect to policy, such as the following immutable pair definition:
 
 \begin{minted}{Java}
 class Pair {
@@ -274,7 +272,7 @@ class Pair {
 }
 \end{minted}
 
-This class can then be used, and the \mono{x} and \mono{y} fields will take on the policy of the instance:
+This class can then be used, and the \code{x} and \code{y} fields will take on the policy of the instance:
 
 \begin{minted}{Java}
 ?{Object x:} Pair lowPair = new Pair(0, 0);
@@ -304,7 +302,7 @@ A generic class in Paragon is declared with the following syntax:
 public class MyClass<T, policy P, actor A> {
 \end{minted}
 
-Here, \mono{T} is a regular Java type parameter, \mono{P} is a policy type parameter and \mono{A} is an actor type parameter. This class could then be instantiated with:
+Here, \code{T} is a regular Java type parameter, \code{P} is a policy type parameter and \code{A} is an actor type parameter. This class could then be instantiated with:
 
 \begin{minted}{Java}
 final User alice = new User();
