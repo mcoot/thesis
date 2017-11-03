@@ -34,7 +34,7 @@
 
 The first case study is that of an implementation of the well known board game Battleships. The premise of this game is that two opposing players each have a separate `board', which is a grid of (x, y) coordinates. Each player places a set number of ships on the board, each of which covers some number of contiguous coordinates either horizontally or vertically. A player is not allowed to learn the layout of the other's board, but from here players take it in turns to guess (or `query') coordinates, and the other player must reveal whether or not the guessed coordinate contains a ship -- if so, that ship is destroyed. The game continues until one player has no remaining ships on the board.
 
-Essentially, this is an incomplete information game: the rules require that each player cannot know the layout of the opponent's board, but they must trust the integrity of the information they receive through querying (i.e. it is not permissible to lie about whether a queried position contains a ship).
+This is an incomplete information game: the rules require that each player cannot know the layout of the opponent's board, but they must trust the integrity of the information they receive through querying (i.e. it is not permissible to lie about whether a queried position contains a ship).
 
 \newpage
 
