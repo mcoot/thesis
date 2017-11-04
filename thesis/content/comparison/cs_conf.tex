@@ -34,7 +34,7 @@
 
 The second case study is a simplified Conference Management system. Papers have a title and list of authors; these papers may then be submitted to the conference. Some submitted papers are then accepted and allocated to a conference session, in secret. Then at some point in time the final conference schedule is made available, and previously secret information about which papers were accepted becomes publicly available.
 
-In addition, until the release of the schedule by the conference organiser, the submitted papers' titles are publicly viewable, but their authors lists are secret (this could represent, for instance, a policy for blind review).
+In addition, until the release of the schedule by the conference organiser, the submitted papers' titles are publicly viewable, but their authors lists are secret (this represents a policy for blind review).
 
 \subsection{Key Security Properties}
 
@@ -50,11 +50,11 @@ There are essentially two parts to the security policy required for this program
 
 Timed release requires that confidentiality be time-variant -- equivalent pieces of code may be acceptable or unacceptable depending on \textit{when} they are called.
 
-This is an inherently dynamic policy: it cannot be represented in a static lattice structure. Hence, its representation requires either some notion of declassification so that information can be allowed to `escape' from a lattice policy structure or some way of representing policy state directly. As will be discussed in the following sections, the former method is problematic as declassification bypasses the security-type system entirely, preventing the type system from properly enforcing the conditions of the timed release.
+This is an inherently dynamic policy: it cannot be represented in a static lattice structure. Hence, its representation requires either some notion of declassification so that information can be allowed to `escape' from a lattice policy structure, or alternately some way of representing policy state directly. As will be discussed in the following sections, the former method is problematic as declassification bypasses the security type system entirely, preventing the type system from properly enforcing the conditions of the timed release.
 
 \subsubsection{Paper Acceptance}
 
-The first aspect of the policy, that papers' acceptance status remain hidden until release, provides an illustration of how implicit information flows must be taken into consideration. It is relatively straightforward to prevent an explicit leak of this information (for example, from a method that returns whether or not the paper has been accepted), but in order to prevent \textit{all} flow, the security type system must also prevent any information whose value depends on the acceptance status from being leaked.
+The first aspect of the policy, that a paper's acceptance status remain hidden until release, provides an illustration of how implicit information flows must be taken into consideration. It is relatively straightforward to prevent an explicit leak of this information (for example, from a method that returns whether or not the paper has been accepted), but in order to prevent \textit{all} flow, the security type system must also prevent any information whose value depends on the acceptance status from being leaked.
 
 In the example application, this requirement is demonstrated through the ability for users to retrieve the session allocation for a given paper. Since any paper which has been allocated to a session must have been accepted, leaking the session allocation implies a leak of the acceptance status. This precise issue occurred in the EDAS conference management system \cite{agrawal2016edas_conf}, and is discussed in relation to an alternative approach to information flow security by \citeauthor{polikarpova2016lifty} \cite{polikarpova2016lifty}.
 
@@ -68,7 +68,7 @@ The other aspect of the policy is more straightforward: until the timed release,
 
 \subsection{Implementation Structure}
 
-The JIF and Paragon implementations for the Conference Management case study were written to follow the same class structure. Each implementation attempts to provide essentially the same security policy mechanisms, but as discussed the degree to which the security typing can correctly encode the timed release mechanism varies between them.
+The JIF and Paragon implementations for the Conference Management case study were written to follow the same class structure. Each implementation attempts to provide essentially the same security policy mechanisms, but the degree to which the security typing can correctly encode the timed release mechanism varies between them.
 
 The structure uses the following classes:
 
@@ -112,7 +112,7 @@ A condensed code printout, containing critical sections of the JIF implementatio
 
 \subsubsection{`Semi-parametric' Paper Policy}
 
-The \mono{Paper} class requires that the title and abstract fields have low confidentiality, but that the list of authors be restricted. Since \mono{Paper} is essentially a data type class, it is desirable to make it as generic as possible. In order to avoid hard coding each policy, it is possible to simply use two label type parameters. However, this reduces readability, as it is not immediately clear what the implications of instantiating a \mono{Paper[\jiflabel{O->*}, \jiflabel{O->_}]} are.
+The \code{Paper} class requires that the title and abstract fields have low confidentiality, but that the list of authors be restricted. Since \code{Paper} is essentially a data type class, it is desirable to make it as generic as possible. In order to avoid hard coding either policy, it is possible to simply use two label type parameters. However, this reduces readability, as it is not immediately clear what the implications of instantiating a \code{Paper[{O->*}, {O->_}]} are.
 
 For this reason, the implementation instead uses a single label type parameter to represent the restriction on the author list, and makes use of the special \jiflabel{this} label so that a given \mono{Paper}'s title and abstract have their policy determined by that of the instance itself.
 
@@ -128,20 +128,20 @@ public class Paper[label AuthorLabel] implements JifObject[AuthorLabel] {
 
 The Conference Management system requires the use of a map data structure in order to store the mapping from an accepted paper to its session allocation. This exposes one of the practical concerns that working with JIF presents: JIF is built upon Java 1.4 and so lacks Java's generics.
 
-The process of actually retrieving a value from the map is complicated further by JIF's own type system. Maps have label generics for the keys and value types, and as a result both the key and value objects must be of type \mono{JifObject[L]} where \mono{L} is the label for the key or the value respectively. Hence, it is not trivial to use any type as the key or value for a map -- it must either conform to one of JIF's provided types or be wrapped in one.
+The process of actually retrieving a value from the map is complicated further by JIF's own type system. Maps have label generics for the keys and value types, and as a result both the key and value objects must be of type \code{JifObject[L]} where \code{L} is the label for the key or the value respectively. Hence, it is not trivial to use any type as the key or value for a map -- it must either conform to one of JIF's provided types or be wrapped in one.
 
-In the case of the allocations map, where the desired value is simply an integer classified to be visible only to the conference organiser \mono{O}, this requires wrapping the value in a \mono{JifInteger[\jiflabel{O->*}]} (so that it is a subtype of the required \mono{JifObject[\jiflabel{O->*}]}). Retrieving the object is then a complex process, made more complex when combined with the declassification of the result, as is necessary in this case.
+In the case of the allocations map, where the desired value is simply an integer classified to be visible only to the conference organiser \code{O}, this requires wrapping the value in a \code{JifInteger[{O->*}]} (so that it is a subtype of the required \code{JifObject[{O->*}]}). Retrieving the object is then a complex process, made more complex when combined with the declassification of the result, as is necessary in this case.
 
 This process, of retrieving the session number for an accepted paper and declassifying it, is most easily described by annotating the code for it.
 
-\subsubsection{Retrieving and Declassifying the Session Number}
+\subsubsection{Retrieving and Declassifying the Session Number} \label{cs_conf_jif_retrieval}
 %First, the method to perform this declassification requires a quite specific signature. The ultimate goal is that all confidentiality is to be removed from the session number -- hence we have the resulting label \jiflabel{O->_}.
 %
 %The \mono{where authority(O)} clause is also required here so that the method is allowed to actually perform declassifications on the high confidentiality data belonging to principal \mono{O}.
 
 %Next, note that the key for the map is not the \mono{Paper} object itself but the paper's title wrapped in a \mono{JifString}; this could instead be avoided by having \mono{Paper} subclass \mono{JifObject}, but this would conflict with the polymorphism and use of label type parameters by \mono{Paper}.
 
-Note references are annotated in the code in the style of \mono{<1>} to remain distinct from the code itself.
+Note references are annotated in the code in the style of \code{<1>} to remain distinct from the code itself.
 
 \begin{minted}{Java}
 int{O->_} <1> 
@@ -186,19 +186,19 @@ declassifySessionNumber{O->_}<2>(String{O->_} title):{O->_}
 	
 	\item The begin and end labels of the method must also be \jiflabel{O->_} since after timed release this declassification process must be available to any principal.
 	
-	\item The authority clause is necessary since only principal \mono{O} (the organiser) may actually perform this declassification.
+	\item The authority clause is necessary since only principal \code{O} (the organiser) may actually perform this declassification.
 	
-	\item Rather than using the \mono{Paper} as the key, its title is wrapped in a \mono{JifString} and used as the key. To avoid this would require making \mono{Paper} a subtype of \mono{JifObject} and cause issues with security type polymorphism.
+	\item Rather than using the \mono{Paper} as the key, its title is wrapped in a \code{JifString} and used as the key. To avoid this would require making \mono{Paper} a subtype of \code{JifObject} and cause issues with security type polymorphism.
 	
-	\item The actual \mono{get} call itself requires a runtime label parameter, and the resulting object is at the combination of this label and the key label parameter of the map. In this case the label, \jiflabel{O->*}, is the same as that of the internally stored value but it is not necessarily the case.
+	\item The actual \code{get} call itself requires a runtime label parameter, and the resulting object is at the combination of this label and the key label parameter of the map. In this case the label, \jiflabel{O->*}, is the same as that of the internally stored value but it is not necessarily the case.
 	
-	\item The extensive use of try-catch constructs is required because \textit{all} exceptions are checked in JIF, including \mono{NullPointerException} and \mono{ClassCastException}. In this method negative sentinel values are returned to represent failure.
+	\item The extensive use of try-catch constructs is required because \textit{all} exceptions are checked in JIF, including \code{NullPointerException} and \code{ClassCastException}. In this method negative sentinel values are returned to represent failure.
 	
-	\item This declassification merely allows the code to work with the \mono{JifObject} -- the value stored within is still at the level indicated by the type parameter, \jiflabel{O->*}.
+	\item This declassification merely allows the code to work with the \code{JifObject} -- the value stored within is still at the level indicated by the type parameter, \jiflabel{O->*}.
 	
-	\item Since JIF lacks generics, the result of the map must be explicitly cast to \mono{JifInteger}. This cast would fail and give a \mono{ClassCastException} if the object stored actually had a different policy than \jiflabel{O->*}.
+	\item Since JIF lacks generics, the result of the map must be explicitly cast to \code{JifInteger}. This cast would fail and give a \code{ClassCastException} if the object stored actually had a different policy than \jiflabel{O->*}.
 	
-	\item At this point, the actual integer value may be retrieved, at the classification of the \mono{JifInteger}'s type parameter.
+	\item At this point, the actual integer value may be retrieved at the classification of the \code{JifInteger}'s type parameter.
 	
 	\item The result which has finally been retrieved can then be declassified appropriately and returned.
 	
@@ -206,17 +206,17 @@ declassifySessionNumber{O->_}<2>(String{O->_} title):{O->_}
 
 \subsubsection{Timed Release Policy}
 
-The JIF implementation for the Conference Management system is made more complex by the nature of JIF's Decentralised Label Model. The core security principle of timed release cannot be modelled by the DLM, as it is inherently `stateful'. That is, timed release is tied to a boolean variable which may change at runtime.
+The JIF implementation for the Conference Management system is made more complex by the nature of JIF's Decentralised Label Model. The core security principle of timed release cannot be modelled by the DLM, as it is inherently stateful. That is, timed release is tied to a boolean variable which may change at runtime.
 
 A straightforward lattice model cannot represent a runtime-variant policy, and while the DLM allows for more complex policy formulation than a traditional lattice model, the reader set for a variable must be known statically.
 
-Therefore, JIF's security type system is unable to model the timed release policy and so the functionality must be approximated through the use of declassification.
+JIF's security type system is unable to model the timed release policy and so the functionality must be approximated through the use of declassification.
 
 \subsubsection{Modeling Timed Release with Declassification}
 
 The code for declassifying the session number of an accepted paper (and hence also its acceptance status) was described in detail above. However, nothing in the declassification procedure \textit{required} that it only be performed once timed release had occurred.
 
-This issue presents a significant issue with using JIF to implement a timed release policy. Since the security type system cannot encode timed release, implementing it necessarily requires giving up the safety that the security type system provides.
+This presents a significant issue with using JIF to implement a timed release policy. Since the security type system cannot encode timed release, implementing it necessarily requires giving up the safety that the security type system provides.
 
 This is best illustrated with the relevant code snippet:
 
@@ -248,15 +248,15 @@ A condensed code printout, containing critical sections of the Paragon implement
 
 \subsubsection{`Semi-parametric' Paper Policy}
 
-As with the JIF implementation, consideration must be given to the need for differing policies on the fields of the \mono{Paper} class. To allow for polymorphism, the Paragon implementation uses a similar strategy as for JIF: use of the \mono{policyof(this)} policy for the title and abstract, and a policy type parameter for the restriction upon authors.
+As with the JIF implementation, consideration must be given to the need for differing policies on the fields of the \mono{Paper} class. To allow for polymorphism, the Paragon implementation uses a similar strategy as for JIF: use of the \code{policyof(this)} policy for the title and abstract, and a policy type parameter for the restriction upon authors.
 
-Unlike JIF, Paragon uses the standard Java syntax for generics, so the class is defined as \mono{public class Paper<policy authorRestriction>}. Beyond this, the Paragon implementation benefits from being able to use the standard Java signatures for \mono{equals}, \mono{hashCode} and \mono{toString}, but is broadly similar to the JIF implementation.
+Unlike JIF, Paragon uses the standard Java syntax for generics, so the class is defined as \code{public class Paper<policy authorRestriction>}. Beyond this, the Paragon implementation benefits from being able to use the standard Java signatures for \code{equals}, \code{hashCode} and \code{toString}, but is broadly similar to the JIF implementation.
 
 \subsubsection{Data Structures}
 
-Where the JIF implementation made interacting with data structures (like the map used to store sessions allocation) quite verbose, in Paragon the process is mostly similar to plain Java. Where a \mono{HashMap<K, V>} in Java takes as type parameters the key and value type, in Paragon, a \mono{HashMap<K, policy KeyPol, V, policy ValPol>} takes a further two -- the policies for keys and values. Policy and actor type parameters use the same notation as regular Java generics and can be mixed with them as required.
+Where the JIF implementation made interacting with data structures (like the map used to store sessions allocation) quite verbose, in Paragon the process is mostly similar to plain Java. Where a \code{HashMap<K, V>} in Java takes as type parameters the key and value type, in Paragon, a \code{HashMap<K, policy KeyPol, V, policy ValPol>} takes a further two -- the policies for keys and values. Policy and actor type parameters use the same notation as regular Java generics and can be mixed with them as required.
 
-In addition, manipulating or retrieving values from a map is simple in Paragon. Compare the code sample above for retrieving and declassifying a session allocation with the below Paragon equivalent:
+In addition, manipulating or retrieving values from a map is simple in Paragon. Compare the code sample in \ref{cs_conf_jif_retrieval} for retrieving and declassifying a session allocation with the below Paragon equivalent:
 
 \begin{minted}{Java}
 return allocations.get(paper);
@@ -266,7 +266,7 @@ Note that there is no explicit declassification here; this is handled by the loc
 
 \subsubsection{Timed Release Policy}
 
-Where timed release cannot be explicitly modeled in the Decentralised Label Model used by JIF's policy language, the logic-based policy language of Paragon, combined with the Paralock construct allows for timed release to be simply and clearly stated.
+Where timed release cannot be explicitly modeled in the Decentralised Label Model used by JIF's policy language, the logic-based policy language of Paragon combined with the Paralock construct allows for timed release to be simply and clearly stated.
 
 The policies used in the Conference System are the following:
 
@@ -290,6 +290,8 @@ static final policy ifAllocationsVisible = {
 \end{enumerate}
 
 There are two different usages of this timed release policy in the application: the paper acceptance status, and the hiding of author details. Unlike JIF, Paragon essentially provides multiple methods for the enforcement of a policy, and so each usage of the policy is discussed separately below, in relation to a specific method of handling enforcement.
+
+\newpage
 
 \subsubsection{`Default Value' Handling}
 
@@ -326,6 +328,8 @@ static final policy ifAllocationsVisible = {
 
 This allows any object to access the information, and so no further declassification action is required: the value retrieved from the map may simply be returned.
 
+\newpage
+
 In addition, since the timed release is properly encoded into Paragon's policy langauge via the lock, the issue encountered in JIF regarding flipping the condition cannot occur. The following code, with the conditional flipped, will not compile in Paragon:
 
 \begin{minted}{Java}
@@ -336,7 +340,7 @@ if (!allocationsVisible) {
 }
 \end{minted}
 
-The end result of this is a method which is functionally the same as its JIF counterpart -- the method may be called anywhere, but will only return a meaningful value after timed release -- but Paragon's policy model allows for type safety that JIF's does not.
+The end result is a method which is functionally the same as its JIF counterpart -- the method may be called anywhere, but will only return a meaningful value after timed release -- but the Paragon version is type safe, where the JIF implementation is not.
 
 \subsubsection{Compile-time Handling}
 
@@ -344,17 +348,16 @@ In both JIF and Paragon, methods may be annotated such that they may only called
 
 However, since JIF's policy language cannot express timed release, it is not possible to write a method with a begin label requiring that the method \textit{only} be called after timed release. For the Paragon implementation this is possible through lock state annotations. This method is demonstrated in the case study for the author visibility restriction.
 
-Implementing this requires very little programmer burden: the paper authors are already at the correct restriction level, since each \mono{Paper} is parametrised by the \mono{ifAllocationsVisible} policy. The only requirement is that any method which exposes these details to a lower level of confidentiality should be annotated with \mono{\textasciitilde allocationsVisible} (specifying that the method may only be called when the \mono{allocationsVisible} lock is open).
+Implementing this requires very little programmer burden: the paper authors are already at the correct restriction level, since each \code{Paper} is parametrised by the \code{ifAllocationsVisible} policy. The only requirement is that any method which exposes these details to a lower level of confidentiality should be annotated with \code{~allocationsVisible} (specifying that the method may only be called when the \code{allocationsVisible} lock is open).
 
-In the case study's \mono{Main} class, the \mono{printOutAuthors} method, which prints out the authors of all papers in an array to standard output, has this annotation:
+In the case study's \code{Main} class, the \code{printOutAuthors} method, which prints out the authors of all papers in an array to standard output, has this annotation:
 
 \begin{minted}{Java}
-private static
-~allocationsVisible
-!bottom
-void printOutAuthors(
+private static ~allocationsVisible !bottom void printOutAuthors(
 	?bottom List<Paper<ifAllocationsVisible>, bottom> retrievedPapers) {
 \end{minted}
+
+\newpage
 
 Then, in the \mono{main} function, the effect is demonstrated as follows:
 
@@ -369,7 +372,7 @@ conferenceSystem.setAllocationsVisible();
 printOutAuthors(retrievedPapers);
 \end{minted}
 
-If the first \mono{printOutAuthors} line is uncommented, the program will not compile since the lock will not be known to be open at that point of execution. However, the same code executed after a method known to open that lock (via the \mono{+allocationsVisible} annotation) will be accepted by the type checker.
+If the first \code{printOutAuthors} line is uncommented, the program will not compile since the lock will not be known to be open at that point of execution. However, the same code executed after a method call known to open that lock (via the \code{+allocationsVisible} annotation) will be accepted by the type checker.
 
 \subsection{Conclusion}
 

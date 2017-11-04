@@ -1,26 +1,24 @@
 \section{Practicalities} \label{sect_practicalities}
 
-Developing the three case studies presented above led to some observations regarding the practical usage of the JIF and Paragon languages. Both are languages developed primarily for research, and so both lack the kind of thorough documentation and tooling that most languages used at a commercial scale have. In addition to this, the theory of information flow is not widely taught, and a solid understanding is required in order to effectively write programs in either language.
-
-Regardless, the languages differ in several important ways which impact on their usability.
+Developing the three case studies presented above led to some observations regarding the practical usage of the JIF and Paragon languages. Both were developed primarily for research, and so both lack the kind of thorough documentation and tooling that most languages used at a commercial scale have. In addition to this, the theory of information flow is not widely taught and a solid understanding is required in order to effectively write programs in either language.
 
 \subsection{Conceptual Burden}
 
-The largest initial barrier to writing programs using JIF or Paragon is the conceptual burden inherent in any language which controls information flow. While access control is well understood and is commonly used both in application development and in the day-to-day operation of a computer, Discretionary Access Control is intuitive and so common that virtually every person involved in the process of developing, deploying and using an application is familiar with it.
+The largest initial barrier to writing programs using JIF or Paragon is the conceptual burden inherent in any language with places controls on information flow. Access control is well understood and is commonly used both in application development and in the day-to-day operation of a computer, and Discretionary Access Control in particular is both intuitive and so common that virtually every person involved in the process of developing, deploying and using an application is familiar with it.
 
 The same cannot be said for security typed information flow. Implementing a program using a security typed language requires first understanding the theory behind the Bell-LaPadula lattice model, non-interference and declassification, which are not intuitive to a programmer lacking a background in mathematics or theoretical computer science. In addition, policy models differ between languages: writing JIF code requires an understanding of the DLM, and writing Paragon code requires conceptualising policy in terms of the ParaLock model.
 
 \subsubsection{JIF}
 
-Paragon has a significant advantage in terms of conceptual burden. JIF requires formulating policy in terms of interacting, potentially mutually distrustful principals. It requires first understanding the hierarchy of principals, and then the model by which ownership-based policies are transformed into the final `reader set'. This model makes sense for some problems, as in the Battleships case study where the two players may be aligned with a principal each with data which should remain confidential to them except through a clearly defined declassification channel.
+Paragon has a significant advantage in terms of conceptual burden. JIF requires formulating policy in terms of interacting, potentially mutually distrustful principals. It requires first understanding the hierarchy of principals, and then the model by which ownership-based policies are transformed into the final `reader set'. This model makes sense for some problems, as in the Battleships case study where the two players may be aligned with principals, each with data which should remain confidential to them except through a clearly defined declassification channel.
 
 However, defining a policy in JIF becomes difficult when the desired policy is inherently dynamic or not built upon interacting principals, as in the Conference Management case study, where the \textit{timing} of declassification was fundamental to the policy.
 
 \subsubsection{Paragon}
 
-Paragon by contrast builds its policy model on predicate logic. Any programmer familiar with access control is able to understand the intention of labels like \paralabel{alice}{}, and labels like \paralabel{User u}{} require only an understanding of universal quantification, aided by the use of `objects as actors': it allows for standard Java concepts such as inheritance to be easily mapped into the policy domain. Though the use of join and meet to combine policies does require some understanding of lattice structures, these concepts also map neatly to the ideas of `intersection' and `union' of policies respectively. Hence, constructing a static policy in Paragon is generally straightforward.
+Paragon by contrast builds its policy model on predicate logic. Any programmer familiar with access control is able to understand the intention of labels like \paralabel{alice}{}, and labels like \paralabel{User u}{} require only an understanding of universal quantification, aided by the use of `objects as actors', which allows for standard Java concepts such as inheritance to be easily mapped into the policy domain. Though the use of join and meet to combine policies does require some understanding of lattice structures, these concepts also map neatly to the ideas of `intersection' and `union' of policies respectively. Hence, constructing a static policy in Paragon is generally straightforward.
 
-Dynamic policies, too, can easily be mapped between the desired security property and its Paragon representation. Unparametrised `Flow Locks' are simply boolean values, and parametrised `ParaLocks' can be easily conceptualised as unary and binary relations. Many practical confidentiality policies can be expressed in natural language in the form ``User $ x $ may read information $ y $ if condition $ p $ holds", which can be translated almost verbatim into Paragon's policy language.
+Dynamic policies, too, can easily be mapped between the desired security property and its Paragon representation. Unparametrised Flow Locks are simply boolean values, and parametrised ParaLocks can be conceptualised as unary and binary relations. Many practical confidentiality policies can be expressed in natural language in the form ``User $ x $ may read information $ y $ if condition $ p $ holds", which can be translated almost verbatim into Paragon's policy language.
 
 \subsection{Annotation Burden \& Boilerplate}
 
@@ -28,11 +26,11 @@ Paragon and JIF both require the programmer to annotate policies throughout the 
 
 \subsubsection{Policy Agnosticism, Type Inference and Null Pointer Analysis}
 
-Ideally, information flow mechanisms would be \textit{policy agnostic} \cite{yang2012agnostic} \cite{austin2013agnostic}, where flow policy could be defined separately to code. This model is common in access control -- for instance, the Java security model defines access policies in an external file, which are then enforced at runtime by the Security Manager \cite{gong2003javasecurity}. Policy agnosticism allows for code reuse and eases the conceptual burden on the programmer.
+Ideally, information flow mechanisms would be \textit{policy agnostic} \cite{yang2012agnostic}\cite{austin2013agnostic}; that is, flow policy would be defined separately to code. This model is common in access control -- for instance, the Java security model defines access policies in an external file, which are then enforced at runtime by the Security Manager \cite{gong2003javasecurity}. Policy agnosticism allows for code reuse and eases the conceptual burden on the programmer.
 
-While neither Paragon nor JIF are policy agnostic languages, they do both provide some mechanisms to reduce annotation burden via type inference: it is generally possible to leave local variables without annotations, and the compiler will attempt to determine the correct label for that variable. In theory this is always possible and a failure of type inference usually means that the code is somehow incorrect, but at times it is difficult to debug a label issue without explicitly adding in annotations to local variables.
+While neither Paragon nor JIF are policy agnostic languages, they do both provide some mechanisms to reduce annotation burden both via security type polymorphism and via type inference: it is generally possible to leave local variables without annotations, and the compiler will attempt to determine the correct label for that variable. In theory this is always possible and a failure of type inference usually means that the code is somehow incorrect, but at times it is difficult to debug a label issue without explicitly adding in annotations to local variables.
 
-In addition to type inference, Paragon and JIF both provide `null pointer analysis'. Since all exceptions -- including \code{NullPointerException} -- are checked in JIF and Paragon, it is therefore often necessary to use \code{try}-\code{catch} constructs, which significantly increases the code's line count and decreases readability. Both languages use static analysis techniques to try and determine which values are known not to be null, and the compiler then allows these variables to be used without catching the \code{NullPointerException}.
+In addition to type inference, Paragon and JIF both provide null pointer analysis. Since all exceptions -- including \code{NullPointerException} -- are checked in JIF and Paragon, it is therefore often necessary to use \code{try}-\code{catch} constructs, which significantly increases the code's line count and decreases readability. Both languages use static analysis techniques to try and determine which values are known not to be null, and the compiler then allows these variables to be used without catching the \code{NullPointerException}.
 
 In practice, JIF is better able to perform this than Paragon; Paragon's analysis often fails to determine that a value cannot be null, even when its state was explicitly checked, such as in the following snippet:
 
@@ -41,19 +39,19 @@ if (myObject == null) return;
 myObject.method();
 \end{minted}
 
-If the above code were included in a JIF program, the null pointer analysis would determine that \code{myObject} cannot be null on the second line, and therefore a \code{try}-\code{catch} is not required. Paragon's null pointer analysis would sometimes fail here, requiring a \code{try}-\code{catch} construct around the method call, or the use of Paragon's added \code{notnull} annotation to make it clear.
+If the above code were included in a JIF program, the null pointer analysis would determine that \code{myObject} cannot be null on the second line, and therefore a \code{try}-\code{catch} is not required. Paragon's null pointer analysis would sometimes fail here, requiring a \code{try}-\code{catch} construct around the method call, or the use of Paragon's \code{notnull} annotation to make it clear.
 
 \subsubsection{Boilerplate and Interfacing with Java}
 
-One concern that potentially limits the applicability of these languages to developing real applications is the additional boilerplate code required when writing programs in JIF or Paragon which need to interface with external resources, in the form of the Java standard library or other external Java libraries.
+One concern that potentially limits the applicability of these languages to developing real applications is the additional boilerplate code required when writing programs in JIF or Paragon which need to interface with external resources, whether with the Java standard library or other external Java libraries.
 
-Both languages have a system which allows a JIF or Paragon interface to be written for a regular Java class, without that class being recreated in Paragon. The standard distributions of each comes with a set of interfaces for commonly used subsets of the Java standard library.
+Both languages have a system which allows a JIF or Paragon interface to be written for a regular Java class, without that class being reimplemented. The standard distribution of each comes with a set of interfaces for commonly used subsets of the Java standard library.
 
-In practice, interacting with the Java standard library is substantially simpler in Paragon than in JIF. In Paragon, most Java standard libraries may be used mostly unmodified, with some extensions such as the \code{PrintStream} class, which in Paragon is parametrised by a policy in order to allow for output streams of varying confidentiality. 
+In practice, interacting with the Java standard library is substantially simpler in Paragon than in JIF. In Paragon, the APIs for most Java standard library components may be used without modification, with some extensions such as the \code{PrintStream} class, which in Paragon is parametrised by a policy in order to allow for output streams of varying confidentiality. 
 
 JIF also provides a label-polymorphic \code{PrintStream} class, but JIF also requires specialised implementations of even the most core Java concepts: the programmer cannot simply override the \code{equals}, \code{hashCode} and \code{toString} methods provided by the Java \code{Object} class; they must instead override those provided by the \code{JIFObject[label L]} interface in order to allow comparisons with objects with differing labels.
 
-Interacting with the user in Paragon is generally similar to doing so in plain Java, but as discussed in \ref{cs_battleships_jif_impl}, in JIF merely accessing standard out involves significant boilerplate code.
+Interacting with the user in Paragon is generally similar to doing so in plain Java, but as discussed in \ref{cs_battleships_jif_impl}, merely accessing standard out in JIF involves significant boilerplate code.
 
 \subsection{Documentation \& Tooling}
 
@@ -67,13 +65,13 @@ In order to make development of the three case studies smoother, scripts were wr
 
 JIF and Paragon both have limited language documentation available. JIF's webpage \cite{jifwebsite} provides a user's manual \cite{jifmanual}, as well as generated JavaDocs for the internals of the runtime. The JIF manual contains material introducing the Decentralised Label Model, outlining the features of the JIF language and providing information about interacting with Java code.
 
-The JIF manual however, has not been updated since JIF version 3.3.0, released in 2009, and so is missing some content which applies to the current JIF version 3.5.0. The difference between these versions has some consequences, particularly with regard to a new ``robust declassification" mechanism which means that some existing JIF code -- including JIF code directly included in examples in the manual -- will no longer compile with the current version.
+However, the JIF manual has not been updated since JIF version 3.3.0, released in 2009, and so is missing some content which applies to the current JIF version 3.5.0. The difference between these versions has some consequences, particularly with regard to a new ``robust declassification" mechanism which means that some existing JIF code -- including JIF code directly included in examples in the manual -- will no longer compile with the current version.
 
-Paragon's webpage \cite{parawebsite} does not provide a user manual, but it does include a tutorial for the language \cite{paratutorial}, available both in PDF form and as an interactive webpage which includes editable code which may be run through the Paragon compiler straight from the webpage.
+Paragon's webpage \cite{parawebsite} does not provide a user's manual, but it does include a tutorial for the language \cite{paratutorial}, available both in PDF form and as an interactive webpage including editable code which may be run through the Paragon compiler straight from the webpage.
 
 \subsection{Compiler Maturity}
 
-While JIF and Paragon are both research languages, and hence do not have compilers which are as well documented or as well tested as those of commercial languages, JIF has been under active development significantly longer than Paragon, and as a result the JIF compiler has fewer noticeable bugs and generally produces more detailed error messages when compilation fails.
+While neither JIF nor Paragon have compilers which are as well documented or as well tested as those of commercial languages, JIF has been under active development significantly longer than Paragon, and as a result the JIF compiler has fewer noticeable bugs and generally produces more detailed error messages when compilation fails.
 
 \subsubsection{Installation \& Compiler Bugs}
 
@@ -81,13 +79,15 @@ As research languages, JIF and Paragon do not provide automatic installers or ot
 
 Paragon also has installation-related issues; though binaries are provided for both the compiler and runtime, the Windows version of the Paragon v0.2 compiler is non-functional: it compiles code using a mix of conventions from Paragon v0.1 and v0.2 in such a way that the resultant \code{.java} file can never compile with \code{javac}. The compiler's Linux binary does not have this issue.
 
-Regardless of the version of the Paragon compiler, it does still occasionally produce incorrect results. The most clear case of this that was encountered while developing the case studies is that it fails to correctly compile runtime checks of lock state. Indeed, in order to compile the case studies first from Paragon code to Java code, and then to Java \code{.class} files, it is necessary to manually modify the Java source files in the middle in order to correct this.
+Regardless of the version of the Paragon compiler, it does still occasionally produce incorrect results. The most clear case of this that was encountered while developing the case studies is that it fails to correctly compile runtime checks of lock state. Indeed, in order to compile the case studies first from Paragon code to Java code, and then to Java \code{.class} files, it is necessary to manually modify the output Java source files in order to correct the bug.
+
+\clearpage
 
 \subsubsection{Compiler Error Messages}
 
-When JIF presents an information flow error during compilation, it presents a short description of the error, alongside the file and line number; where possible, it also includes the specific variable or statement which caused the error.
+When JIF presents an information flow error during compilation, it displays a short description of the error, alongside the file and line number; where possible, it also includes the specific variable or statement which caused the error.
 
-The JIF compiler also includes a \code{-explain} flag, which causes error messages to include the details of the flow constraint which was violated. There are subtle differences between platforms with these errors: in particular, the unicode symbols such as those indicating the join and meet operators do not print correctly, being replaced with question mark characters before even being output to the terminal. This makes interpreting compiler errors on Windows very difficult.
+The JIF compiler also includes a \code{-explain} flag, which causes error messages to include details of the flow constraint which was violated. There are subtle differences between platforms with these errors: in particular, the unicode symbols such as those indicating the join and meet operators do not print correctly when run under Cygwin, being replaced with question mark characters before even being output to the terminal. This makes interpreting compiler errors on Windows very difficult.
 
 Paragon similarly shows a short message along with the file, method and line number, though Paragon's static checker is often unable to correctly determine the line number on which the error occurs. Paragon includes a verbose compiler flag which provides more information, and also includes verbosity `levels' which can log more of the compiler's actions.
 

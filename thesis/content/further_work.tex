@@ -22,7 +22,7 @@ The case studies presented in \autoref{chap_comparison} demonstrate both the app
 
 \subsubsection{Battleships}
 
-The Battleships case study presented in \ref{sect_cs_battleships} requires modelling a `game board' containing information secret to one of the game's players. This information must not leak to the other player, except through a specific querying mechanism as part of the game's rules. This policy is easily encoded in JIF by identifying each player with a principal and using a declassifying method to handle queries. Paragon similarly encodes this; it does not require an explicit principal for each player, because Paragon uses `objects as actors' -- the player instance itself \textit{is} the principal. Paragon performs declassification using a simple Flow Lock, cleanly emulating the same declassification strategy as the JIF implementation.
+The Battleships case study presented in \ref{sect_cs_battleships} requires modelling a `game board' containing information secret to one of the game's players. This information must not leak to the other player, except through a specific querying mechanism as part of the game's rules. This policy is easily encoded in JIF by identifying each player with a principal and using a declassifying method to handle queries. Paragon similarly encodes this; it does not require an explicit principal for each player, because Paragon uses `objects as actors' -- the player instance itself \textit{is} the principal. Paragon performs declassification using a simple flow lock, cleanly emulating the same declassification strategy as the JIF implementation.
 
 \subsubsection{Conference Management}
 
@@ -30,7 +30,7 @@ The Conference Management case study presented in \ref{sect_cs_conf} models a `t
 
 JIF's Decentralised Label Model cannot naturally encode this policy; timed release cannot be expressed in terms of interacting principals. As a result, the JIF implementation of this case study relies on using declassification as an `escape hatch' from the security typing system. Developing this application in JIF is feasible, but doing so requires giving up some of the confidentiality guarantees that security typing provides.
 
-Paragon, by contrast, encodes this policy with a single flow lock, which is opened when the timed release condition is met. Hence, the Paragon implementation of this application is able to provide more stringent confidentiality guarantees than the JIF version.
+Paragon, by contrast, encodes this policy with a single lock, which is opened when the timed release condition is met. Hence, the Paragon implementation of this application is able to provide more stringent confidentiality guarantees than the JIF version.
 
 \subsubsection{Calendar Scheduler}
 
@@ -42,7 +42,7 @@ Paragon comes closer to encoding the policy; its policy definition language allo
 
 \subsubsection{Practicalities}
 
-Setting up either JIF or Paragon and developing the tooling required for streamlined development is a non-trivial task, documentation is sparse and when debugging programs both compilers often output compiler errors which are difficult to interpret. The JIF compiler is (unsurprisingly, given it has been in development for far longer) substantially more mature than the Paragon compiler, which has a number of unresolved bugs.
+Setting up either JIF or Paragon and developing the tooling required for streamlined development is a non-trivial task; documentation is sparse and when debugging programs both compilers often output compiler errors which are difficult to interpret. The JIF compiler is (unsurprisingly, given it has been in development for far longer) substantially more mature than the Paragon compiler, which has a number of unresolved bugs.
 
 While these rough edges are to be expected for research languages, they do make it difficult to recommend using either JIF or Paragon to write a serious application, and they emphasise the need for polish in any information flow language which seeks to become practical outside of academic research.
 
@@ -50,15 +50,15 @@ In addition, the conceptual burden of both languages is still high. Paragon's po
 
 \section{Conclusions}
 
-The more streamlined policy model of Paragon, combined with its greater flexibility make it both easier to use and better able to represent the confidentiality policies of real-world applications. JIF's policy model is effective for modelling certain kinds of policies, and the implementation of the JIF distribution is substantially more mature than that of Paragon, but its comparative lack of expressiveness and its high programmer burden present a significant challenge to its use in practical development.
+The more streamlined policy model of Paragon combined with its greater flexibility make it both easier to use and better able to represent the confidentiality policies of real-world applications. JIF's policy model is effective for modelling certain kinds of policies, and the implementation of the JIF distribution is substantially more mature than that of Paragon, but its comparative lack of expressiveness and its high programmer burden present a significant challenge to its use in practical development.
 
-The case studies implemented covered a range of policies, including policies which could not be adequately represented in either language. These issues along with a general lack of maturity in the ecosystem of information flow tools substantially limit the applications for which security typed information flow is a feasible choice. Regardless, the concepts have potential for large scale application in real world development and the models being implemented in research have (and will likely continue to) become increasingly powerful and expressive over time.
+The case studies implemented covered a range of policies, including policies which could not be adequately represented in either language. These issues, along with a general lack of maturity in the ecosystem of information flow tools, substantially limit the applications for which security typed information flow is a feasible choice. Regardless, the concepts have potential for large scale application in real world development and the models being implemented in research have (and will likely continue to) become increasingly powerful and expressive over time.
 
 \section{Further Work}
 
 The analysis of the JIF programming language presented in this thesis focuses on development using recent versions of JIF and the standard JIF runtime. The JPmail project \cite{jpmailpage} at Pennsylvania State University developed a set of policy tools for JIF which were not thoroughly examined for this comparison, including an Eclipse plugin, JIFclipse, along with tools supporting a policy store with dynamic look-up of principals. These tools were, however, designed for a significantly outdated version of JIF and require the use of a modified JIF runtime, and the project is no longer under active development.
 
-In the literature, there are other approaches to alleviating some of the limitations of JIF. One such approach is that taken by the RX language \cite{swamy06rx}, which builds upon the Decentralised Label Model but attempts to introduce support for dynamic policy through \textit{policy updates}, using both static analysis and runtime checks to reason about the information flows through a program. Though the principles of the RX language have been developed through two papers \cite{swamy06rx} \cite{hicks05rx}, it has not been implemented in practice and the most recent paper was published in 2006.
+In the literature, there are other approaches to alleviating some of the limitations of JIF. One such approach is that taken by the RX language \cite{swamy06rx}, which builds upon the Decentralised Label Model but attempts to introduce support for dynamic policy through \textit{policy updates}, using both static analysis and runtime checks to reason about the information flows through a program. Though the principles of the RX language have been developed through two papers \cite{swamy06rx}\cite{hicks05rx}, it has not been implemented in practice and the most recent paper was published in 2006.
 
 Another system, Java Object-sensitive ANAlysis (JOANA) \cite{graf2013joana}, makes use of a separate static analyser and annotations in Java code, rather than implementing information flow checks by extending the type system. It analyses Java bytecode against traditional lattice-based policies by generating a dependency graph of flows through the system. This approach is is built on substantially different theoretical foundations to those of JIF and Paragon, and it has potential upsides in requiring lower programmer burden, not needing extensive syntax changes to standard Java. As a result, it would make a potentially useful comparison with more traditional security typed languages if performed in depth.
 
@@ -80,7 +80,7 @@ Initially, several approaches to the idea of evaluating information flow securit
 
 Java's security model focuses primarily on controlling the potential actions of \textit{code}, rather than the confidentiality of \textit{data} per se. These are related, but they have distinct purposes. For instance, information flow mechanisms do not attempt to resolve concerns about the trustworthiness of code which is loaded dynamically at runtime and potentially sourced from the internet, but this is fundamental to Java's security model. And similarly, the actual information revealed by a program's execution through both variables in memory and implicit flow is not a problem considered by the Java security model.
 
-A second approach was to focus on the ways in which information flow mechanisms could impact on or mitigate the effects of security vulnerabilities within Java itself and commonly used Java libraries. This approach would have involved examining known vulnerabilities listed in the Common Vulnerabilities and Exposures (CVE) system, and relating them to the guarantees provided by an information flow system.
+A second approach was to focus on the ways in which information flow mechanisms could impact on or mitigate the effects of security vulnerabilities within Java itself and commonly used Java libraries. This approach would have involved examining known vulnerabilities listed in the Common Vulnerabilities and Exposures (CVE) system, and relating them to the guarantees provided by an information flow mechanism.
 
 This approach was also problematic, as many vulnerabilities do not directly relate to the flow of information, and those that do primarily fall outside the realm of what can be addressed by existing information flow implementations. For instance, they often rely on reflection, which security typed languages like JIF and Paragon do not implement.
 
@@ -88,7 +88,7 @@ Ultimately, the approach shifted to considering information flow mechanisms on t
 
 The key decision which flows from this approach is the question of which mechanisms to consider. Information flow encompasses a number of related fields, but even within the scope of \textit{language-based} information flow security, a number of mechanisms have been proposed and implemented. It was clear that JIF should form a part of any comparison -- it is by far the most mature implementation of language-based information flow, and is used as a baseline in many other parts of the literature. The decision was made to stick to `mostly static' implementations of information flow, as runtime-enforced information flow tends to be focused on web technologies (for instance, the FlowFox web browser \cite{degroef2012flowfox}) rather than on languages like Java.
 
-Paragon was then a natural language to compare against, as it explicitly describes itself as a `third generation' security typed language, representing a generational leap from `second generation' languages like JIF.
+Paragon was then a natural language to compare against, as it explicitly describes itself as a `third generation' security typed language, representing a generational leap over `second generation' languages like JIF.
 
 \subsection{Comparison Methodology}
 
